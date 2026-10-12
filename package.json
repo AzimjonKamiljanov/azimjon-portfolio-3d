@@ -4,6 +4,6 @@
   "description": "3D Solar System Developer Portfolio",
   "type": "module",
   "scripts": {
-    "deploy": "wrangler deploy"
+    "deploy": "npx wrangler deploy"
   }
 }
