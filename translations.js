@@ -9,10 +9,17 @@ export const translations = {
     ui: {
         uz: {
             brandTitle: "AZIMJON KAMILJANOV",
-            brandSubtitle: "Lead AI Systems Architect",
+            brandSubtitle: "Lead AI Systems Architect • 9 Sayyora Koinot Portfoliosi",
             overviewBtn: "Umumiy Ko'rinish",
             orbitActive: "Orbita: Harakatda",
             orbitPaused: "Orbita: To'xtatildi",
+            warpSpeed1x: "Vaqt: 1x",
+            warpSpeed5x: "Vaqt: 5x",
+            warpSpeed20x: "Vaqt: 20x",
+            orbitsActive: "Orbitalar: Yoniq",
+            orbitsHidden: "Orbitalar: O'chiq",
+            cinematicBtn: "Toza Fazo",
+            cinematicExit: "Boshqaruvni qaytarish (H / Esc)",
             audioOn: "Ovoz: Yoniq",
             audioOff: "Ovoz: O'chiq",
             catalogBtn: "Loyihalar",
@@ -142,15 +149,24 @@ export const translations = {
                 uranus: "Uran",
                 neptune: "Neptun",
                 pluto: "Pluton",
+                voyager: "Voyager",
+                comet: "Kometa",
                 stars: "Yulduzlar"
             }
         },
         en: {
             brandTitle: "AZIMJON KAMILJANOV",
-            brandSubtitle: "Lead AI Systems Architect",
+            brandSubtitle: "Lead AI Systems Architect • 9-Planet Cosmic Portfolio",
             overviewBtn: "Solar Overview",
             orbitActive: "Orbit: Running",
             orbitPaused: "Orbit: Paused",
+            warpSpeed1x: "Time: 1x",
+            warpSpeed5x: "Time: 5x",
+            warpSpeed20x: "Time: 20x",
+            orbitsActive: "Orbits: ON",
+            orbitsHidden: "Orbits: OFF",
+            cinematicBtn: "Pure Space",
+            cinematicExit: "Restore UI (H / Esc)",
             audioOn: "Sound: ON",
             audioOff: "Sound: OFF",
             catalogBtn: "Projects",
@@ -280,15 +296,24 @@ export const translations = {
                 uranus: "Uranus",
                 neptune: "Neptune",
                 pluto: "Pluto",
+                voyager: "Voyager",
+                comet: "Comet",
                 stars: "Stars"
             }
         },
         ru: {
             brandTitle: "AZIMJON KAMILJANOV",
-            brandSubtitle: "Lead AI Systems Architect",
+            brandSubtitle: "Lead AI Systems Architect • Портфолио 9 Планет",
             overviewBtn: "Обзор Системы",
             orbitActive: "Орбита: В движении",
             orbitPaused: "Орбита: На паузе",
+            warpSpeed1x: "Время: 1x",
+            warpSpeed5x: "Время: 5x",
+            warpSpeed20x: "Время: 20x",
+            orbitsActive: "Орбиты: Вкл",
+            orbitsHidden: "Орбиты: Выкл",
+            cinematicBtn: "Чистый Космос",
+            cinematicExit: "Вернуть интерфейс (H / Esc)",
             audioOn: "Звук: ВКЛ",
             audioOff: "Звук: ВЫКЛ",
             catalogBtn: "Проекты",
@@ -418,6 +443,8 @@ export const translations = {
                 uranus: "Уран",
                 neptune: "Нептун",
                 pluto: "Плутон",
+                voyager: "Вояджер",
+                comet: "Комета",
                 stars: "Звезды"
             }
         }
@@ -871,6 +898,90 @@ Empowered by Poco CLI for atomic cross-repository commits, continuous testing, a
                 tags: ['Google Jules', 'Cloud Fleet', 'Poco CLI', 'Multi-Repo', 'Automated DevOps'],
                 actionText: 'Репозиторий Poco',
                 githubText: 'Poco'
+            }
+        },
+
+        Voyager: {
+            uz: {
+                badge: 'Koinot Zondi • Interstellar Architecture',
+                title: 'Voyager 1 • CyberProbe Deep Space Telemetry',
+                subtitle: 'Avtonom Tizimlar, Chuqur Arxitektura va Erkin AI Missiyasi',
+                content: `Azimjon Kamiljanovning yulduzlararo fazoga yo'naltirilgan texnologik konseptsiyasi.
+Yulduzlararo masofalarda avtonom ishlovchi kiber-agentlar arxitekturasi, RTX 5070 lokal GPU infratuzilmasi, markazlashmagan AI protokollari va tizimli optimallashtirish missiyasi.
+
+Telemetriya:
+• Missiya: Deep Space Autonomous Computing
+• Aloqa kanali: Direct Decentralized RPC
+• Holat: Yulduzlararo fazoda faol parvozda
+• Boshqaruv: Azimjon Kamiljanov AI Systems Lab`,
+                tags: ['Voyager 1', 'Interstellar Mission', 'Autonomous Agents', 'Deep Architecture', 'RTX 5070 CUDA', 'Decentralized Tech'],
+                actionText: 'Voyager Missiyasi',
+                githubText: 'GitHub Profil'
+            },
+            en: {
+                badge: 'Deep Space Probe • Interstellar Architecture',
+                title: 'Voyager 1 • CyberProbe Deep Space Telemetry',
+                subtitle: 'Autonomous Systems, Deep Architecture & Decentralized AI Mission',
+                content: `Azimjon Kamiljanov's deep-space engineering vision.
+Autonomous agent architecture operating over interstellar distances, local RTX 5070 GPU infrastructure, decentralized AI pipelines, and continuous system resilience.
+
+Telemetry:
+• Mission: Deep Space Autonomous Computing
+• Channel: Direct Decentralized RPC
+• Status: Sailing into Interstellar Space
+• Operation: Azimjon Kamiljanov AI Systems Lab`,
+                tags: ['Voyager 1', 'Interstellar Mission', 'Autonomous Agents', 'Deep Architecture', 'RTX 5070 CUDA', 'Decentralized Tech'],
+                actionText: 'Voyager Mission',
+                githubText: 'GitHub Profile'
+            },
+            ru: {
+                badge: 'Космический Зонд • Межзвездная Архитектура',
+                title: 'Voyager 1 • CyberProbe Deep Space Telemetry',
+                subtitle: 'Автономные Системы, Глубокая Архитектура и Миссия Свободного AI',
+                content: `Технологическая концепция Азимжона Камильджанова, устремленная в межзвездное пространство.
+Архитектура автономных кибер-агентов, работающих на межзвездных расстояниях, локальная GPU-инфраструктура RTX 5070, децентрализованные AI протоколы и отказоустойчивость.
+
+Телеметрия:
+• Миссия: Deep Space Autonomous Computing
+• Канал связи: Direct Decentralized RPC
+• Статус: Активный полет в межзвездной среде
+• Центр управления: Azimjon Kamiljanov AI Systems Lab`,
+                tags: ['Voyager 1', 'Interstellar Mission', 'Autonomous Agents', 'Deep Architecture', 'RTX 5070 CUDA', 'Decentralized Tech'],
+                actionText: 'Миссия Вояджер',
+                githubText: 'Профиль GitHub'
+            }
+        },
+
+        Comet: {
+            uz: {
+                badge: 'Koinot Hodisasi • Davriy Kometa',
+                title: 'Halley-Neowise • Dynamic Periodic Comet',
+                subtitle: 'Ekssentrik Dumli Yulduz va Quyosh Shamoli Dinamikasi',
+                content: `Quyosh tizimini kesib o'tuvchi yuqori ekssentriklikdagi kometaning dinamik harakati.
+Quyosh nurlanish bosimi va quyosh shamoli natijasida hosil bo'ladigan gaz (ion) va chang dumlari fizikasi. Quyosh yaqinida maksimal tezlik va yorqinlikka erishadi.`,
+                tags: ['Comet', 'Keplerian Orbit', 'Ion Tail', 'Solar Wind', 'Solar Physics'],
+                actionText: 'Kometa Dinamikasi',
+                githubText: 'GitHub Profil'
+            },
+            en: {
+                badge: 'Cosmic Phenomenon • Periodic Comet',
+                title: 'Halley-Neowise • Dynamic Periodic Comet',
+                subtitle: 'Highly Eccentric Comet & Solar Wind Dynamics',
+                content: `Dynamic trajectory of a highly eccentric comet sweeping through the Solar System.
+Physics of dual tails (bluish gas ion tail and warm dust tail) driven by solar radiation pressure and solar wind, accelerating near perihelion.`,
+                tags: ['Comet', 'Keplerian Orbit', 'Ion Tail', 'Solar Wind', 'Solar Physics'],
+                actionText: 'Comet Dynamics',
+                githubText: 'GitHub Profile'
+            },
+            ru: {
+                badge: 'Космический Феномен • Периодическая Комета',
+                title: 'Halley-Neowise • Dynamic Periodic Comet',
+                subtitle: 'Эксцентричная Комета и Динамика Солнечного Ветра',
+                content: `Динамическая траектория кометы с высоким эксцентриситетом, пролетающей через Солнечную систему.
+Физика двойного хвоста (газовый ионный и пылевой), направленного от Солнца под давлением солнечного ветра и радиации.`,
+                tags: ['Comet', 'Keplerian Orbit', 'Ion Tail', 'Solar Wind', 'Solar Physics'],
+                actionText: 'Динамика Кометы',
+                githubText: 'Профиль GitHub'
             }
         }
     },

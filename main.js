@@ -10,6 +10,175 @@ import { translations } from './translations.js';
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x010106);
 
+// ==============================================================================
+// 1-YO'NALISH: PROCEDURAL GLSL MILKY WAY GALAXY & COSMIC NEBULAE SKYDOME
+// ==============================================================================
+const milkyWayVertexShader = `
+varying vec3 vWorldDir;
+void main() {
+    vWorldDir = normalize(position);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`;
+
+const milkyWayFragmentShader = `
+uniform float uTime;
+varying vec3 vWorldDir;
+
+float hash3(vec3 p) {
+    p = fract(p * 0.3183099 + vec3(0.1, 0.1, 0.1));
+    p *= 17.0;
+    return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
+
+float noise3(vec3 x) {
+    vec3 p = floor(x);
+    vec3 w = fract(x);
+    vec3 u = w * w * w * (w * (w * 6.0 - 15.0) + 10.0);
+    
+    float n000 = hash3(p + vec3(0.0, 0.0, 0.0));
+    float n100 = hash3(p + vec3(1.0, 0.0, 0.0));
+    float n010 = hash3(p + vec3(0.0, 1.0, 0.0));
+    float n110 = hash3(p + vec3(1.0, 1.0, 0.0));
+    float n001 = hash3(p + vec3(0.0, 0.0, 1.0));
+    float n101 = hash3(p + vec3(1.0, 0.0, 1.0));
+    float n011 = hash3(p + vec3(0.0, 1.0, 1.0));
+    float n111 = hash3(p + vec3(1.0, 1.0, 1.0));
+
+    float nx00 = mix(n000, n100, u.x);
+    float nx10 = mix(n010, n110, u.x);
+    float nx01 = mix(n001, n101, u.x);
+    float nx11 = mix(n011, n111, u.x);
+
+    float nxy0 = mix(nx00, nx10, u.y);
+    float nxy1 = mix(nx01, nx11, u.y);
+
+    return mix(nxy0, nxy1, u.z);
+}
+
+float fbm3(vec3 p) {
+    float f = 0.0;
+    float amp = 0.5;
+    for (int i = 0; i < 4; i++) {
+        f += amp * noise3(p);
+        p = p * 2.15 + vec3(1.2, 3.4, 5.6);
+        amp *= 0.5;
+    }
+    return f;
+}
+
+void main() {
+    vec3 dir = normalize(vWorldDir);
+    
+    // Tilt coordinate system by ~60 degrees for realistic galactic plane relative to ecliptic
+    float cosT = 0.50;
+    float sinT = 0.866;
+    vec3 gDir = vec3(
+        dir.x,
+        dir.y * cosT - dir.z * sinT,
+        dir.y * sinT + dir.z * cosT
+    );
+    
+    float distG = abs(gDir.y);
+    
+    // Main galactic disk profile (smooth bell curve along galactic equator)
+    float disk = exp(-distG * distG * 18.0);
+    
+    // Galactic core bulge (brightest in Sagittarius constellation)
+    vec3 coreDir = normalize(vec3(0.82, 0.04, 0.57));
+    float coreDist = length(gDir - coreDir);
+    float coreGlow = exp(-coreDist * coreDist * 3.4) * 1.6;
+    
+    // Interstellar cosmic dust lanes & The Great Rift (absorption of light by cold molecular dust)
+    vec3 noisePos = gDir * 4.2;
+    float dustNoise = fbm3(noisePos);
+    float darkLanes = smoothstep(0.40, 0.74, dustNoise * (1.0 - distG * 1.4));
+    float diskBright = max(0.0, (disk * 1.35 + coreGlow) * (1.0 - darkLanes * 0.78));
+    
+    // Cosmic emission nebulae (Orion / Carina / Lagoon style interstellar gas clouds)
+    float neb1Dist = length(gDir - normalize(vec3(-0.68, 0.18, -0.70)));
+    float neb1 = exp(-neb1Dist * neb1Dist * 14.0) * fbm3(gDir * 7.5);
+    
+    float neb2Dist = length(gDir - normalize(vec3(0.24, -0.22, -0.94)));
+    float neb2 = exp(-neb2Dist * neb2Dist * 12.0) * fbm3(gDir * 7.0 + 2.1);
+    
+    // Deep cosmic palette
+    vec3 bgSpace = vec3(0.003, 0.003, 0.008);
+    vec3 discStarGlow = vec3(0.82, 0.78, 0.96) * 0.52; // Luminous stellar disc
+    vec3 coreWarmth = vec3(1.0, 0.80, 0.52) * 0.95;     // Golden galactic bulge
+    vec3 nebCyan = vec3(0.12, 0.55, 0.88) * 1.15;       // Cyan reflection nebulae
+    vec3 nebMagenta = vec3(0.72, 0.18, 0.55) * 1.05;    // Pink/magenta H-alpha gas
+    
+    vec3 col = bgSpace;
+    col += discStarGlow * diskBright;
+    col += coreWarmth * coreGlow * (1.0 - darkLanes * 0.45);
+    col += nebCyan * neb1;
+    col += nebMagenta * neb2;
+    
+    // Subtle star dust grain
+    float grain = pow(noise3(gDir * 32.0), 3.0) * disk * 0.3;
+    col += vec3(grain);
+    
+    gl_FragColor = vec4(col, 1.0);
+}
+`;
+
+const milkyWayUniforms = {
+    uTime: { value: 0.0 }
+};
+
+const milkyWayMat = new THREE.ShaderMaterial({
+    vertexShader: milkyWayVertexShader,
+    fragmentShader: milkyWayFragmentShader,
+    uniforms: milkyWayUniforms,
+    side: THREE.BackSide,
+    depthWrite: false
+});
+
+const milkyWaySphere = new THREE.Mesh(
+    new THREE.SphereGeometry(950, 64, 48),
+    milkyWayMat
+);
+milkyWaySphere.renderOrder = -100;
+scene.add(milkyWaySphere);
+
+// ==============================================================================
+// 2-YO'NALISH: FRESNEL RAYLEIGH SCATTERING ATMOSPHERIC RIM GLOW HELPER
+// ==============================================================================
+function createAtmosphereGlow(radius, colorHex, intensity = 1.0, scale = 1.055) {
+    const geo = new THREE.SphereGeometry(radius * scale, 48, 48);
+    const mat = new THREE.ShaderMaterial({
+        vertexShader: `
+            varying vec3 vNormal;
+            void main() {
+                vNormal = normalize(normalMatrix * normal);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform vec3 uColor;
+            uniform float uIntensity;
+            varying vec3 vNormal;
+            void main() {
+                float rim = pow(0.68 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.8);
+                rim = clamp(rim, 0.0, 1.0);
+                gl_FragColor = vec4(uColor, rim * uIntensity);
+            }
+        `,
+        uniforms: {
+            uColor: { value: new THREE.Color(colorHex) },
+            uIntensity: { value: intensity }
+        },
+        blending: THREE.AdditiveBlending,
+        side: THREE.BackSide,
+        transparent: true,
+        depthWrite: false
+    });
+    const atmosMesh = new THREE.Mesh(geo, mat);
+    atmosMesh.raycast = () => {}; // Transparent to raycasting so planet sphere is directly clickable
+    return atmosMesh;
+}
+
 // Setup Camera with wide cinematic field of view
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 4000);
 // Elevated overview camera showing ALL 9 PLANETS immediately
@@ -688,6 +857,7 @@ const planetsData = [
         speed: 0.012, 
         texture: 'mercury_2048.jpg', 
         color: 0xb5b2ad, 
+        tilt: 0.03,
         badge: '1-Sayyora • Enterprise Platform',
         title: 'CareTrack Clinic • Medical ERP', 
         subtitle: 'Klinikalar va Shifoxonalar uchun Avtomatlashtirilgan CRM/ERP',
@@ -710,6 +880,10 @@ Xavfsiz ma'lumotlar shifrlanishi (HIPAA standartlari), role-based audit va real 
         speed: 0.0085, 
         texture: 'venus_2048.jpg', 
         color: 0xe8c892, 
+        tilt: 177.3,
+        hasAtmosphere: true,
+        atmosphereColor: 0xfcd34d,
+        atmosphereIntensity: 1.1,
         badge: '2-Sayyora • Voice AI & Robotics',
         title: 'Jarvis-X • Autonomous Desktop Voice Assistant', 
         subtitle: 'Ovozli Buyruqlar, Desktop Avtomatizatsiyasi va Aqlli Yordamchi',
@@ -733,9 +907,14 @@ Modular, offline-capable, multilingual (EN/UZ) arxitektura, mahalliy STT/TTS dvi
         specular: 'earth_specular_2048.jpg', 
         normal: 'earth_normal_2048.jpg', 
         color: 0xffffff, 
+        tilt: 23.4,
         hasClouds: true,
         hasMoon: true,
         moonDistance: 3.4,
+        hasAtmosphere: true,
+        atmosphereColor: 0x38bdf8,
+        atmosphereIntensity: 1.35,
+        hasNightLights: true,
         badge: '3-Sayyora • Flagship AI Loyiha',
         title: 'CyberAgent TITAN NEXUS', 
         subtitle: 'Shaxsiy Avtonom Super-Agent va Telegram Ovozli Duplex VoIP Tizimi',
@@ -758,6 +937,7 @@ Hydrogram VoIP dvigateli orqali 1-on-1 telefon qo'ng'iroqlari, jonli duplex ovoz
         speed: 0.0048, 
         texture: 'mars_2048.jpg', 
         color: 0xdb582a, 
+        tilt: 25.2,
         badge: '4-Sayyora • 3D CAD & Smeta Engine',
         title: 'UstaPro Master CAD 3D • Construction Platform', 
         subtitle: 'Muhandislik 3D Hisob-kitob, Tom, Pol, Shift va Avtomatlashtirilgan Smeta',
@@ -780,6 +960,7 @@ Three.js 3D interaktiv modeli, 2D blueprint rejimi, solo-inspektor va Cloudflare
         speed: 0.0028, 
         texture: 'jupiter_2048.jpg', 
         color: 0xdf9b64, 
+        tilt: 3.1,
         badge: '5-Sayyora • DevSecOps & Security Engine',
         title: 'Sentinel ECC Matrix • Resilient Distributed Architecture', 
         subtitle: 'Xatoliklarga Chidamli ECC Matritsa va Xavfsiz Docker Sandboxing',
@@ -830,6 +1011,9 @@ Avtonom ravishda kod yozish, testlarni yurgizish, xatolarni tahlil qilish va loy
         ringInner: 2.3,
         ringOuter: 3.75,
         tilt: 97.8,
+        hasAtmosphere: true,
+        atmosphereColor: 0x67e8f9,
+        atmosphereIntensity: 0.9,
         badge: '7-Sayyora • Cloud Web Solutions',
         title: 'Modern Full-Stack Ecosystem • Enterprise Web', 
         subtitle: 'Mikroxizmatlar, REST/GraphQL API va Yuqori Yuklamali Web Ilovalar',
@@ -851,6 +1035,10 @@ React / Next.js frontend, Node.js / Express backend mikroxizmatlari, Redis kesh 
         speed: 0.0010, 
         texture: 'neptune_2048.jpg', 
         color: 0x3d66cc, 
+        tilt: 28.3,
+        hasAtmosphere: true,
+        atmosphereColor: 0x3b82f6,
+        atmosphereIntensity: 1.25,
         badge: '8-Sayyora • Deep Learning & Neural Networks',
         title: 'AI Learning & Deep Learning Lab • RTX 5070 CUDA', 
         subtitle: 'PyTorch 2.14, CUDA 13 va 200+ Zamonaviy AI/ML Kutubxonalar',
@@ -872,6 +1060,7 @@ Kompyuter ko'rishi (CV), NLP, Transformer modellarini nozik sozlash (Fine-tuning
         speed: 0.00075, 
         texture: 'pluto_2048.jpg', 
         color: 0xba9e83, 
+        tilt: 122.5,
         badge: '9-Sayyora • Cloud Fleet & Edge Computing',
         title: 'Google Jules Cloud Fleet & Poco Orchestrator', 
         subtitle: 'Google Labs Jules SDK, Cloud VM Fleet va Avtonom PR Generator',
@@ -885,6 +1074,23 @@ Antigravity va terminal orqali Google Cloud VM'larida murakkab dasturlash vazifa
         githubText: 'Poco'
     }
 ];
+
+let saturnGlobeMesh = null;
+const saturnRingUniforms = {
+    uSunDirLocal: { value: new THREE.Vector3(1, 0, 0) },
+    uSaturnRadius: { value: 2.4 }
+};
+
+function updateSaturnRingShadow() {
+    if (!saturnGlobeMesh) return;
+    const saturnWorldPos = new THREE.Vector3();
+    saturnGlobeMesh.getWorldPosition(saturnWorldPos);
+    // Sun is at (0, 0, 0) in world space
+    const sunDirWorld = saturnWorldPos.clone().negate().normalize();
+    const invSaturnRot = saturnGlobeMesh.quaternion.clone().invert();
+    const sunDirLocal = sunDirWorld.applyQuaternion(invSaturnRot);
+    saturnRingUniforms.uSunDirLocal.value.copy(sunDirLocal);
+}
 
 const planets = [];
 
@@ -906,10 +1112,48 @@ planetsData.forEach(data => {
     if (data.specular) materialOptions.metalnessMap = textureLoader.load(textureBase + data.specular);
     
     const mat = new THREE.MeshStandardMaterial(materialOptions);
+
+    // 2-YO'NALISH: Earth Dynamic Night City Lights on unlit hemisphere
+    if (data.id === 'Earth' && data.hasNightLights) {
+        const earthNightTex = textureLoader.load(textureBase + 'earth_night_2048.jpg');
+        earthNightTex.colorSpace = THREE.SRGBColorSpace;
+        mat.onBeforeCompile = (shader) => {
+            shader.uniforms.uNightTexture = { value: earthNightTex };
+            shader.vertexShader = shader.vertexShader.replace(
+                '#include <common>',
+                `#include <common>
+                 varying vec3 vEarthWorldPos;
+                 varying vec3 vEarthWorldNormal;`
+            );
+            shader.vertexShader = shader.vertexShader.replace(
+                '#include <worldpos_vertex>',
+                `#include <worldpos_vertex>
+                 vEarthWorldPos = (modelMatrix * vec4(transformed, 1.0)).xyz;
+                 vEarthWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);`
+            );
+            shader.fragmentShader = shader.fragmentShader.replace(
+                '#include <common>',
+                `#include <common>
+                 uniform sampler2D uNightTexture;
+                 varying vec3 vEarthWorldPos;
+                 varying vec3 vEarthWorldNormal;`
+            );
+            shader.fragmentShader = shader.fragmentShader.replace(
+                '#include <dithering_fragment>',
+                `#include <dithering_fragment>
+                 vec3 lightToSun = normalize(-vEarthWorldPos);
+                 float NdotL = dot(vEarthWorldNormal, lightToSun);
+                 float nightFactor = smoothstep(0.12, -0.22, NdotL);
+                 vec3 nightLights = texture2D(uNightTexture, vMapUv).rgb * nightFactor * 2.2;
+                 gl_FragColor.rgb += nightLights;`
+            );
+        };
+    }
+
     const mesh = new THREE.Mesh(geom, mat);
     mesh.position.x = data.distance;
     
-    // Natural axial tilt
+    // Real astronomical axial tilt
     if (data.tilt) {
         mesh.rotation.z = THREE.MathUtils.degToRad(data.tilt);
     }
@@ -918,7 +1162,7 @@ planetsData.forEach(data => {
     const initialAngle = (data.distance * 0.85) % (Math.PI * 2);
     orbitGroup.rotation.y = initialAngle;
 
-    // Photorealistic Rings for Saturn & Uranus
+    // Photorealistic Rings for Saturn & Uranus with Cassini Real Globe Shadow
     let ringMesh = null;
     if (data.hasRing && data.ringInner && data.ringOuter) {
         const ringGeo = createRadialRingGeometry(data.ringInner, data.ringOuter, 180, 32);
@@ -931,20 +1175,59 @@ planetsData.forEach(data => {
             metalness: 0.08,
             alphaTest: 0.015
         });
+
+        // 2-YO'NALISH: Saturn Globe Shadow cast onto its Rings
+        if (data.id === 'Saturn') {
+            saturnGlobeMesh = mesh;
+            ringMat.onBeforeCompile = (shader) => {
+                shader.uniforms.uSunDirLocal = saturnRingUniforms.uSunDirLocal;
+                shader.uniforms.uSaturnRadius = saturnRingUniforms.uSaturnRadius;
+                shader.vertexShader = shader.vertexShader.replace(
+                    '#include <common>',
+                    `#include <common>
+                     varying vec3 vRingLocalPos;`
+                );
+                shader.vertexShader = shader.vertexShader.replace(
+                    '#include <begin_vertex>',
+                    `#include <begin_vertex>
+                     vRingLocalPos = position;`
+                );
+                shader.fragmentShader = shader.fragmentShader.replace(
+                    '#include <common>',
+                    `#include <common>
+                     uniform vec3 uSunDirLocal;
+                     uniform float uSaturnRadius;
+                     varying vec3 vRingLocalPos;`
+                );
+                shader.fragmentShader = shader.fragmentShader.replace(
+                    '#include <dithering_fragment>',
+                    `#include <dithering_fragment>
+                     vec3 globePos = vec3(vRingLocalPos.x, -vRingLocalPos.z, vRingLocalPos.y);
+                     float proj = dot(globePos, uSunDirLocal);
+                     if (proj < 0.0) {
+                         float distToAxis = length(globePos - proj * uSunDirLocal);
+                         float shadow = smoothstep(uSaturnRadius * 0.94, uSaturnRadius * 1.05, distToAxis);
+                         gl_FragColor.rgb *= mix(0.06, 1.0, shadow);
+                     }`
+                );
+            };
+        }
+
         ringMesh = new THREE.Mesh(ringGeo, ringMat);
         ringMesh.rotation.x = Math.PI / 2;
         ringMesh.raycast = () => {}; // Decorative rings don't block raycasting to planet
         mesh.add(ringMesh);
     }
 
-    // Earth Clouds layer
+    // 2-YO'NALISH: Earth Dynamic Realistic Cloud Layer
     let cloudsMesh = null;
     if (data.hasClouds) {
-        const cloudGeo = new THREE.SphereGeometry(data.radius * 1.025, 64, 64);
+        const cloudGeo = new THREE.SphereGeometry(data.radius * 1.022, 64, 64);
+        const cloudsTex = textureLoader.load(textureBase + 'earth_clouds_2048.png');
         const cloudMat = new THREE.MeshStandardMaterial({
-            color: 0x93c5fd,
+            map: cloudsTex,
             transparent: true,
-            opacity: 0.18,
+            opacity: 0.72,
             depthWrite: false,
             roughness: 0.92,
             metalness: 0.0
@@ -952,6 +1235,12 @@ planetsData.forEach(data => {
         cloudsMesh = new THREE.Mesh(cloudGeo, cloudMat);
         cloudsMesh.raycast = () => {}; // Transparent to raycasting so Earth sphere is directly targeted
         mesh.add(cloudsMesh);
+    }
+
+    // 2-YO'NALISH: Planetary Atmospheres (Fresnel Rayleigh Limb Glow)
+    if (data.hasAtmosphere) {
+        const atmosGlow = createAtmosphereGlow(data.radius, data.atmosphereColor, data.atmosphereIntensity, 1.055);
+        mesh.add(atmosGlow);
     }
 
     // 3D Holographic Planet Label (omitted from in-scene mesh for a clean minimalist environment)
@@ -1038,6 +1327,9 @@ Joylashuv: Toshkent, O'zbekiston`,
 });
 
 // Crisp, Elegant Glowing Orbit Lines (Consistently separated concentric rings)
+const orbitLinesGroup = new THREE.Group();
+scene.add(orbitLinesGroup);
+
 planetsData.forEach(data => {
     const orbitPoints = [];
     const segments = 160;
@@ -1052,7 +1344,7 @@ planetsData.forEach(data => {
         opacity: 0.22 
     });
     const orbitLine = new THREE.Line(orbitGeo, orbitMat);
-    scene.add(orbitLine);
+    orbitLinesGroup.add(orbitLine);
 });
 
 // ==========================================
@@ -1670,37 +1962,383 @@ stellarProjectsData.forEach((sData, idx) => {
     });
 });
 
-// Background Starfield (4,500 distant stars)
+// ==============================================================================
+// 1-YO'NALISH: PLANCK BLACKBODY STELLAR POPULATION (7,500 STARS)
+// ==============================================================================
 const starsGeometry = new THREE.BufferGeometry();
-const starsCount = 4500;
+const starsCount = 7500;
 const posArray = new Float32Array(starsCount * 3);
+const colorArray = new Float32Array(starsCount * 3);
 const starsData = [];
 
-for (let i = 0; i < starsCount * 3; i += 3) {
-    const r = 200 + Math.random() * 450;
+// Planck Blackbody spectral distribution:
+// O/B (blue/cyan ~25,000K): #9bb0ff
+// A (pure white ~10,000K): #cad7ff
+// F (warm white ~7,000K): #f8f9ff
+// G (solar yellow/gold ~5,800K): #fff4e8
+// K (orange ~4,500K): #ffd2a1
+// M (crimson/red dwarf ~3,000K): #ff9e79
+const planckSpectralPalette = [
+    new THREE.Color(0x9bb0ff), // O/B Hot Blue
+    new THREE.Color(0xb8c8ff), // B Light Blue
+    new THREE.Color(0xf0f4ff), // A Pure White
+    new THREE.Color(0xfff8ee), // F Warm White
+    new THREE.Color(0xffe2a4), // G Solar Yellow/Gold
+    new THREE.Color(0xffb87a), // K Orange
+    new THREE.Color(0xff8866)  // M Red Dwarf
+];
+
+for (let i = 0; i < starsCount; i++) {
+    const idx3 = i * 3;
+    const r = 220 + Math.random() * 550;
     const theta = 2 * Math.PI * Math.random();
     const phi = Math.acos(2 * Math.random() - 1);
     const x = r * Math.sin(phi) * Math.cos(theta);
     const y = r * Math.sin(phi) * Math.sin(theta);
     const z = r * Math.cos(phi);
     
-    posArray[i] = x;
-    posArray[i+1] = y;
-    posArray[i+2] = z;
+    posArray[idx3] = x;
+    posArray[idx3 + 1] = y;
+    posArray[idx3 + 2] = z;
+    
+    // Choose spectral color with realistic distribution
+    const roll = Math.random();
+    let col;
+    if (roll < 0.08) col = planckSpectralPalette[0];
+    else if (roll < 0.18) col = planckSpectralPalette[1];
+    else if (roll < 0.38) col = planckSpectralPalette[2];
+    else if (roll < 0.58) col = planckSpectralPalette[3];
+    else if (roll < 0.78) col = planckSpectralPalette[4];
+    else if (roll < 0.92) col = planckSpectralPalette[5];
+    else col = planckSpectralPalette[6];
+    
+    colorArray[idx3] = col.r;
+    colorArray[idx3 + 1] = col.g;
+    colorArray[idx3 + 2] = col.b;
     
     if (i < 120) {
         starsData.push({ position: new THREE.Vector3(x, y, z) });
     }
 }
 starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+starsGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
 const starsMaterial = new THREE.PointsMaterial({ 
-    size: 0.45, 
-    color: 0xffffff, 
+    size: 0.65, 
+    vertexColors: true,
     transparent: true, 
-    opacity: 0.85
+    opacity: 0.88
 });
 const stars = new THREE.Points(starsGeometry, starsMaterial);
 scene.add(stars);
+
+// ==============================================================================
+// 3-YO'NALISH: DYNAMIC PERIODIC COMET (HALLEY-NEOWISE DUAL TAILS)
+// ==============================================================================
+const cometGroup = new THREE.Group();
+scene.add(cometGroup);
+
+const cometNucleusGeo = new THREE.DodecahedronGeometry(0.55, 1);
+const cometNucleusMat = new THREE.MeshStandardMaterial({
+    color: 0x88ccff,
+    roughness: 0.75,
+    metalness: 0.2
+});
+const cometNucleus = new THREE.Mesh(cometNucleusGeo, cometNucleusMat);
+cometGroup.add(cometNucleus);
+
+// Glowing nucleus core sprite
+const cometCanvas = document.createElement('canvas');
+cometCanvas.width = 128;
+cometCanvas.height = 128;
+const cCtx = cometCanvas.getContext('2d');
+const cGrad = cCtx.createRadialGradient(64, 64, 0, 64, 64, 64);
+cGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+cGrad.addColorStop(0.2, 'rgba(160, 235, 255, 0.9)');
+cGrad.addColorStop(0.5, 'rgba(56, 189, 248, 0.35)');
+cGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+cCtx.fillStyle = cGrad;
+cCtx.fillRect(0, 0, 128, 128);
+const cometCoreTex = new THREE.CanvasTexture(cometCanvas);
+const cometCoreMat = new THREE.SpriteMaterial({
+    map: cometCoreTex,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    opacity: 0.95
+});
+const cometCoreSprite = new THREE.Sprite(cometCoreMat);
+cometCoreSprite.scale.set(6.5, 6.5, 1);
+cometNucleus.add(cometCoreSprite);
+
+// Dynamic dual ion & dust particle tail
+const COMET_TAIL_COUNT = 140;
+const cometTailGeo = new THREE.BufferGeometry();
+const cometTailPositions = new Float32Array(COMET_TAIL_COUNT * 3);
+const cometTailColors = new Float32Array(COMET_TAIL_COUNT * 3);
+
+for (let i = 0; i < COMET_TAIL_COUNT; i++) {
+    const fraction = i / COMET_TAIL_COUNT;
+    cometTailPositions[i * 3] = 0;
+    cometTailPositions[i * 3 + 1] = 0;
+    cometTailPositions[i * 3 + 2] = 0;
+    // Ion tail gradient from electric cyan-blue to faint white
+    cometTailColors[i * 3] = 0.35 + fraction * 0.55;
+    cometTailColors[i * 3 + 1] = 0.75 + fraction * 0.2;
+    cometTailColors[i * 3 + 2] = 1.0;
+}
+cometTailGeo.setAttribute('position', new THREE.BufferAttribute(cometTailPositions, 3));
+cometTailGeo.setAttribute('color', new THREE.BufferAttribute(cometTailColors, 3));
+
+const cometTailMat = new THREE.PointsMaterial({
+    size: 1.8,
+    vertexColors: true,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    opacity: 0.72,
+    depthWrite: false
+});
+const cometTailMesh = new THREE.Points(cometTailGeo, cometTailMat);
+scene.add(cometTailMesh);
+
+// UserData for interaction
+cometNucleus.userData = {
+    id: 'Comet',
+    isComet: true,
+    radius: 0.85,
+    badge: 'Koinot Hodisasi • Davriy Kometa',
+    title: 'Halley-Neowise • Dynamic Periodic Comet',
+    subtitle: 'Ekssentrik Dumli Yulduz va Quyosh Shamoli Dinamikasi',
+    content: `Quyosh tizimini kesib o'tuvchi yuqori ekssentriklikdagi kometaning dinamik harakati.
+Quyosh nurlanish bosimi va quyosh shamoli natijasida hosil bo'ladigan gaz (ion) va chang dumlari fizikasi. Quyosh yaqinida maksimal tezlik va yorqinlikka erishadi.`,
+    tags: ['Comet', 'Keplerian Orbit', 'Ion Tail', 'Solar Wind', 'Solar Physics'],
+    actionUrl: 'https://github.com/AzimjonKamiljanov',
+    actionText: 'Kometa Dinamikasi',
+    githubUrl: 'https://github.com/AzimjonKamiljanov',
+    githubText: 'GitHub Profil'
+};
+interactableObjects.push(cometNucleus);
+cometGroup.userData = cometNucleus.userData;
+
+let cometProgress = 0.0;
+function updateComet(deltaSpeed = 1.0) {
+    cometProgress += 0.0012 * deltaSpeed;
+    if (cometProgress > Math.PI * 2) cometProgress -= Math.PI * 2;
+    
+    // Keplerian eccentric ellipse: a = 120, e = 0.86, inclination = 36 deg
+    const a = 120;
+    const e = 0.86;
+    const r = (a * (1 - e * e)) / (1 + e * Math.cos(cometProgress));
+    
+    const cosInc = 0.81; // cos(36 deg)
+    const sinInc = 0.58; // sin(36 deg)
+    
+    const cx = r * Math.cos(cometProgress);
+    const cz = r * Math.sin(cometProgress) * cosInc;
+    const cy = r * Math.sin(cometProgress) * sinInc;
+    
+    cometGroup.position.set(cx, cy, cz);
+    
+    // Comet tail points directly AWAY from the Sun (0, 0, 0)
+    const sunToComet = cometGroup.position.clone().normalize();
+    const tailPositionsAttr = cometTailGeo.attributes.position;
+    
+    // Near perihelion (small r), tail stretches long (up to 42 units) and blazes brightly
+    const tailLen = Math.max(12.0, (1.0 - Math.min(1.0, r / 150.0)) * 42.0);
+    const tailBrightness = Math.max(0.35, (1.0 - Math.min(1.0, r / 160.0)) * 1.0);
+    cometTailMat.opacity = tailBrightness * 0.78;
+    
+    for (let i = 0; i < COMET_TAIL_COUNT; i++) {
+        const frac = i / COMET_TAIL_COUNT;
+        // Tail particles expand and trail outward
+        const spread = frac * 1.4;
+        const pTail = cometGroup.position.clone().add(
+            sunToComet.clone().multiplyScalar(frac * tailLen)
+        );
+        pTail.x += (Math.sin(i * 1.7 + cometProgress * 5.0) - 0.5) * spread;
+        pTail.y += (Math.cos(i * 2.3 + cometProgress * 4.0) - 0.5) * spread;
+        pTail.z += (Math.sin(i * 3.1 + cometProgress * 6.0) - 0.5) * spread;
+        
+        tailPositionsAttr.setXYZ(i, pTail.x, pTail.y, pTail.z);
+    }
+    tailPositionsAttr.needsUpdate = true;
+}
+
+// ==============================================================================
+// 3-YO'NALISH: SOLAR WIND PARTICLE STREAM
+// ==============================================================================
+const SOLAR_WIND_COUNT = 900;
+const solarWindGeo = new THREE.BufferGeometry();
+const solarWindPositions = new Float32Array(SOLAR_WIND_COUNT * 3);
+const solarWindDirections = new Float32Array(SOLAR_WIND_COUNT * 3);
+const solarWindDistances = new Float32Array(SOLAR_WIND_COUNT);
+
+for (let i = 0; i < SOLAR_WIND_COUNT; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2.0 * Math.random() - 1.0);
+    const dx = Math.sin(phi) * Math.cos(theta);
+    const dy = Math.sin(phi) * Math.sin(theta) * 0.45;
+    const dz = Math.cos(phi);
+    const len = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1.0;
+    
+    solarWindDirections[i * 3] = dx / len;
+    solarWindDirections[i * 3 + 1] = dy / len;
+    solarWindDirections[i * 3 + 2] = dz / len;
+    
+    const dist = 8.5 + Math.random() * 155.0;
+    solarWindDistances[i] = dist;
+    
+    solarWindPositions[i * 3] = (dx / len) * dist;
+    solarWindPositions[i * 3 + 1] = (dy / len) * dist;
+    solarWindPositions[i * 3 + 2] = (dz / len) * dist;
+}
+
+solarWindGeo.setAttribute('position', new THREE.BufferAttribute(solarWindPositions, 3));
+const solarWindMat = new THREE.PointsMaterial({
+    size: 0.75,
+    color: 0xffd288,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    opacity: 0.45,
+    depthWrite: false
+});
+const solarWindMesh = new THREE.Points(solarWindGeo, solarWindMat);
+scene.add(solarWindMesh);
+
+function updateSolarWind(deltaSpeed = 1.0) {
+    const posAttr = solarWindGeo.attributes.position;
+    for (let i = 0; i < SOLAR_WIND_COUNT; i++) {
+        solarWindDistances[i] += 0.32 * deltaSpeed;
+        if (solarWindDistances[i] > 165.0) {
+            solarWindDistances[i] = 8.0 + Math.random() * 4.0;
+        }
+        const d = solarWindDistances[i];
+        posAttr.setXYZ(
+            i,
+            solarWindDirections[i * 3] * d,
+            solarWindDirections[i * 3 + 1] * d,
+            solarWindDirections[i * 3 + 2] * d
+        );
+    }
+    posAttr.needsUpdate = true;
+}
+
+// ==============================================================================
+// 4-YO'NALISH: VOYAGER 1 / CYBERPROBE 3D MODEL
+// ==============================================================================
+const voyagerGroup = new THREE.Group();
+
+// 1. High-Gain Parabolic Antenna Dish
+const dishGeo = new THREE.CylinderGeometry(1.5, 0.2, 0.45, 32, 1, true);
+const dishMat = new THREE.MeshStandardMaterial({
+    color: 0xf1f5f9,
+    roughness: 0.3,
+    metalness: 0.5,
+    side: THREE.DoubleSide
+});
+const dishMesh = new THREE.Mesh(dishGeo, dishMat);
+dishMesh.rotation.x = Math.PI / 2;
+dishMesh.position.z = 0.35;
+voyagerGroup.add(dishMesh);
+
+// Subreflector cone in front of dish
+const subreflectorGeo = new THREE.ConeGeometry(0.18, 0.65, 12);
+const subreflectorMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 });
+const subreflectorMesh = new THREE.Mesh(subreflectorGeo, subreflectorMat);
+subreflectorMesh.rotation.x = -Math.PI / 2;
+subreflectorMesh.position.z = 0.75;
+voyagerGroup.add(subreflectorMesh);
+
+// 2. Main Spacecraft Bus (10-sided electronics compartment with golden MLI foil)
+const busGeo = new THREE.CylinderGeometry(0.75, 0.75, 0.5, 10);
+const busMat = new THREE.MeshStandardMaterial({
+    color: 0xd4af37, // Golden Kapton MLI foil
+    metalness: 0.85,
+    roughness: 0.25
+});
+const busMesh = new THREE.Mesh(busGeo, busMat);
+busMesh.position.z = -0.15;
+voyagerGroup.add(busMesh);
+
+// 3. RTG Power Generator Boom
+const rtgBoomGeo = new THREE.CylinderGeometry(0.04, 0.04, 2.8, 8);
+const boomMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.6 });
+const rtgBoom = new THREE.Mesh(rtgBoomGeo, boomMat);
+rtgBoom.rotation.z = Math.PI / 3;
+rtgBoom.position.set(-1.2, 0.6, -0.2);
+voyagerGroup.add(rtgBoom);
+
+// RTG Power Canisters
+const rtgCanGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.9, 12);
+const rtgCanMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.3 });
+const rtgCan = new THREE.Mesh(rtgCanGeo, rtgCanMat);
+rtgCan.position.set(-2.4, 1.2, -0.2);
+voyagerGroup.add(rtgCan);
+
+// 4. Magnetometer Boom (Long boom extending outward)
+const magBoomGeo = new THREE.CylinderGeometry(0.03, 0.03, 4.2, 8);
+const magBoom = new THREE.Mesh(magBoomGeo, boomMat);
+magBoom.rotation.z = -Math.PI / 4;
+magBoom.position.set(1.6, -0.9, -0.2);
+voyagerGroup.add(magBoom);
+
+// 5. Pulsing Telemetry LED Beacon
+const beaconGeo = new THREE.SphereGeometry(0.12, 16, 16);
+const beaconMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+const beaconMesh = new THREE.Mesh(beaconGeo, beaconMat);
+beaconMesh.position.set(0, 0.55, 0.5);
+voyagerGroup.add(beaconMesh);
+
+// Raycast hit target for Voyager
+const voyagerHitGeo = new THREE.SphereGeometry(2.4, 16, 16);
+const voyagerHitMat = new THREE.MeshBasicMaterial({ visible: false });
+const voyagerHitMesh = new THREE.Mesh(voyagerHitGeo, voyagerHitMat);
+
+voyagerHitMesh.userData = {
+    id: 'Voyager',
+    isProbe: true,
+    radius: 1.5,
+    badge: 'Koinot Zondi • Interstellar Architecture',
+    title: 'Voyager 1 • CyberProbe Deep Space Telemetry',
+    subtitle: 'Avtonom Tizimlar, Chuqur Arxitektura va Erkin AI Missiyasi',
+    content: `Azimjon Kamiljanovning yulduzlararo fazoga yo'naltirilgan texnologik konseptsiyasi.
+Yulduzlararo masofalarda avtonom ishlovchi kiber-agentlar arxitekturasi, RTX 5070 lokal GPU infratuzilmasi, markazlashmagan AI protokollari va tizimli optimallashtirish missiyasi.
+
+Telemetriya:
+• Missiya: Deep Space Autonomous Computing
+• Aloqa kanali: Direct Decentralized RPC
+• Holat: Yulduzlararo fazoda faol parvozda
+• Boshqaruv: Azimjon Kamiljanov AI Systems Lab`,
+    tags: ['Voyager 1', 'Interstellar Mission', 'Autonomous Agents', 'Deep Architecture', 'RTX 5070 CUDA', 'Decentralized Tech'],
+    actionUrl: 'https://github.com/AzimjonKamiljanov',
+    actionText: 'Voyager Missiyasi',
+    githubUrl: 'https://github.com/AzimjonKamiljanov',
+    githubText: 'GitHub Profil'
+};
+voyagerGroup.add(voyagerHitMesh);
+voyagerGroup.userData = voyagerHitMesh.userData;
+interactableObjects.push(voyagerHitMesh);
+
+// Position Voyager in deep outer solar system (distance 158 units)
+let voyagerOrbitAngle = 1.1;
+const VOYAGER_DIST = 158;
+voyagerGroup.position.set(
+    Math.cos(voyagerOrbitAngle) * VOYAGER_DIST,
+    14,
+    Math.sin(voyagerOrbitAngle) * VOYAGER_DIST
+);
+voyagerGroup.lookAt(0, 0, 0);
+scene.add(voyagerGroup);
+
+function updateVoyager(deltaSpeed = 1.0) {
+    voyagerOrbitAngle += 0.00035 * deltaSpeed;
+    voyagerGroup.position.set(
+        Math.cos(voyagerOrbitAngle) * VOYAGER_DIST,
+        14 + Math.sin(clockTime * 0.5) * 1.2,
+        Math.sin(voyagerOrbitAngle) * VOYAGER_DIST
+    );
+    voyagerGroup.lookAt(0, 0, 0);
+    const pulse = 0.5 + 0.5 * Math.sin(clockTime * 4.0);
+    beaconMat.color.setRGB(0.2, 0.8 + 0.2 * pulse, 1.0);
+}
 
 // ==========================================
 // 4. UI ELEMENTS & MODAL CONTROLS
@@ -2399,6 +3037,22 @@ function setLanguage(lang) {
     if (orbitToggleText) {
         orbitToggleText.innerText = isOrbitPaused ? uiTexts.orbitPaused : uiTexts.orbitActive;
     }
+    const warpSpeedText = document.getElementById('warp-speed-text');
+    if (warpSpeedText) {
+        if (orbitSpeedMultiplier === 5) warpSpeedText.innerText = uiTexts.warpSpeed5x || "Vaqt: 5x";
+        else if (orbitSpeedMultiplier === 20) warpSpeedText.innerText = uiTexts.warpSpeed20x || "Vaqt: 20x";
+        else warpSpeedText.innerText = uiTexts.warpSpeed1x || "Vaqt: 1x";
+    }
+    const orbitsToggleText = document.getElementById('orbits-toggle-text');
+    if (orbitsToggleText) {
+        const isVis = (typeof orbitLinesGroup === 'undefined' || !orbitLinesGroup) ? true : orbitLinesGroup.visible;
+        orbitsToggleText.innerText = isVis ? (uiTexts.orbitsActive || "Orbitalar: Yoniq") : (uiTexts.orbitsHidden || "Orbitalar: O'chiq");
+    }
+    const cinematicToggleText = document.getElementById('cinematic-toggle-text');
+    if (cinematicToggleText && uiTexts.cinematicBtn) cinematicToggleText.innerText = uiTexts.cinematicBtn;
+    const cinematicExitText = document.getElementById('cinematic-exit-text');
+    if (cinematicExitText && uiTexts.cinematicExit) cinematicExitText.innerText = uiTexts.cinematicExit;
+
     const catalogBtnText = document.getElementById('catalog-btn-text');
     if (catalogBtnText) catalogBtnText.innerText = uiTexts.catalogBtn;
 
@@ -2472,7 +3126,8 @@ function setLanguage(lang) {
         'Uranus': uiTexts.nav.uranus,
         'Neptune': uiTexts.nav.neptune,
         'Pluto': uiTexts.nav.pluto,
-        'star': uiTexts.nav.stars
+        'star': uiTexts.nav.stars,
+        'Voyager': uiTexts.nav.voyager || 'Voyager'
     };
 
     document.querySelectorAll('#nav-container .nav-btn').forEach(btn => {
@@ -2573,7 +3228,7 @@ function setLanguage(lang) {
             transData = translations.celestial.sun?.[lang];
         } else if (obj.userData.isMoon) {
             transData = translations.celestial.moon?.[lang];
-        } else if (obj.userData.isPlanet && translations.celestial[obj.userData.id]) {
+        } else if ((obj.userData.isPlanet || obj.userData.isProbe || obj.userData.isComet) && translations.celestial[obj.userData.id]) {
             transData = translations.celestial[obj.userData.id]?.[lang];
         } else if (obj.userData.isStar && translations.stars[obj.userData.id]) {
             transData = translations.stars[obj.userData.id]?.[lang];
@@ -2766,6 +3421,125 @@ if (orbitToggleBtn) {
         }
     });
 }
+
+// ==============================================================================
+// 5-YO'NALISH: INTERAKTIV KOINOT ASBOBLARI (HUD CONTROLS & CINEMATIC MODE)
+// ==============================================================================
+let orbitSpeedMultiplier = 1;
+const warpSpeedBtn = document.getElementById('warp-speed-btn');
+const warpSpeedText = document.getElementById('warp-speed-text');
+
+function setOrbitSpeed(multiplier) {
+    orbitSpeedMultiplier = multiplier;
+    if (warpSpeedBtn) {
+        warpSpeedBtn.classList.remove('speed-5x', 'speed-20x');
+        if (multiplier === 5) warpSpeedBtn.classList.add('speed-5x');
+        else if (multiplier === 20) warpSpeedBtn.classList.add('speed-20x');
+    }
+    const uiTexts = translations.ui[currentLang] || translations.ui.uz;
+    if (warpSpeedText) {
+        if (multiplier === 5) warpSpeedText.innerText = uiTexts.warpSpeed5x || "Vaqt: 5x";
+        else if (multiplier === 20) warpSpeedText.innerText = uiTexts.warpSpeed20x || "Vaqt: 20x";
+        else warpSpeedText.innerText = uiTexts.warpSpeed1x || "Vaqt: 1x";
+    }
+}
+
+if (warpSpeedBtn) {
+    warpSpeedBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playUiClick();
+        if (orbitSpeedMultiplier === 1) setOrbitSpeed(5);
+        else if (orbitSpeedMultiplier === 5) setOrbitSpeed(20);
+        else setOrbitSpeed(1);
+    });
+}
+
+// Orbit Lines Toggle (Show/Hide all orbit trajectories)
+const orbitsToggleBtn = document.getElementById('orbits-toggle-btn');
+const orbitsToggleText = document.getElementById('orbits-toggle-text');
+
+function toggleOrbits() {
+    if (typeof orbitLinesGroup === 'undefined' || !orbitLinesGroup) return;
+    orbitLinesGroup.visible = !orbitLinesGroup.visible;
+    const uiTexts = translations.ui[currentLang] || translations.ui.uz;
+    if (orbitsToggleBtn) {
+        if (orbitLinesGroup.visible) {
+            orbitsToggleBtn.classList.remove('orbits-hidden');
+            if (orbitsToggleText) orbitsToggleText.innerText = uiTexts.orbitsActive || "Orbitalar: Yoniq";
+        } else {
+            orbitsToggleBtn.classList.add('orbits-hidden');
+            if (orbitsToggleText) orbitsToggleText.innerText = uiTexts.orbitsHidden || "Orbitalar: O'chiq";
+        }
+    }
+}
+
+if (orbitsToggleBtn) {
+    orbitsToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playUiClick();
+        toggleOrbits();
+    });
+}
+
+// Pure Space / Cinematic Mode (Hide all UI overlays for pure cosmic view)
+let isCinematicActive = false;
+const cinematicToggleBtn = document.getElementById('cinematic-toggle-btn');
+const cinematicExitBanner = document.getElementById('cinematic-exit-banner');
+const cinematicExitBtn = document.getElementById('cinematic-exit-btn');
+
+function toggleCinematic(enable = null) {
+    if (enable !== null) isCinematicActive = enable;
+    else isCinematicActive = !isCinematicActive;
+
+    if (isCinematicActive) {
+        document.body.classList.add('cinematic-active');
+        if (cinematicExitBanner) {
+            cinematicExitBanner.classList.remove('hidden');
+            cinematicExitBanner.style.display = 'block';
+        }
+    } else {
+        document.body.classList.remove('cinematic-active');
+        if (cinematicExitBanner) {
+            cinematicExitBanner.classList.add('hidden');
+            setTimeout(() => {
+                if (!isCinematicActive && cinematicExitBanner) cinematicExitBanner.style.display = 'none';
+            }, 350);
+        }
+    }
+}
+
+if (cinematicToggleBtn) {
+    cinematicToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playUiClick();
+        toggleCinematic();
+    });
+}
+
+if (cinematicExitBtn) {
+    cinematicExitBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playUiClick();
+        toggleCinematic(false);
+    });
+}
+
+// Global Keyboard Shortcuts: 'H' for Cinematic Mode, 'O' for Orbit Lines, 'Escape' to exit Cinematic
+window.addEventListener('keydown', (e) => {
+    // If typing in an input (e.g. search bar or contact terminal), ignore shortcuts
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+    
+    if (e.key === 'h' || e.key === 'H') {
+        e.preventDefault();
+        toggleCinematic();
+    } else if (e.key === 'o' || e.key === 'O') {
+        e.preventDefault();
+        toggleOrbits();
+    } else if (e.key === 'Escape' && isCinematicActive) {
+        e.preventDefault();
+        toggleCinematic(false);
+    }
+});
 
 // ==========================================
 // CINEMATIC AUTOPILOT TOUR MODE (SUN + 9 PLANETS + MOON)
@@ -3289,6 +4063,10 @@ function focusOnObject(object, isTourCall = false) {
         camOffsetDist = Math.max(rad * 10.0, 5.0);
     } else if (object.userData.isStar) {
         camOffsetDist = 18.0;
+    } else if (object.userData.isProbe) {
+        camOffsetDist = 8.0;
+    } else if (object.userData.isComet) {
+        camOffsetDist = 14.0;
     }
     
     const dir = targetWorldPos.clone().normalize();
@@ -3326,7 +4104,8 @@ function focusOnObject(object, isTourCall = false) {
     const btn = document.querySelector(`.nav-btn[data-target="${object.userData.id}"]`) ||
                 (object.userData.isSun ? document.querySelector('.nav-btn[data-target="sun"]') : null) ||
                 (object.userData.isMoon ? document.querySelector('.nav-btn[data-target="moon"]') : null) ||
-                (object.userData.isStar ? document.querySelector('.nav-btn[data-target="star"]') : null);
+                (object.userData.isStar ? document.querySelector('.nav-btn[data-target="star"]') : null) ||
+                (object.userData.isProbe ? document.querySelector('.nav-btn[data-target="Voyager"]') : null);
     if (btn) updateNavActiveState(btn);
 
     animateCamera(finalCamPos, finalTargetPos, object.userData);
@@ -4131,12 +4910,16 @@ function animate() {
     
     clockTime += 0.008;
     sunUniforms.uTime.value = clockTime;
+    if (typeof milkyWayUniforms !== 'undefined' && milkyWayUniforms.uTime) {
+        milkyWayUniforms.uTime.value = clockTime;
+    }
 
     const shouldRotate = !currentTarget && !isOrbitPaused && currentGesture !== 'fist';
+    const effectiveSpeed = shouldRotate ? orbitSpeedMultiplier : 0.2;
     
     planets.forEach(p => {
         if (shouldRotate) {
-            p.orbitGroup.rotation.y += p.speed;
+            p.orbitGroup.rotation.y += p.speed * orbitSpeedMultiplier;
         }
         if (!p.isMoonData) {
             p.mesh.rotateY(0.005);
@@ -4147,9 +4930,25 @@ function animate() {
             p.cloudsMesh.rotateY(0.007);
         }
     });
+
+    if (typeof updateSaturnRingShadow === 'function') {
+        updateSaturnRingShadow();
+    }
+    if (typeof updateComet === 'function') {
+        updateComet(effectiveSpeed);
+    }
+    if (typeof updateSolarWind === 'function') {
+        updateSolarWind(effectiveSpeed);
+    }
+    if (typeof updateVoyager === 'function') {
+        updateVoyager(effectiveSpeed);
+    }
     
     if (shouldRotate) {
         stars.rotation.y += 0.0001;
+        if (typeof milkyWaySphere !== 'undefined' && milkyWaySphere) {
+            milkyWaySphere.rotation.y += 0.00004;
+        }
         if (typeof asteroidBeltGroup !== 'undefined' && asteroidBeltGroup) {
             asteroidBeltGroup.rotation.y += 0.0009;
         }
@@ -4180,6 +4979,14 @@ window.__showInfo = showInfo;
 window.__setLanguage = setLanguage;
 window.__toggleAudio = toggleAudio;
 Object.defineProperty(window, '__isAudioMuted', { get: () => isAudioMuted, configurable: true });
+Object.defineProperty(window, '__orbitSpeedMultiplier', { get: () => orbitSpeedMultiplier, configurable: true });
+window.__setOrbitSpeed = setOrbitSpeed;
+window.__toggleOrbits = toggleOrbits;
+window.__toggleCinematic = toggleCinematic;
+window.__orbitLinesGroup = typeof orbitLinesGroup !== 'undefined' ? orbitLinesGroup : null;
+window.__comet = typeof cometGroup !== 'undefined' ? cometGroup : null;
+window.__voyager = typeof voyagerGroup !== 'undefined' ? voyagerGroup : null;
+window.__milkyWaySphere = typeof milkyWaySphere !== 'undefined' ? milkyWaySphere : null;
 window.__applyCatalogFilters = applyCatalogFilters;
 window.__renderMoonTerminal = renderMoonTerminal;
 window.__closeCatalog = closeCatalog;

@@ -133,7 +133,7 @@
             <div class="pulsing-dot"></div>
             <div>
                 <h1 class="brand-title">AZIMJON KAMILJANOV</h1>
-                <p class="brand-subtitle">Lead AI Systems Architect</p>
+                <p class="brand-subtitle">Lead AI Systems Architect • 9 Sayyora Koinot Portfoliosi</p>
             </div>
         </div>
         <div class="brand-actions">
@@ -156,6 +156,15 @@
             </a>
             <button id="orbit-toggle-btn" class="header-link" title="Orbita Harakatini To'xtatish yoki Davom Ettirish">
                 <span id="orbit-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><rect x="6" y="4" width="3.5" height="16" rx="1"/><rect x="14.5" y="4" width="3.5" height="16" rx="1"/></svg></span> <span id="orbit-toggle-text">Orbita: Harakatda</span>
+            </button>
+            <button id="warp-speed-btn" class="header-link" title="Vaqt Oqimi Tezligi (1x / 5x / 20x)">
+                <span id="warp-speed-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> <span id="warp-speed-text">Vaqt: 1x</span>
+            </button>
+            <button id="orbits-toggle-btn" class="header-link" title="Orbita Chiziqlarini Yoqish yoki O'chirish (O)">
+                <span id="orbits-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="3"/></svg></span> <span id="orbits-toggle-text">Orbitalar: Yoniq</span>
+            </button>
+            <button id="cinematic-toggle-btn" class="header-link" title="Toza Koinot Rejimi (H) / Pure Space Cinematic Mode">
+                <span id="cinematic-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></span> <span id="cinematic-toggle-text">Toza Fazo</span>
             </button>
             <button id="audio-toggle-btn" class="header-link audio-muted" title="Kosmik Ovozni Yoqish yoki O'chirish">
                 <span id="audio-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg></span> <span id="audio-toggle-text">Ovoz: O'chiq</span>
@@ -221,11 +230,23 @@
             <span class="planet-orb orb-pluto"></span>
             <span class="label">Pluton</span>
         </button>
+        <button class="nav-btn special-voyager" data-target="Voyager" title="Voyager 1 - Koinot Zondi Missiyasi">
+            <span class="planet-orb orb-voyager"></span>
+            <span class="label">Voyager</span>
+        </button>
         <button class="nav-btn special-star" data-target="star" title="Haqiqiy Astronomik Yulduzlar & Kiber-Arsenal (18 ta Loyiha)">
             <span class="planet-orb orb-stars"></span>
             <span class="label">Yulduzlar</span>
         </button>
     </nav>
+
+    <!-- Floating Cinematic Mode Exit Banner -->
+    <div id="cinematic-exit-banner" class="cinematic-exit-banner hidden">
+        <button id="cinematic-exit-btn" class="cinematic-exit-btn">
+            <svg class="btn-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span id="cinematic-exit-text">Boshqaruvni qaytarish (H / Esc)</span>
+        </button>
+    </div>
 
     <!-- Interactive Cosmic Onboarding & User Guide Modal -->
     <div id="guide-modal-container" class="guide-modal-container hidden">

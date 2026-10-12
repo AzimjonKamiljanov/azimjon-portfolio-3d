@@ -62,7 +62,7 @@ body, html {
 }
 
 .brand-title {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Orbitron', 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.6px;
@@ -369,6 +369,12 @@ body, html {
 /* 11. Pluto Orb (Nitrogen frost ash stone) */
 .orb-pluto {
     background: radial-gradient(circle at 35% 35%, #f5f5f4 0%, #a8a29e 50%, #292524 100%);
+}
+
+/* 11.5 Voyager Probe Orb (Golden / Telemetry cyan satellite) */
+.orb-voyager {
+    background: radial-gradient(circle at 35% 35%, #ffffff 0%, #38bdf8 45%, #0284c7 80%, #0369a1 100%);
+    box-shadow: 0 0 7px rgba(56, 189, 248, 0.7);
 }
 
 /* 12. Cyber Stars Orb (Precision starlight diamond) */
@@ -1198,7 +1204,7 @@ body, html {
 }
 
 .catalog-heading {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Orbitron', 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 24px;
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -2426,7 +2432,8 @@ body, html {
         font-size: 8.5px;
         border-radius: 6px;
     }
-    .brand-actions a.header-link {
+    .brand-actions a.header-link,
+    .brand-actions button.header-link {
         display: none;
     }
     .brand-actions a#resume-download-btn {
@@ -2633,3 +2640,81 @@ body, html {
         text-align: center;
     }
 }
+
+/* ==============================================================================
+   5-YO'NALISH: INTERAKTIV KOINOT ASBOBLARI (HUD CONTROLS & CINEMATIC MODE)
+   ============================================================================== */
+#warp-speed-btn.speed-5x {
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.45);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+#warp-speed-btn.speed-20x {
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.55);
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.35);
+}
+
+#orbits-toggle-btn.orbits-hidden {
+    opacity: 0.65;
+    color: #94a3b8;
+}
+
+#cinematic-toggle-btn:hover {
+    color: #a78bfa;
+    border-color: rgba(167, 139, 250, 0.45);
+}
+
+/* Pure Space / Cinematic Mode */
+body.cinematic-active #main-header,
+body.cinematic-active #nav-container,
+body.cinematic-active #control-hints,
+body.cinematic-active #gesture-hud,
+body.cinematic-active #tour-hud,
+body.cinematic-active #guide-modal-container {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cinematic-exit-banner {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99999;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.cinematic-exit-banner.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(20px);
+}
+
+.cinematic-exit-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 9999px;
+    color: #f1f5f9;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(56, 189, 248, 0.25);
+    transition: all 0.2s ease;
+}
+
+.cinematic-exit-btn:hover {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(56, 189, 248, 0.6);
+    color: #38bdf8;
+    transform: scale(1.04);
+}
+
