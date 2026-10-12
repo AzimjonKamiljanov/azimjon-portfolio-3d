@@ -20,6 +20,19 @@ export const translations = {
             orbitsHidden: "Orbitalar: O'chiq",
             cinematicBtn: "Toza Fazo",
             cinematicExit: "Boshqaruvni qaytarish (H / Esc)",
+            constellationsBtnOn: "Turkumlar: Yoniq",
+            constellationsBtnOff: "Turkumlar: O'chiq",
+            scaleCompareBtn: "Hajmlar Taqqoslashi",
+            scaleCompareOn: "Hajmlar: Yoniq",
+            scaleCompareOff: "Hajmlar: O'chiq",
+            surfaceViewBtn: "Yuzadan Qarash",
+            surfaceEarthrise: "Oy: Earthrise",
+            surfaceMars: "Mars: Moviy Botish",
+            surfaceExit: "Orbitaga Qaytish",
+            skyViewBtn: "Sky View",
+            skyViewOn: "Sky View: Yoniq",
+            skyViewBanner: "Sky View Planetariy: Telefonni osmonga qarating",
+            skyViewExit: "Chiqish",
             audioOn: "Ovoz: Yoniq",
             audioOff: "Ovoz: O'chiq",
             catalogBtn: "Loyihalar",
@@ -151,6 +164,7 @@ export const translations = {
                 pluto: "Pluton",
                 voyager: "Voyager",
                 comet: "Kometa",
+                blackHole: "Qora O'ra",
                 stars: "Yulduzlar"
             }
         },
@@ -167,6 +181,19 @@ export const translations = {
             orbitsHidden: "Orbits: OFF",
             cinematicBtn: "Pure Space",
             cinematicExit: "Restore UI (H / Esc)",
+            constellationsBtnOn: "Constellations: ON",
+            constellationsBtnOff: "Constellations: OFF",
+            scaleCompareBtn: "Scale Comparison",
+            scaleCompareOn: "Scale: ON",
+            scaleCompareOff: "Scale: OFF",
+            surfaceViewBtn: "Surface View",
+            surfaceEarthrise: "Moon: Earthrise",
+            surfaceMars: "Mars: Blue Sunset",
+            surfaceExit: "Return to Orbit",
+            skyViewBtn: "Sky View",
+            skyViewOn: "Sky View: ON",
+            skyViewBanner: "Sky View Planetarium: Point your phone at the sky",
+            skyViewExit: "Exit",
             audioOn: "Sound: ON",
             audioOff: "Sound: OFF",
             catalogBtn: "Projects",
@@ -298,6 +325,7 @@ export const translations = {
                 pluto: "Pluto",
                 voyager: "Voyager",
                 comet: "Comet",
+                blackHole: "Black Hole",
                 stars: "Stars"
             }
         },
@@ -314,6 +342,19 @@ export const translations = {
             orbitsHidden: "Орбиты: Выкл",
             cinematicBtn: "Чистый Космос",
             cinematicExit: "Вернуть интерфейс (H / Esc)",
+            constellationsBtnOn: "Созвездия: ВКЛ",
+            constellationsBtnOff: "Созвездия: ВЫКЛ",
+            scaleCompareBtn: "Сравнение Масштабов",
+            scaleCompareOn: "Масштаб: ВКЛ",
+            scaleCompareOff: "Масштаб: ВЫКЛ",
+            surfaceViewBtn: "Вид с Поверхности",
+            surfaceEarthrise: "Луна: Earthrise",
+            surfaceMars: "Марс: Голубой Закат",
+            surfaceExit: "Вернуться на Орбиту",
+            skyViewBtn: "Sky View",
+            skyViewOn: "Sky View: ВКЛ",
+            skyViewBanner: "Sky View Планетарий: Направьте телефон на небо",
+            skyViewExit: "Выход",
             audioOn: "Звук: ВКЛ",
             audioOff: "Звук: ВЫКЛ",
             catalogBtn: "Проекты",
@@ -445,6 +486,7 @@ export const translations = {
                 pluto: "Плутон",
                 voyager: "Вояджер",
                 comet: "Комета",
+                blackHole: "Черная Дыра",
                 stars: "Звезды"
             }
         }
@@ -981,6 +1023,57 @@ Physics of dual tails (bluish gas ion tail and warm dust tail) driven by solar r
 Физика двойного хвоста (газовый ионный и пылевой), направленного от Солнца под давлением солнечного ветра и радиации.`,
                 tags: ['Comet', 'Keplerian Orbit', 'Ion Tail', 'Solar Wind', 'Solar Physics'],
                 actionText: 'Динамика Кометы',
+                githubText: 'Профиль GitHub'
+            }
+        },
+
+        BlackHole: {
+            uz: {
+                badge: 'Singulyarlik • Gravitatsion Linza',
+                title: 'Sagittarius A* • Supermassive Singularity',
+                subtitle: 'Fazoni Eguvchi Gravitatsion Linzalanish va Voqealar Gorizonti',
+                content: `Somon Yo'li galaktikasi markazidagi o'ta og'ir qora o'ra (Gargantua / Sagittarius A*).
+Umumiy nisbiylik nazariyasi (Eynshteyn tenglamalari) bo'yicha cheksiz gravitatsiya qudug'i, yorug'lik ham qochib qutula olmaydigan qop-qora voqealar gorizonti (event horizon) va yorug'lik tezligiga yaqin aylanuvchi oltin-qizil plazma akkretsion diski.
+
+Fizik va Kosmik Ko'rsatkichlar:
+• Relyativistik Gravitatsion Linzalanish (GLSL Spacetime Distortion)
+• Eynshteyn Foton Sferasi va Doppler nurlanish asimmetriyasi
+• Joylashuv: Pluton orbitasidan tashqarida, chuqur yulduzlararo fazoda
+• Arxitektura Falsafasi: Katta yuklamalarda 100% buzilmas va yengilmas mustahkam yadroli tizimlar ramzi.`,
+                tags: ['General Relativity', 'Event Horizon', 'Accretion Disk', 'Einstein Ring', 'Gravitational Lensing', 'Sagittarius A*', 'GLSL Shader'],
+                actionText: 'Singulyarlik Tahlili',
+                githubText: 'GitHub Profil'
+            },
+            en: {
+                badge: 'Singularity • Gravitational Lens',
+                title: 'Sagittarius A* • Supermassive Singularity',
+                subtitle: 'Spacetime-Curving Gravitational Lensing & Event Horizon',
+                content: `Supermassive black hole at the center of the Milky Way (Gargantua / Sagittarius A*).
+Extreme curvature of spacetime governed by General Relativity, creating an impenetrable event horizon where light cannot escape, flanked by a swirling relativistic gold-red plasma accretion disk.
+
+Physical & Cosmic Specifications:
+• Relativistic Gravitational Lensing (GLSL Spacetime Distortion)
+• Einstein Photon Sphere & Doppler beaming asymmetry
+• Location: Deep interstellar space well beyond Pluto
+• Architectural Philosophy: The symbolic embodiment of zero-failure, unbreakable core systems design under astronomical scale.`,
+                tags: ['General Relativity', 'Event Horizon', 'Accretion Disk', 'Einstein Ring', 'Gravitational Lensing', 'Sagittarius A*', 'GLSL Shader'],
+                actionText: 'Singularity Analysis',
+                githubText: 'GitHub Profile'
+            },
+            ru: {
+                badge: 'Сингулярность • Гравитационная Линза',
+                title: 'Sagittarius A* • Сверхмассивная Сингулярность',
+                subtitle: 'Искривление Пространства, Гравитационное Линзирование и Горизонт Событий',
+                content: `Сверхмассивная черная дыра в центре Млечного Пути (Gargantua / Sagittarius A*).
+Экстремальное искривление пространства-времени по уравнениям Эйнштейна, непроницаемый горизонт событий (event horizon) и вращающийся с околосветовой скоростью плазменный аккреционный диск.
+
+Физические Параметры:
+• Релятивистское гравитационное линзирование (GLSL Spacetime Distortion)
+• Фотонная сфера Эйнштейна и доплеровский эффект на аккреционном диске
+• Расположение: Глубокий межзвездный космос за пределами Плутона
+• Символизм Архитектуры: Воплощение абсолютно несокрушимого ядра распределенных систем под экстремальными нагрузками.`,
+                tags: ['General Relativity', 'Event Horizon', 'Accretion Disk', 'Einstein Ring', 'Gravitational Lensing', 'Sagittarius A*', 'GLSL Shader'],
+                actionText: 'Анализ Сингулярности',
                 githubText: 'Профиль GitHub'
             }
         }

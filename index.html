@@ -163,6 +163,18 @@
             <button id="orbits-toggle-btn" class="header-link" title="Orbita Chiziqlarini Yoqish yoki O'chirish (O)">
                 <span id="orbits-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="3"/></svg></span> <span id="orbits-toggle-text">Orbitalar: Yoniq</span>
             </button>
+            <button id="constellations-toggle-btn" class="header-link" title="Yulduz Turkumlari (C) / Constellations Grid">
+                <span id="constellations-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span> <span id="constellations-toggle-text">Turkumlar: Yoniq</span>
+            </button>
+            <button id="scale-compare-btn" class="header-link" title="Hajmlar Taqqoslashi Rejimi / Scale Comparison Mode">
+                <span id="scale-compare-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h10M4 18h6"/></svg></span> <span id="scale-compare-text">Hajmlar Taqqoslashi</span>
+            </button>
+            <button id="surface-view-btn" class="header-link" title="Yuzadan Qarash Rejimi (Earthrise / Mars) / Surface View Mode">
+                <span id="surface-view-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg></span> <span id="surface-view-text">Yuzadan Qarash</span>
+            </button>
+            <button id="skyview-toggle-btn" class="header-link" title="Mobil Planetariy / Sky View Gyroscope">
+                <span id="skyview-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> <span id="skyview-toggle-text">Sky View</span>
+            </button>
             <button id="cinematic-toggle-btn" class="header-link" title="Toza Koinot Rejimi (H) / Pure Space Cinematic Mode">
                 <span id="cinematic-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></span> <span id="cinematic-toggle-text">Toza Fazo</span>
             </button>
@@ -234,6 +246,10 @@
             <span class="planet-orb orb-voyager"></span>
             <span class="label">Voyager</span>
         </button>
+        <button class="nav-btn special-blackhole" data-target="BlackHole" title="Sagittarius A* - Qora O'ra (Black Hole)">
+            <span class="planet-orb orb-blackhole"></span>
+            <span class="label">Qora O'ra</span>
+        </button>
         <button class="nav-btn special-star" data-target="star" title="Haqiqiy Astronomik Yulduzlar & Kiber-Arsenal (18 ta Loyiha)">
             <span class="planet-orb orb-stars"></span>
             <span class="label">Yulduzlar</span>
@@ -245,6 +261,31 @@
         <button id="cinematic-exit-btn" class="cinematic-exit-btn">
             <svg class="btn-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             <span id="cinematic-exit-text">Boshqaruvni qaytarish (H / Esc)</span>
+        </button>
+    </div>
+
+    <!-- Floating Surface View Mode Bar -->
+    <div id="surface-view-bar" class="surface-view-bar hidden">
+        <button id="surface-earthrise-btn" class="surface-bar-btn active">
+            <svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+            <span id="surface-earthrise-text">Oy: Earthrise</span>
+        </button>
+        <button id="surface-mars-btn" class="surface-bar-btn">
+            <svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="6"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
+            <span id="surface-mars-text">Mars: Moviy Botish</span>
+        </button>
+        <button id="surface-exit-btn" class="surface-bar-btn exit-btn">
+            <svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span id="surface-exit-text">Orbitaga Qaytish</span>
+        </button>
+    </div>
+
+    <!-- Floating Sky View Exit Banner -->
+    <div id="skyview-exit-banner" class="skyview-exit-banner hidden">
+        <div class="skyview-banner-text" id="skyview-banner-text">Sky View: Telefonni osmonga qarating</div>
+        <button id="skyview-exit-btn" class="skyview-exit-btn">
+            <svg class="btn-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span id="skyview-exit-text">Chiqish</span>
         </button>
     </div>
 

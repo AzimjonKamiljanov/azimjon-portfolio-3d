@@ -735,6 +735,52 @@ const sunLabel = createLabelSprite('Quyosh', '☀️', '#ffaa00');
 sunLabel.position.y = 9.8;
 // sun.add(sunLabel);
 
+// 5-YO'NALISH BOOST: Scale Comparison Label Generator
+function createScaleLabelSprite(name, diameterKm, colorHex = '#38bdf8') {
+    const canvas = document.createElement('canvas');
+    canvas.width = 384;
+    canvas.height = 110;
+    const ctx = canvas.getContext('2d');
+    
+    const r = 24;
+    const x = 16, y = 14, w = 352, h = 82;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+    
+    ctx.fillStyle = 'rgba(10, 14, 24, 0.90)';
+    ctx.fill();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = colorHex;
+    ctx.stroke();
+    
+    ctx.font = 'bold 24px "Space Grotesk", sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText(name, canvas.width / 2, 45);
+    
+    ctx.font = '600 20px "JetBrains Mono", monospace';
+    ctx.fillStyle = colorHex;
+    ctx.fillText(`⌀ ${diameterKm}`, canvas.width / 2, 74);
+    
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter;
+    const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false });
+    const sprite = new THREE.Sprite(spriteMat);
+    sprite.scale.set(7.5, 2.15, 1);
+    sprite.visible = false;
+    return sprite;
+}
+
+const sunScaleLabel = createScaleLabelSprite('Quyosh', '1,392,700 km', '#ffaa00');
+sunScaleLabel.position.y = 10.5;
+sun.add(sunScaleLabel);
+sun.userData.scaleLabel = sunScaleLabel;
+
 // ==========================================
 // PHOTOREALISTIC PROCEDURAL PLANETARY RINGS (NASA CASSINI & JWST SPEC)
 // ==========================================
@@ -869,6 +915,7 @@ const planetsData = [
         name: 'Merkuriy', 
         icon: '☿',
         radius: 0.95, 
+        diameterKm: '4,879 km',
         distance: 16, 
         speed: 0.012, 
         texture: 'mercury_2048.jpg', 
@@ -892,6 +939,7 @@ Xavfsiz ma'lumotlar shifrlanishi (HIPAA standartlari), role-based audit va real 
         name: 'Venera', 
         icon: '♀',
         radius: 1.35, 
+        diameterKm: '12,104 km',
         distance: 26, 
         speed: 0.0085, 
         texture: 'venus_2048.jpg', 
@@ -917,6 +965,7 @@ Modular, offline-capable, multilingual (EN/UZ) arxitektura, mahalliy STT/TTS dvi
         name: 'Yer', 
         icon: 'orb-earth',
         radius: 1.55, 
+        diameterKm: '12,742 km',
         distance: 38, 
         speed: 0.0062, 
         texture: 'earth_atmos_2048.jpg', 
@@ -949,6 +998,7 @@ Hydrogram VoIP dvigateli orqali 1-on-1 telefon qo'ng'iroqlari, jonli duplex ovoz
         name: 'Mars', 
         icon: '♂',
         radius: 1.15, 
+        diameterKm: '6,779 km',
         distance: 50, 
         speed: 0.0048, 
         texture: 'mars_2048.jpg', 
@@ -972,6 +1022,7 @@ Three.js 3D interaktiv modeli, 2D blueprint rejimi, solo-inspektor va Cloudflare
         name: 'Yupiter', 
         icon: '♃',
         radius: 3.0, 
+        diameterKm: '139,820 km',
         distance: 68, 
         speed: 0.0028, 
         texture: 'jupiter_2048.jpg', 
@@ -994,6 +1045,7 @@ OWASP GenAI 2026 xatarlarini oldini olish, terminal buyruqlarini audit qilish va
         name: 'Saturn', 
         icon: '♄',
         radius: 2.4, 
+        diameterKm: '116,460 km',
         distance: 88, 
         speed: 0.0020, 
         texture: 'saturn_2048.jpg', 
@@ -1019,6 +1071,7 @@ Avtonom ravishda kod yozish, testlarni yurgizish, xatolarni tahlil qilish va loy
         name: 'Uran', 
         icon: '♅',
         radius: 1.8, 
+        diameterKm: '50,724 km',
         distance: 108, 
         speed: 0.0014, 
         texture: 'uranus_2048.jpg', 
@@ -1047,6 +1100,7 @@ React / Next.js frontend, Node.js / Express backend mikroxizmatlari, Redis kesh 
         name: 'Neptun', 
         icon: '♆',
         radius: 1.7, 
+        diameterKm: '49,244 km',
         distance: 126, 
         speed: 0.0010, 
         texture: 'neptune_2048.jpg', 
@@ -1072,6 +1126,7 @@ Kompyuter ko'rishi (CV), NLP, Transformer modellarini nozik sozlash (Fine-tuning
         name: 'Pluton', 
         icon: '♇',
         radius: 0.85, 
+        diameterKm: '2,376 km',
         distance: 142, 
         speed: 0.00075, 
         texture: 'pluto_2048.jpg', 
@@ -1092,6 +1147,14 @@ Antigravity va terminal orqali Google Cloud VM'larida murakkab dasturlash vazifa
 ];
 
 let saturnGlobeMesh = null;
+let moonMeshRef = null;
+const earthEclipseUniforms = {
+    uMoonWorldPos: { value: new THREE.Vector3(9999, 9999, 9999) },
+    uEclipseRadius: { value: 0.65 }
+};
+const jupiterMoonsList = [];
+const saturnMoonsList = [];
+
 const saturnRingUniforms = {
     uSunDirLocal: { value: new THREE.Vector3(1, 0, 0) },
     uSaturnRadius: { value: 2.4 }
@@ -1131,12 +1194,14 @@ planetsData.forEach(data => {
     
     const mat = new THREE.MeshStandardMaterial(materialOptions);
 
-    // 2-YO'NALISH: Earth Dynamic Night City Lights on unlit hemisphere
+    // 2-YO'NALISH: Earth Dynamic Night City Lights on unlit hemisphere & Real Solar Eclipse
     if (data.id === 'Earth' && data.hasNightLights) {
         const earthNightTex = textureLoader.load(textureBase + 'earth_night_2048.jpg');
         earthNightTex.colorSpace = THREE.SRGBColorSpace;
         mat.onBeforeCompile = (shader) => {
             shader.uniforms.uNightTexture = { value: earthNightTex };
+            shader.uniforms.uMoonWorldPos = earthEclipseUniforms.uMoonWorldPos;
+            shader.uniforms.uEclipseRadius = earthEclipseUniforms.uEclipseRadius;
             shader.vertexShader = shader.vertexShader.replace(
                 '#include <common>',
                 `#include <common>
@@ -1153,6 +1218,8 @@ planetsData.forEach(data => {
                 '#include <common>',
                 `#include <common>
                  uniform sampler2D uNightTexture;
+                 uniform vec3 uMoonWorldPos;
+                 uniform float uEclipseRadius;
                  varying vec3 vEarthWorldPos;
                  varying vec3 vEarthWorldNormal;`
             );
@@ -1166,6 +1233,22 @@ planetsData.forEach(data => {
                  vec3 nightLights = texture2D(uNightTexture, vMapUv).rgb * nightFactor * 2.5;
                  totalEmissiveRadiance += nightLights;
                  #endif`
+            );
+            shader.fragmentShader = shader.fragmentShader.replace(
+                '#include <dithering_fragment>',
+                `#include <dithering_fragment>
+                 // Real Solar Eclipse: calculate Moon shadow umbra on Earth
+                 vec3 sunToFrag = vEarthWorldPos;
+                 float distFrag = length(sunToFrag);
+                 vec3 rayDir = normalize(sunToFrag);
+                 float tMoon = dot(uMoonWorldPos, rayDir);
+                 float distMoon = length(uMoonWorldPos);
+                 if (tMoon > 0.0 && distMoon < distFrag) {
+                     vec3 closestMoonPt = rayDir * tMoon;
+                     float perpDist = length(uMoonWorldPos - closestMoonPt);
+                     float eclipseShadow = smoothstep(uEclipseRadius * 0.35, uEclipseRadius * 1.5, perpDist);
+                     gl_FragColor.rgb *= mix(0.12, 1.0, eclipseShadow);
+                 }`
             );
         };
     }
@@ -1268,6 +1351,11 @@ planetsData.forEach(data => {
     planetLabel.position.y = data.radius + 1.8;
     // mesh.add(planetLabel);
 
+    // 5-YO'NALISH BOOST: Scale Comparison Label for Planets
+    const planetScaleLabel = createScaleLabelSprite(data.name, data.diameterKm || '12,000 km', '#' + (data.color ? data.color.toString(16).padStart(6, '0') : '38bdf8'));
+    planetScaleLabel.position.y = data.radius + 2.2;
+    mesh.add(planetScaleLabel);
+
     mesh.userData = { 
         id: data.id,
         badge: data.badge,
@@ -1283,6 +1371,8 @@ planetsData.forEach(data => {
         orbitGroup: orbitGroup, 
         distance: data.distance,
         radius: data.radius,
+        diameterKm: data.diameterKm,
+        scaleLabel: planetScaleLabel,
         ringOuter: data.ringOuter || 0
     };
     orbitGroup.add(mesh);
@@ -1313,6 +1403,7 @@ planetsData.forEach(data => {
             metalness: 0.05
         });
         const moon = new THREE.Mesh(moonGeom, moonMat);
+        moonMeshRef = moon;
         moon.position.x = data.moonDistance;
         
         const moonLabel = createLabelSprite('Oy', '', '#ffffff');
@@ -1343,6 +1434,96 @@ Joylashuv: Toshkent, O'zbekiston`,
         moonOrbit.add(moon);
         interactableObjects.push(moon);
         planets.push({ mesh: moon, orbitGroup: moonOrbit, speed: 0.022, isMoonData: true });
+    }
+
+    // 2-YO'NALISH BOOST: Yupiter Tabiiy Yo'ldoshlari (Io, Yevropa, Ganimed, Kallisto)
+    if (data.id === 'Jupiter') {
+        const jupiterMoonsCenter = new THREE.Group();
+        jupiterMoonsCenter.position.x = data.distance;
+        orbitGroup.add(jupiterMoonsCenter);
+
+        const jMoonsConfig = [
+            { name: 'Io', radius: 0.22, distance: 4.6, speed: 0.038, color: 0xf59e0b, angle: 0.6 },
+            { name: 'Europa', radius: 0.18, distance: 6.0, speed: 0.028, color: 0xdbeafe, angle: 2.1 },
+            { name: 'Ganymede', radius: 0.32, distance: 7.8, speed: 0.019, color: 0x9ca3af, angle: 3.8 },
+            { name: 'Callisto', radius: 0.28, distance: 9.6, speed: 0.013, color: 0x78716c, angle: 5.3 }
+        ];
+
+        jMoonsConfig.forEach(m => {
+            const mOrbit = new THREE.Group();
+            mOrbit.rotation.y = m.angle;
+            jupiterMoonsCenter.add(mOrbit);
+
+            const mGeo = new THREE.SphereGeometry(m.radius, 16, 16);
+            const mMat = new THREE.MeshStandardMaterial({
+                color: m.color,
+                roughness: 0.82,
+                metalness: 0.08
+            });
+            const mMesh = new THREE.Mesh(mGeo, mMat);
+            mMesh.position.x = m.distance;
+            mMesh.userData = { id: m.name, isMiniMoon: true, parentPlanet: 'Jupiter', radius: m.radius };
+            mOrbit.add(mMesh);
+
+            // Subtle minimalist orbit ring
+            const orbitPts = [];
+            for (let i = 0; i <= 64; i++) {
+                const th = (i / 64) * Math.PI * 2;
+                orbitPts.push(new THREE.Vector3(Math.cos(th) * m.distance, 0, Math.sin(th) * m.distance));
+            }
+            const oLine = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints(orbitPts),
+                new THREE.LineBasicMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.12 })
+            );
+            jupiterMoonsCenter.add(oLine);
+
+            jupiterMoonsList.push({ name: m.name, mesh: mMesh, orbitGroup: mOrbit, speed: m.speed });
+            planets.push({ mesh: mMesh, orbitGroup: mOrbit, speed: m.speed, isMiniMoon: true });
+        });
+    }
+
+    // 2-YO'NALISH BOOST: Saturn Tabiiy Yo'ldoshlari (Titan, Enselad)
+    if (data.id === 'Saturn') {
+        const saturnMoonsCenter = new THREE.Group();
+        saturnMoonsCenter.position.x = data.distance;
+        orbitGroup.add(saturnMoonsCenter);
+
+        const sMoonsConfig = [
+            { name: 'Titan', radius: 0.32, distance: 8.2, speed: 0.021, color: 0xfbbf24, angle: 1.2 },
+            { name: 'Enceladus', radius: 0.16, distance: 6.4, speed: 0.032, color: 0xf8fafc, angle: 4.2 }
+        ];
+
+        sMoonsConfig.forEach(m => {
+            const mOrbit = new THREE.Group();
+            mOrbit.rotation.y = m.angle;
+            saturnMoonsCenter.add(mOrbit);
+
+            const mGeo = new THREE.SphereGeometry(m.radius, 16, 16);
+            const mMat = new THREE.MeshStandardMaterial({
+                color: m.color,
+                roughness: 0.78,
+                metalness: 0.12
+            });
+            const mMesh = new THREE.Mesh(mGeo, mMat);
+            mMesh.position.x = m.distance;
+            mMesh.userData = { id: m.name, isMiniMoon: true, parentPlanet: 'Saturn', radius: m.radius };
+            mOrbit.add(mMesh);
+
+            // Subtle minimalist orbit ring
+            const orbitPts = [];
+            for (let i = 0; i <= 64; i++) {
+                const th = (i / 64) * Math.PI * 2;
+                orbitPts.push(new THREE.Vector3(Math.cos(th) * m.distance, 0, Math.sin(th) * m.distance));
+            }
+            const oLine = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints(orbitPts),
+                new THREE.LineBasicMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.12 })
+            );
+            saturnMoonsCenter.add(oLine);
+
+            saturnMoonsList.push({ name: m.name, mesh: mMesh, orbitGroup: mOrbit, speed: m.speed });
+            planets.push({ mesh: mMesh, orbitGroup: mOrbit, speed: m.speed, isMiniMoon: true });
+        });
     }
 });
 
@@ -2367,6 +2548,704 @@ function updateVoyager(deltaSpeed = 1.0) {
     beaconMat.color.setRGB(0.2, 0.8 + 0.2 * pulse, 1.0);
 }
 
+// ==============================================================================
+// 🌌 COSMIC REALISM BOOST ENHANCEMENTS
+// ==============================================================================
+
+// ------------------------------------------------------------------------------
+// 1. GRAVITATIONAL LENSING BLACK HOLE (SAGITTARIUS A* / GARGANTUA)
+// ------------------------------------------------------------------------------
+const blackHoleGroup = new THREE.Group();
+
+// Dark event horizon sphere
+const eventHorizonGeo = new THREE.SphereGeometry(3.6, 64, 64);
+const eventHorizonMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+const eventHorizon = new THREE.Mesh(eventHorizonGeo, eventHorizonMat);
+blackHoleGroup.add(eventHorizon);
+
+// Swirling plasma accretion disk with relativistic Doppler beaming
+const accretionGeo = new THREE.RingGeometry(3.7, 13.0, 160, 24);
+const accretionMat = new THREE.ShaderMaterial({
+    uniforms: {
+        uTime: { value: 0 },
+        uInnerRadius: { value: 3.7 },
+        uOuterRadius: { value: 13.0 }
+    },
+    vertexShader: `
+        varying vec2 vUv;
+        varying vec3 vPos;
+        void main() {
+            vUv = uv;
+            vPos = position;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+        uniform float uTime;
+        uniform float uInnerRadius;
+        uniform float uOuterRadius;
+        varying vec2 vUv;
+        varying vec3 vPos;
+
+        float hash(vec2 p) {
+            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+        }
+        float noise(vec2 p) {
+            vec2 i = floor(p);
+            vec2 f = fract(p);
+            vec2 u = f * f * (3.0 - 2.0 * f);
+            return mix(mix(hash(i + vec2(0.0,0.0)), hash(i + vec2(1.0,0.0)), u.x),
+                       mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x), u.y);
+        }
+
+        void main() {
+            float r = length(vPos.xy);
+            float angle = atan(vPos.y, vPos.x);
+            float normR = (r - uInnerRadius) / (uOuterRadius - uInnerRadius);
+            if (normR < 0.0 || normR > 1.0) discard;
+
+            // Swirling Keplerian plasma flow (accelerates near photon orbit)
+            float swirl = angle * 5.0 - uTime * (1.8 / (normR + 0.25));
+            float n1 = noise(vec2(normR * 10.0, swirl * 0.6));
+            float n2 = noise(vec2(normR * 20.0, swirl * 1.4));
+            float plasma = n1 * 0.65 + n2 * 0.35;
+
+            // Relativistic Doppler beaming
+            float doppler = 1.0 + 0.58 * cos(angle + 0.5);
+
+            vec3 colInner = vec3(1.0, 0.95, 0.72);
+            vec3 colMid = vec3(1.0, 0.52, 0.12);
+            vec3 colOuter = vec3(0.85, 0.16, 0.02);
+
+            vec3 color = mix(colInner, colMid, smoothstep(0.0, 0.38, normR));
+            color = mix(color, colOuter, smoothstep(0.38, 0.95, normR));
+            color *= (0.75 + 0.7 * plasma) * doppler;
+
+            float alpha = smoothstep(0.0, 0.08, normR) * smoothstep(1.0, 0.68, normR) * 0.92;
+            gl_FragColor = vec4(color, alpha);
+        }
+    `,
+    side: THREE.DoubleSide,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+});
+const accretionDisk = new THREE.Mesh(accretionGeo, accretionMat);
+accretionDisk.rotation.x = Math.PI / 2 + 0.32;
+accretionDisk.rotation.y = 0.2;
+blackHoleGroup.add(accretionDisk);
+
+// Gravitational Lensing Halo (Photon sphere thin Einstein ring and warped distortion)
+const lensingGeo = new THREE.PlaneGeometry(36, 36);
+const lensingMat = new THREE.ShaderMaterial({
+    uniforms: {
+        uHorizonRadius: { value: 3.6 }
+    },
+    vertexShader: `
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+        uniform float uHorizonRadius;
+        varying vec2 vUv;
+        void main() {
+            vec2 centerUv = vUv - 0.5;
+            float dist = length(centerUv) * 36.0;
+            if (dist < uHorizonRadius) discard;
+
+            // Photon sphere Einstein ring at r = 4.3
+            float photonRing = exp(-pow(dist - 4.3, 2.0) / 0.16) * 1.85;
+
+            // Gravitational lensing warp glow
+            float lensingGlow = pow(uHorizonRadius / max(dist, uHorizonRadius), 3.2) * 0.42;
+
+            vec3 ringCol = vec3(1.0, 0.88, 0.55) * photonRing;
+            vec3 glowCol = vec3(1.0, 0.48, 0.12) * lensingGlow;
+
+            float alpha = clamp(photonRing + lensingGlow, 0.0, 0.95);
+            gl_FragColor = vec4(ringCol + glowCol, alpha);
+        }
+    `,
+    side: THREE.DoubleSide,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+});
+const lensingMesh = new THREE.Mesh(lensingGeo, lensingMat);
+blackHoleGroup.add(lensingMesh);
+
+// Raycast hit target for Black Hole
+const blackHoleHitGeo = new THREE.SphereGeometry(7.5, 16, 16);
+const blackHoleHitMat = new THREE.MeshBasicMaterial({ visible: false });
+const blackHoleHitMesh = new THREE.Mesh(blackHoleHitGeo, blackHoleHitMat);
+
+blackHoleHitMesh.userData = {
+    id: 'BlackHole',
+    isBlackHole: true,
+    radius: 3.6,
+    badge: 'Singulyarlik • Gravitatsion Linza',
+    title: 'Sagittarius A* • Supermassive Singularity',
+    subtitle: 'Fazoni Eguvchi Gravitatsion Linzalanish va Voqealar Gorizonti',
+    content: `Somon Yo'li galaktikasi markazidagi o'ta og'ir qora o'ra (Gargantua / Sagittarius A*).
+Umumiy nisbiylik nazariyasi (Eynshteyn tenglamalari) bo'yicha cheksiz gravitatsiya qudug'i, yorug'lik ham qochib qutula olmaydigan qop-qora voqealar gorizonti (event horizon) va yorug'lik tezligiga yaqin aylanuvchi oltin-qizil plazma akkretsion diski.
+
+Fizik va Kosmik Ko'rsatkichlar:
+• Relyativistik Gravitatsion Linzalanish (GLSL Spacetime Distortion)
+• Eynshteyn Foton Sferasi va Doppler nurlanish asimmetriyasi
+• Joylashuv: Pluton orbitasidan tashqarida, chuqur yulduzlararo fazoda
+• Arxitektura Falsafasi: Katta yuklamalarda 100% buzilmas va yengilmas mustahkam yadroli tizimlar ramzi.`,
+    tags: ['General Relativity', 'Event Horizon', 'Accretion Disk', 'Einstein Ring', 'Gravitational Lensing', 'Sagittarius A*', 'GLSL Shader'],
+    actionUrl: 'https://github.com/AzimjonKamiljanov',
+    actionText: 'Singulyarlik Tahlili',
+    githubUrl: 'https://github.com/AzimjonKamiljanov',
+    githubText: 'GitHub Profil'
+};
+blackHoleGroup.add(blackHoleHitMesh);
+blackHoleGroup.userData = blackHoleHitMesh.userData;
+interactableObjects.push(blackHoleHitMesh);
+
+// Deep space coordinates beyond Pluto (distance ~228 units)
+blackHoleGroup.position.set(-170, 26, -145);
+scene.add(blackHoleGroup);
+
+// ------------------------------------------------------------------------------
+// 6. YULDUZ TURKUMLARI XARITASI (CONSTELLATIONS GRID)
+// ------------------------------------------------------------------------------
+const constellationsGroup = new THREE.Group();
+scene.add(constellationsGroup);
+let areConstellationsVisible = true;
+
+const constellationDefs = [
+    {
+        nameKey: 'orion',
+        defaultName: 'ORION',
+        stars: [
+            { id: 'betelgeuse', pos: [250, 180, -860] },
+            { id: 'bellatrix', pos: [120, 200, -880] },
+            { id: 'rigel', pos: [140, -120, -900] },
+            { id: 'saiph', pos: [260, -130, -870] },
+            { id: 'mintaka', pos: [150, 60, -890] },
+            { id: 'alnilam', pos: [185, 50, -885] },
+            { id: 'alnitak', pos: [220, 40, -880] }
+        ],
+        lines: [
+            ['betelgeuse', 'bellatrix'],
+            ['bellatrix', 'mintaka'],
+            ['mintaka', 'alnilam'],
+            ['alnilam', 'alnitak'],
+            ['alnitak', 'saiph'],
+            ['saiph', 'rigel'],
+            ['rigel', 'mintaka'],
+            ['betelgeuse', 'alnitak']
+        ],
+        center: [185, 230, -875]
+    },
+    {
+        nameKey: 'ursa_major',
+        defaultName: 'URSA MAJOR',
+        stars: [
+            { id: 'dubhe', pos: [-350, 680, -520] },
+            { id: 'merak', pos: [-380, 620, -560] },
+            { id: 'phecda', pos: [-470, 600, -480] },
+            { id: 'megrez', pos: [-450, 660, -450] },
+            { id: 'alioth', pos: [-520, 640, -380] },
+            { id: 'mizar', pos: [-580, 610, -320] },
+            { id: 'alkaid', pos: [-640, 560, -250] }
+        ],
+        lines: [
+            ['dubhe', 'merak'],
+            ['merak', 'phecda'],
+            ['phecda', 'megrez'],
+            ['megrez', 'dubhe'],
+            ['megrez', 'alioth'],
+            ['alioth', 'mizar'],
+            ['mizar', 'alkaid']
+        ],
+        center: [-480, 710, -440]
+    },
+    {
+        nameKey: 'cassiopeia',
+        defaultName: 'CASSIOPEIA',
+        stars: [
+            { id: 'caph', pos: [120, 780, 460] },
+            { id: 'schedar', pos: [180, 760, 480] },
+            { id: 'gamma_cas', pos: [240, 790, 430] },
+            { id: 'ruchbah', pos: [310, 770, 450] },
+            { id: 'segin', pos: [360, 800, 400] }
+        ],
+        lines: [
+            ['caph', 'schedar'],
+            ['schedar', 'gamma_cas'],
+            ['gamma_cas', 'ruchbah'],
+            ['ruchbah', 'segin']
+        ],
+        center: [240, 830, 440]
+    },
+    {
+        nameKey: 'sagittarius',
+        defaultName: 'SAGITTARIUS',
+        stars: [
+            { id: 'kaus_bor', pos: [-620, -180, -650] },
+            { id: 'kaus_med', pos: [-660, -240, -620] },
+            { id: 'kaus_aus', pos: [-690, -310, -580] },
+            { id: 'ascella', pos: [-620, -320, -640] },
+            { id: 'nunki', pos: [-550, -220, -700] },
+            { id: 'alnasl', pos: [-730, -210, -550] }
+        ],
+        lines: [
+            ['kaus_bor', 'kaus_med'],
+            ['kaus_med', 'kaus_aus'],
+            ['kaus_aus', 'ascella'],
+            ['ascella', 'nunki'],
+            ['nunki', 'kaus_bor'],
+            ['kaus_med', 'alnasl'],
+            ['alnasl', 'kaus_aus']
+        ],
+        center: [-640, -140, -640]
+    }
+];
+
+constellationDefs.forEach(c => {
+    const starMap = new Map();
+    const starPositions = [];
+    c.stars.forEach(s => {
+        const v = new THREE.Vector3(...s.pos).normalize().multiplyScalar(910);
+        starMap.set(s.id, v);
+        starPositions.push(v.x, v.y, v.z);
+    });
+
+    const pointsGeo = new THREE.BufferGeometry();
+    pointsGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+    const pointsMat = new THREE.PointsMaterial({
+        color: 0xe0f2fe,
+        size: 7.0,
+        transparent: true,
+        opacity: 0.85
+    });
+    const pointsMesh = new THREE.Points(pointsGeo, pointsMat);
+    constellationsGroup.add(pointsMesh);
+
+    const lineCoords = [];
+    c.lines.forEach(([id1, id2]) => {
+        const v1 = starMap.get(id1);
+        const v2 = starMap.get(id2);
+        if (v1 && v2) {
+            lineCoords.push(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
+        }
+    });
+    const lineGeo = new THREE.BufferGeometry();
+    lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(lineCoords, 3));
+    const lineMat = new THREE.LineBasicMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.38,
+        linewidth: 1
+    });
+    const lineMesh = new THREE.LineSegments(lineGeo, lineMat);
+    constellationsGroup.add(lineMesh);
+
+    const centerV = new THREE.Vector3(...c.center).normalize().multiplyScalar(895);
+    const label = createLabelSprite(c.defaultName, '✦', '#38bdf8');
+    label.scale.set(40.0, 10.0, 1);
+    label.position.copy(centerV);
+    label.userData = { constellationNameKey: c.nameKey };
+    constellationsGroup.add(label);
+});
+
+function toggleConstellations(forceState) {
+    const nextState = typeof forceState === 'boolean' ? forceState : !areConstellationsVisible;
+    areConstellationsVisible = nextState;
+    constellationsGroup.visible = areConstellationsVisible;
+    const uiTexts = translations.ui[currentLang] || translations.ui.uz;
+    const btn = document.getElementById('constellations-toggle-btn');
+    const txt = document.getElementById('constellations-toggle-text');
+    if (btn) btn.classList.toggle('active', areConstellationsVisible);
+    if (txt) txt.innerText = areConstellationsVisible ? (uiTexts.constellationsBtnOn || "Turkumlar: Yoniq") : (uiTexts.constellationsBtnOff || "Turkumlar: O'chiq");
+}
+
+const constellationsToggleBtn = document.getElementById('constellations-toggle-btn');
+if (constellationsToggleBtn) {
+    constellationsToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playUiClick();
+        toggleConstellations();
+    });
+}
+
+// ------------------------------------------------------------------------------
+// 8. METEOR YOMG'IRI (PERSEID METEOR SHOWER)
+// ------------------------------------------------------------------------------
+const meteorShowerGroup = new THREE.Group();
+scene.add(meteorShowerGroup);
+
+class PerseidMeteorShower {
+    constructor() {
+        this.meteors = [];
+        this.nextSpawnTime = 1.5;
+        this.radiant = new THREE.Vector3(500, 380, -600).normalize();
+    }
+
+    spawn() {
+        if (this.meteors.length >= 3) return;
+
+        const start = new THREE.Vector3(
+            (Math.random() - 0.5) * 500,
+            120 + Math.random() * 200,
+            (Math.random() - 0.5) * 500
+        );
+
+        const dir = this.radiant.clone().negate().add(new THREE.Vector3(
+            (Math.random() - 0.5) * 0.25,
+            (Math.random() - 0.5) * 0.25,
+            (Math.random() - 0.5) * 0.25
+        )).normalize();
+
+        const length = 22 + Math.random() * 18;
+        const speed = 320 + Math.random() * 140;
+
+        const points = [start.clone(), start.clone().add(dir.clone().multiplyScalar(-length))];
+        const geo = new THREE.BufferGeometry().setFromPoints(points);
+        const mat = new THREE.LineBasicMaterial({
+            color: 0xe0f2fe,
+            transparent: true,
+            opacity: 0.9,
+            linewidth: 1.5
+        });
+        const line = new THREE.Line(geo, mat);
+        meteorShowerGroup.add(line);
+
+        this.meteors.push({
+            line,
+            geo,
+            mat,
+            start,
+            dir,
+            speed,
+            length,
+            age: 0,
+            life: 0.5 + Math.random() * 0.35
+        });
+    }
+
+    update(dt) {
+        this.nextSpawnTime -= dt;
+        if (this.nextSpawnTime <= 0) {
+            this.spawn();
+            this.nextSpawnTime = 2.0 + Math.random() * 3.5;
+        }
+
+        for (let i = this.meteors.length - 1; i >= 0; i--) {
+            const m = this.meteors[i];
+            m.age += dt;
+            const progress = m.age / m.life;
+
+            if (progress >= 1.0) {
+                meteorShowerGroup.remove(m.line);
+                m.geo.dispose();
+                m.mat.dispose();
+                this.meteors.splice(i, 1);
+            } else {
+                const travelDist = m.speed * m.age;
+                const head = m.start.clone().add(m.dir.clone().multiplyScalar(travelDist));
+                const tail = head.clone().add(m.dir.clone().multiplyScalar(-m.length));
+
+                const pos = m.geo.attributes.position;
+                pos.setXYZ(0, head.x, head.y, head.z);
+                pos.setXYZ(1, tail.x, tail.y, tail.z);
+                pos.needsUpdate = true;
+
+                const alpha = Math.sin(progress * Math.PI) * 0.88;
+                m.mat.opacity = alpha;
+            }
+        }
+    }
+}
+
+const perseidShower = new PerseidMeteorShower();
+
+// ------------------------------------------------------------------------------
+// 5. HAJMLAR TAQQOSLASHI REJIMI (SCALE COMPARISON MODE)
+// ------------------------------------------------------------------------------
+let isScaleModeActive = false;
+
+function toggleScaleComparison(forceState) {
+    const nextState = typeof forceState === 'boolean' ? forceState : !isScaleModeActive;
+    if (nextState === isScaleModeActive) return;
+    isScaleModeActive = nextState;
+    playUiClick();
+
+    const uiTexts = translations.ui[currentLang] || translations.ui.uz;
+    const btn = document.getElementById('scale-compare-btn');
+    const txt = document.getElementById('scale-compare-text');
+    if (btn) btn.classList.toggle('active', isScaleModeActive);
+    if (txt) txt.innerText = isScaleModeActive ? (uiTexts.scaleCompareOn || "Hajmlar: Yoniq") : (uiTexts.scaleCompareBtn || "Hajmlar Taqqoslashi");
+
+    if (isScaleModeActive) {
+        if (isTourActive) exitTour(false);
+        if (currentSurfaceMode) setSurfaceView(null);
+        if (currentTarget) hideInfo();
+        currentTarget = null;
+
+        if (orbitLinesGroup) orbitLinesGroup.visible = false;
+        if (typeof asteroidBeltGroup !== 'undefined' && asteroidBeltGroup) asteroidBeltGroup.visible = false;
+        if (typeof cometGroup !== 'undefined' && cometGroup) cometGroup.visible = false;
+        if (typeof voyagerGroup !== 'undefined' && voyagerGroup) voyagerGroup.visible = false;
+        if (typeof blackHoleGroup !== 'undefined' && blackHoleGroup) blackHoleGroup.visible = false;
+
+        const scaleLayout = [
+            { id: 'sun', x: -52 },
+            { id: 'Mercury', x: -38 },
+            { id: 'Venus', x: -32 },
+            { id: 'Earth', x: -24 },
+            { id: 'Mars', x: -17 },
+            { id: 'Jupiter', x: -6 },
+            { id: 'Saturn', x: 8 },
+            { id: 'Uranus', x: 20 },
+            { id: 'Neptune', x: 29 },
+            { id: 'Pluto', x: 37 }
+        ];
+
+        gsap.to(sun.position, { x: -52, y: 0, z: 0, duration: 1.5, ease: 'power2.inOut' });
+        if (sun.userData && sun.userData.scaleLabel) sun.userData.scaleLabel.visible = true;
+
+        scaleLayout.forEach(item => {
+            if (item.id === 'sun') return;
+            const p = planets.find(pl => pl.mesh.userData && pl.mesh.userData.id === item.id);
+            if (p) {
+                gsap.to(p.orbitGroup.rotation, { y: 0, duration: 1.2, ease: 'power2.inOut' });
+                gsap.to(p.mesh.position, { x: item.x, y: 0, z: 0, duration: 1.5, ease: 'power2.inOut' });
+                if (p.mesh.userData && p.mesh.userData.scaleLabel) {
+                    p.mesh.userData.scaleLabel.visible = true;
+                }
+            }
+        });
+
+        gsap.to(camera.position, {
+            x: 0,
+            y: 14,
+            z: 76,
+            duration: 1.8,
+            ease: 'power2.inOut',
+            onUpdate: () => {
+                controls.target.set(0, 0, 0);
+                controls.update();
+            }
+        });
+    } else {
+        gsap.to(sun.position, { x: 0, y: 0, z: 0, duration: 1.5, ease: 'power2.inOut' });
+        if (sun.userData && sun.userData.scaleLabel) sun.userData.scaleLabel.visible = false;
+
+        planetsData.forEach(d => {
+            const p = planets.find(pl => pl.mesh.userData && pl.mesh.userData.id === d.id);
+            if (p) {
+                gsap.to(p.mesh.position, { x: d.distance, y: 0, z: 0, duration: 1.5, ease: 'power2.inOut' });
+                if (p.mesh.userData && p.mesh.userData.scaleLabel) {
+                    p.mesh.userData.scaleLabel.visible = false;
+                }
+            }
+        });
+
+        if (orbitLinesGroup) orbitLinesGroup.visible = true;
+        if (typeof asteroidBeltGroup !== 'undefined' && asteroidBeltGroup) asteroidBeltGroup.visible = true;
+        if (typeof cometGroup !== 'undefined' && cometGroup) cometGroup.visible = true;
+        if (typeof voyagerGroup !== 'undefined' && voyagerGroup) voyagerGroup.visible = true;
+        if (typeof blackHoleGroup !== 'undefined' && blackHoleGroup) blackHoleGroup.visible = true;
+
+        resetView();
+    }
+}
+
+const scaleCompareBtn = document.getElementById('scale-compare-btn');
+if (scaleCompareBtn) {
+    scaleCompareBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleScaleComparison();
+    });
+}
+
+// ------------------------------------------------------------------------------
+// 3. "EARTHRISE" VA "MARS QUYOSH BOTISHI" (SURFACE VIEW MODE)
+// ------------------------------------------------------------------------------
+let currentSurfaceMode = null; // null | 'earthrise' | 'mars_sunset'
+let surfaceSavedCamPos = new THREE.Vector3();
+let surfaceSavedTarget = new THREE.Vector3();
+
+const surfaceViewBar = document.getElementById('surface-view-bar');
+const surfaceEarthriseBtn = document.getElementById('surface-earthrise-btn');
+const surfaceMarsBtn = document.getElementById('surface-mars-btn');
+const surfaceExitBtn = document.getElementById('surface-exit-btn');
+const surfaceViewBtn = document.getElementById('surface-view-btn');
+
+function setSurfaceView(mode) {
+    if (mode === currentSurfaceMode) return;
+    playUiClick();
+
+    if (mode) {
+        if (!currentSurfaceMode) {
+            surfaceSavedCamPos.copy(camera.position);
+            surfaceSavedTarget.copy(controls.target);
+        }
+        currentSurfaceMode = mode;
+        if (isScaleModeActive) toggleScaleComparison(false);
+        if (isTourActive) exitTour(false);
+        hideInfo();
+        currentTarget = null;
+
+        if (surfaceViewBar) surfaceViewBar.classList.remove('hidden');
+        if (surfaceViewBtn) surfaceViewBtn.classList.add('active');
+        if (surfaceEarthriseBtn) surfaceEarthriseBtn.classList.toggle('active', mode === 'earthrise');
+        if (surfaceMarsBtn) surfaceMarsBtn.classList.toggle('active', mode === 'mars_sunset');
+
+        if (mode === 'earthrise' && moonMeshRef) {
+            const mPos = new THREE.Vector3();
+            moonMeshRef.getWorldPosition(mPos);
+            const earthObj = planets.find(p => p.mesh.userData && p.mesh.userData.id === 'Earth');
+            if (earthObj) {
+                const ePos = new THREE.Vector3();
+                earthObj.mesh.getWorldPosition(ePos);
+                const dir = ePos.clone().sub(mPos).normalize();
+                camera.position.copy(mPos.clone().add(dir.clone().multiplyScalar(0.55)).add(new THREE.Vector3(0, 0.25, 0)));
+                controls.target.copy(ePos);
+                controls.update();
+            }
+        } else if (mode === 'mars_sunset') {
+            const marsObj = planets.find(p => p.mesh.userData && p.mesh.userData.id === 'Mars');
+            if (marsObj) {
+                const marsPos = new THREE.Vector3();
+                marsObj.mesh.getWorldPosition(marsPos);
+                camera.position.copy(marsPos.clone().add(new THREE.Vector3(0, 0, 0).sub(marsPos).normalize().multiplyScalar(1.68)).add(new THREE.Vector3(0, 0.4, 0)));
+                controls.target.set(0, 0, 0);
+                controls.update();
+            }
+        }
+    } else {
+        currentSurfaceMode = null;
+        if (surfaceViewBar) surfaceViewBar.classList.add('hidden');
+        if (surfaceViewBtn) surfaceViewBtn.classList.remove('active');
+
+        gsap.to(camera.position, {
+            x: surfaceSavedCamPos.x || 0,
+            y: surfaceSavedCamPos.y || 165,
+            z: surfaceSavedCamPos.z || 195,
+            duration: 1.6,
+            ease: "power2.out",
+            onUpdate: () => {
+                controls.target.copy(surfaceSavedTarget);
+                controls.update();
+            }
+        });
+    }
+}
+
+if (surfaceViewBtn) {
+    surfaceViewBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setSurfaceView(currentSurfaceMode ? null : 'earthrise');
+    });
+}
+if (surfaceEarthriseBtn) {
+    surfaceEarthriseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setSurfaceView('earthrise');
+    });
+}
+if (surfaceMarsBtn) {
+    surfaceMarsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setSurfaceView('mars_sunset');
+    });
+}
+if (surfaceExitBtn) {
+    surfaceExitBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setSurfaceView(null);
+    });
+}
+
+// ------------------------------------------------------------------------------
+// 7. MOBIL GIROSKOP REJIMI (PLANETARIUM / SKY VIEW)
+// ------------------------------------------------------------------------------
+let isSkyViewActive = false;
+let skyViewSavedPos = new THREE.Vector3();
+
+const skyViewToggleBtn = document.getElementById('skyview-toggle-btn');
+const skyviewExitBanner = document.getElementById('skyview-exit-banner');
+const skyviewExitBtn = document.getElementById('skyview-exit-btn');
+
+function onDeviceOrientation(event) {
+    if (!isSkyViewActive) return;
+    const alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0;
+    const beta = event.beta ? THREE.MathUtils.degToRad(event.beta) : 0;
+    const gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0;
+    const orient = (typeof window.orientation !== 'undefined') ? THREE.MathUtils.degToRad(window.orientation) : 0;
+
+    const zee = new THREE.Vector3(0, 0, 1);
+    const euler = new THREE.Euler();
+    const q0 = new THREE.Quaternion();
+    const q1 = new THREE.Quaternion(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5));
+
+    euler.set(beta, alpha, -gamma, 'YXZ');
+    const quat = new THREE.Quaternion().setFromEuler(euler);
+    quat.multiply(q1);
+    quat.multiply(q0.setFromAxisAngle(zee, -orient));
+
+    camera.quaternion.slerp(quat, 0.22);
+}
+
+function toggleSkyView(forceState) {
+    const nextState = typeof forceState === 'boolean' ? forceState : !isSkyViewActive;
+    if (nextState === isSkyViewActive) return;
+    isSkyViewActive = nextState;
+    playUiClick();
+
+    if (isSkyViewActive) {
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission().catch(() => {});
+        }
+
+        skyViewSavedPos.copy(camera.position);
+        controls.enabled = false;
+        camera.position.set(0, 2, 0);
+
+        window.addEventListener('deviceorientation', onDeviceOrientation, true);
+        if (skyviewExitBanner) skyviewExitBanner.classList.remove('hidden');
+        if (skyViewToggleBtn) skyViewToggleBtn.classList.add('active');
+    } else {
+        window.removeEventListener('deviceorientation', onDeviceOrientation, true);
+        controls.enabled = true;
+        if (skyviewExitBanner) skyviewExitBanner.classList.add('hidden');
+        if (skyViewToggleBtn) skyViewToggleBtn.classList.remove('active');
+
+        gsap.to(camera.position, {
+            x: skyViewSavedPos.x || 0,
+            y: skyViewSavedPos.y || 165,
+            z: skyViewSavedPos.z || 195,
+            duration: 1.5,
+            ease: "power2.out",
+            onUpdate: () => {
+                controls.target.set(0, 0, 0);
+                controls.update();
+            }
+        });
+    }
+}
+
+if (skyViewToggleBtn) {
+    skyViewToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleSkyView();
+    });
+}
+if (skyviewExitBtn) {
+    skyviewExitBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleSkyView(false);
+    });
+}
+
 // ==========================================
 // 4. UI ELEMENTS & MODAL CONTROLS
 // ==========================================
@@ -3080,6 +3959,32 @@ function setLanguage(lang) {
     const cinematicExitText = document.getElementById('cinematic-exit-text');
     if (cinematicExitText && uiTexts.cinematicExit) cinematicExitText.innerText = uiTexts.cinematicExit;
 
+    const constellationsToggleText = document.getElementById('constellations-toggle-text');
+    if (constellationsToggleText) {
+        constellationsToggleText.innerText = areConstellationsVisible ? (uiTexts.constellationsBtnOn || "Turkumlar: Yoniq") : (uiTexts.constellationsBtnOff || "Turkumlar: O'chiq");
+    }
+    const scaleCompareText = document.getElementById('scale-compare-text');
+    if (scaleCompareText) {
+        scaleCompareText.innerText = isScaleModeActive ? (uiTexts.scaleCompareOn || "Hajmlar: Yoniq") : (uiTexts.scaleCompareBtn || "Hajmlar Taqqoslashi");
+    }
+    const surfaceViewText = document.getElementById('surface-view-text');
+    if (surfaceViewText && uiTexts.surfaceViewBtn) surfaceViewText.innerText = uiTexts.surfaceViewBtn;
+    const surfaceEarthriseText = document.getElementById('surface-earthrise-text');
+    if (surfaceEarthriseText && uiTexts.surfaceEarthrise) surfaceEarthriseText.innerText = uiTexts.surfaceEarthrise;
+    const surfaceMarsText = document.getElementById('surface-mars-text');
+    if (surfaceMarsText && uiTexts.surfaceMars) surfaceMarsText.innerText = uiTexts.surfaceMars;
+    const surfaceExitText = document.getElementById('surface-exit-text');
+    if (surfaceExitText && uiTexts.surfaceExit) surfaceExitText.innerText = uiTexts.surfaceExit;
+
+    const skyviewToggleText = document.getElementById('skyview-toggle-text');
+    if (skyviewToggleText) {
+        skyviewToggleText.innerText = isSkyViewActive ? (uiTexts.skyViewOn || "Sky View: Yoniq") : (uiTexts.skyViewBtn || "Sky View");
+    }
+    const skyviewBannerText = document.getElementById('skyview-banner-text');
+    if (skyviewBannerText && uiTexts.skyViewBanner) skyviewBannerText.innerText = uiTexts.skyViewBanner;
+    const skyviewExitText = document.getElementById('skyview-exit-text');
+    if (skyviewExitText && uiTexts.skyViewExit) skyviewExitText.innerText = uiTexts.skyViewExit;
+
     const catalogBtnText = document.getElementById('catalog-btn-text');
     if (catalogBtnText) catalogBtnText.innerText = uiTexts.catalogBtn;
 
@@ -3154,7 +4059,8 @@ function setLanguage(lang) {
         'Neptune': uiTexts.nav.neptune,
         'Pluto': uiTexts.nav.pluto,
         'star': uiTexts.nav.stars,
-        'Voyager': uiTexts.nav.voyager || 'Voyager'
+        'Voyager': uiTexts.nav.voyager || 'Voyager',
+        'BlackHole': uiTexts.nav.blackHole || "Qora O'ra"
     };
 
     document.querySelectorAll('#nav-container .nav-btn').forEach(btn => {
@@ -3255,7 +4161,7 @@ function setLanguage(lang) {
             transData = translations.celestial.sun?.[lang];
         } else if (obj.userData.isMoon) {
             transData = translations.celestial.moon?.[lang];
-        } else if ((obj.userData.isPlanet || obj.userData.isProbe || obj.userData.isComet) && translations.celestial[obj.userData.id]) {
+        } else if ((obj.userData.isPlanet || obj.userData.isProbe || obj.userData.isComet || obj.userData.isBlackHole) && translations.celestial[obj.userData.id]) {
             transData = translations.celestial[obj.userData.id]?.[lang];
         } else if (obj.userData.isStar && translations.stars[obj.userData.id]) {
             transData = translations.stars[obj.userData.id]?.[lang];
@@ -3562,6 +4468,9 @@ window.addEventListener('keydown', (e) => {
     } else if (e.key === 'o' || e.key === 'O') {
         e.preventDefault();
         toggleOrbits();
+    } else if (e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        toggleConstellations();
     } else if (e.key === 'Escape' && isCinematicActive) {
         e.preventDefault();
         e.stopImmediatePropagation();
@@ -4027,6 +4936,18 @@ window.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
     if (e.key === 'Escape') {
+        if (typeof currentSurfaceMode !== 'undefined' && currentSurfaceMode) {
+            setSurfaceView(null);
+            return;
+        }
+        if (typeof isSkyViewActive !== 'undefined' && isSkyViewActive) {
+            toggleSkyView(false);
+            return;
+        }
+        if (typeof isScaleModeActive !== 'undefined' && isScaleModeActive) {
+            toggleScaleComparison(false);
+            return;
+        }
         if (infoPanel && !infoPanel.classList.contains('hidden')) {
             hideInfo();
             if (typeof isTourActive === 'undefined' || !isTourActive) {
@@ -4095,6 +5016,8 @@ function focusOnObject(object, isTourCall = false) {
         camOffsetDist = 8.0;
     } else if (object.userData.isComet) {
         camOffsetDist = 14.0;
+    } else if (object.userData.isBlackHole) {
+        camOffsetDist = 28.0;
     }
     
     const dir = targetWorldPos.clone().normalize();
@@ -4133,7 +5056,8 @@ function focusOnObject(object, isTourCall = false) {
                 (object.userData.isSun ? document.querySelector('.nav-btn[data-target="sun"]') : null) ||
                 (object.userData.isMoon ? document.querySelector('.nav-btn[data-target="moon"]') : null) ||
                 (object.userData.isStar ? document.querySelector('.nav-btn[data-target="star"]') : null) ||
-                (object.userData.isProbe ? document.querySelector('.nav-btn[data-target="Voyager"]') : null);
+                (object.userData.isProbe ? document.querySelector('.nav-btn[data-target="Voyager"]') : null) ||
+                (object.userData.isBlackHole ? document.querySelector('.nav-btn[data-target="BlackHole"]') : null);
     if (btn) updateNavActiveState(btn);
 
     animateCamera(finalCamPos, finalTargetPos, object.userData);
@@ -4974,6 +5898,53 @@ function animate() {
     if (typeof updateVoyager === 'function') {
         updateVoyager(isVoyagerFocused ? 0.0 : effectiveSpeed);
     }
+
+    // Solar Eclipse: Update Moon world position for Earth umbra shader
+    if (moonMeshRef && typeof earthEclipseUniforms !== 'undefined' && earthEclipseUniforms.uMoonWorldPos) {
+        const mPos = new THREE.Vector3();
+        moonMeshRef.getWorldPosition(mPos);
+        earthEclipseUniforms.uMoonWorldPos.value.copy(mPos);
+    }
+
+    // Black Hole: Animate accretion disk plasma flow & align lensing plane to camera
+    if (typeof accretionMat !== 'undefined' && accretionMat.uniforms?.uTime) {
+        accretionMat.uniforms.uTime.value = clockTime;
+    }
+    if (typeof lensingMesh !== 'undefined' && lensingMesh) {
+        lensingMesh.quaternion.copy(camera.quaternion);
+    }
+
+    // Perseid Meteor Shower: Real-time shooting stars update
+    if (typeof perseidShower !== 'undefined' && perseidShower) {
+        perseidShower.update(0.016 * effectiveSpeed);
+    }
+
+    // Surface View Mode: Dynamic surface camera tracking while planets orbit
+    if (currentSurfaceMode === 'earthrise') {
+        if (moonMeshRef) {
+            const mPos = new THREE.Vector3();
+            moonMeshRef.getWorldPosition(mPos);
+            const earthObj = planets.find(p => p.mesh.userData && p.mesh.userData.id === 'Earth');
+            if (earthObj) {
+                const ePos = new THREE.Vector3();
+                earthObj.mesh.getWorldPosition(ePos);
+                const dir = ePos.clone().sub(mPos).normalize();
+                const targetCam = mPos.clone().add(dir.clone().multiplyScalar(0.55)).add(new THREE.Vector3(0, 0.25, 0));
+                camera.position.lerp(targetCam, 0.12);
+                controls.target.lerp(ePos, 0.12);
+            }
+        }
+    } else if (currentSurfaceMode === 'mars_sunset') {
+        const marsObj = planets.find(p => p.mesh.userData && p.mesh.userData.id === 'Mars');
+        if (marsObj) {
+            const marsPos = new THREE.Vector3();
+            marsObj.mesh.getWorldPosition(marsPos);
+            const dir = new THREE.Vector3(0, 0, 0).sub(marsPos).normalize();
+            const targetCam = marsPos.clone().add(dir.clone().multiplyScalar(1.68)).add(new THREE.Vector3(0, 0.4, 0));
+            camera.position.lerp(targetCam, 0.12);
+            controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.12);
+        }
+    }
     
     if (shouldRotate) {
         stars.rotation.y += 0.0001;
@@ -5051,6 +6022,22 @@ window.__feedGestureLandmarks = (lm) => {
 Object.defineProperty(window, '__isGestureActive', { get: () => isGestureActive, configurable: true });
 Object.defineProperty(window, '__currentGesture', { get: () => currentGesture, configurable: true });
 Object.defineProperty(window, '__gestureHoveredObject', { get: () => gestureHoveredObject, configurable: true });
+
+// Cosmic Realism Boost Test Hooks
+window.__blackHole = typeof blackHoleGroup !== 'undefined' ? blackHoleGroup : null;
+window.__jupiterMoons = typeof jupiterMoonsList !== 'undefined' ? jupiterMoonsList : null;
+window.__saturnMoons = typeof saturnMoonsList !== 'undefined' ? saturnMoonsList : null;
+window.__toggleSurfaceView = setSurfaceView;
+Object.defineProperty(window, '__surfaceMode', { get: () => currentSurfaceMode, configurable: true });
+window.__toggleScaleComparison = toggleScaleComparison;
+Object.defineProperty(window, '__isScaleModeActive', { get: () => isScaleModeActive, configurable: true });
+window.__toggleConstellations = toggleConstellations;
+window.__constellationsGroup = typeof constellationsGroup !== 'undefined' ? constellationsGroup : null;
+Object.defineProperty(window, '__areConstellationsVisible', { get: () => areConstellationsVisible, configurable: true });
+window.__toggleSkyView = toggleSkyView;
+Object.defineProperty(window, '__isSkyViewActive', { get: () => isSkyViewActive, configurable: true });
+window.__meteorShower = typeof perseidShower !== 'undefined' ? perseidShower : null;
+window.__earthEclipseUniforms = typeof earthEclipseUniforms !== 'undefined' ? earthEclipseUniforms : null;
 
 
 // Initialize localized UI & object states
