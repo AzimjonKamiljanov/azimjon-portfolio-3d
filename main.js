@@ -4068,6 +4068,11 @@ function setLanguage(lang) {
     const catalogBtnText = document.getElementById('catalog-btn-text');
     if (catalogBtnText) catalogBtnText.innerText = uiTexts.catalogBtn;
 
+    const telemetryToggleLabel = document.querySelector('.telemetry-toggle-label');
+    if (telemetryToggleLabel && uiTexts.telemetryBtn) telemetryToggleLabel.innerText = uiTexts.telemetryBtn;
+    const telemetryBadgeText = document.querySelector('.telemetry-badge-text');
+    if (telemetryBadgeText && uiTexts.telemetryBadge) telemetryBadgeText.innerText = uiTexts.telemetryBadge;
+
     const tourToggleText = document.getElementById('tour-toggle-text');
     if (tourToggleText && uiTexts.tourBtn) tourToggleText.innerText = uiTexts.tourBtn;
 
@@ -4519,6 +4524,18 @@ if (orbitsToggleBtn) {
         e.stopPropagation();
         playUiClick();
         toggleOrbits();
+    });
+}
+
+// Telemetry Island Expand/Collapse Toggle
+const telemetryIslandToggleBtn = document.getElementById('telemetry-island-toggle');
+const cosmicTelemetryIsland = document.getElementById('cosmic-telemetry-island');
+if (telemetryIslandToggleBtn && cosmicTelemetryIsland) {
+    telemetryIslandToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playUiClick();
+        const isCollapsed = cosmicTelemetryIsland.classList.toggle('island-collapsed');
+        telemetryIslandToggleBtn.setAttribute('aria-expanded', !isCollapsed);
     });
 }
 

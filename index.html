@@ -88,7 +88,7 @@
             }
         }
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="gsap.min.js"></script>
     <!-- MediaPipe Hands & Camera Utils for Real-time AI Vision Gesture Control (Pinned Stable Versions) -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
@@ -129,70 +129,96 @@
 
     <!-- Top Brand Header -->
     <header id="brand-header">
-        <div class="brand-left">
-            <div class="pulsing-dot"></div>
-            <div>
-                <h1 class="brand-title">AZIMJON KAMILJANOV</h1>
-                <p class="brand-subtitle">Lead AI Systems Architect • 9 Sayyora Koinot Portfoliosi</p>
+        <div class="brand-main-bar">
+            <div class="brand-left">
+                <div class="pulsing-dot"></div>
+                <div>
+                    <h1 class="brand-title">AZIMJON KAMILJANOV</h1>
+                    <p class="brand-subtitle">Lead AI Systems Architect • 9 Sayyora Koinot Portfoliosi</p>
+                </div>
+            </div>
+            <div class="brand-actions">
+                <!-- Group 1: Boshqaruv / Profil guruhi -->
+                <div class="brand-nav-group" id="brand-nav-group">
+                    <div class="lang-switch-container" aria-label="Tilni tanlash / Select language / Выберите язык">
+                        <button class="lang-btn active" data-lang="uz" title="O'zbek tili">UZ</button>
+                        <button class="lang-btn" data-lang="en" title="English">EN</button>
+                        <button class="lang-btn" data-lang="ru" title="Русский">RU</button>
+                    </div>
+                    <button id="catalog-btn" class="header-link highlight-link" title="Barcha Loyihalar Ro'yxati">
+                        <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></span> <span id="catalog-btn-text">Loyihalar</span>
+                    </button>
+                    <a id="resume-download-btn" class="header-link highlight-resume" href="assets/Azimjon_Kamiljanov_Resume.pdf" download="Azimjon_Kamiljanov_Resume.pdf" title="Azimjon Kamiljanov • PDF Rezyume / CV">
+                        <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg></span> <span id="resume-download-text">CV Yuklab Olish</span>
+                    </a>
+                    <button id="tour-toggle-btn" class="header-link highlight-tour" title="Kinematik Avto-Sayohat / Cinematic Autopilot Tour">
+                        <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="6 4 19 12 6 20 6 4"/></svg></span> <span id="tour-toggle-text">Avto-Sayohat</span>
+                    </button>
+                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="header-link social-link" title="GitHub Profil">
+                        <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></span> <span class="social-text">GitHub</span>
+                    </a>
+                    <a href="https://t.me/KamiljanovAzimjon" target="_blank" rel="noopener noreferrer" class="header-link telegram-badge social-link" title="Telegram Aloqa">
+                        <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.28c-.15.65-.53.81-1.08.51l-2.99-2.2-1.44 1.39c-.16.16-.3.3-.61.3l.21-3.04 5.54-5.01c.24-.22-.05-.34-.38-.12L7.98 13.52l-2.94-.92c-.64-.2-.65-.64.13-.95l11.49-4.43c.53-.2 1 .12.9 1.04z"/></svg></span> <span class="social-text">Telegram</span>
+                    </a>
+                </div>
+
+                <!-- Group 2: Koinot Asboblari / Quick Toggles Pod (Icon Pod) -->
+                <div class="brand-group-toggles" id="brand-quick-toggles" aria-label="Tezkor boshqaruvlar">
+                    <button id="audio-toggle-btn" class="header-link audio-muted icon-pod-btn" title="Kosmik Ovozni Yoqish yoki O'chirish">
+                        <span id="audio-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg></span> <span id="audio-toggle-text" class="pod-btn-text">Ovoz: O'chiq</span>
+                    </button>
+                    <button id="gesture-toggle-btn" class="header-link gesture-inactive icon-pod-btn" title="Kamera orqali Qo'l Harakatlari Boshqaruvi (AI Vision)">
+                        <span id="gesture-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v5"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v7"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.83L7 15"/></svg></span> <span id="gesture-toggle-text" class="pod-btn-text">Qo'l Boshqaruvi</span>
+                    </button>
+                    <button id="cinematic-toggle-btn" class="header-link icon-pod-btn" title="Toza Koinot Rejimi (H) / Pure Space Cinematic Mode">
+                        <span id="cinematic-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></span> <span id="cinematic-toggle-text" class="pod-btn-text">Toza Fazo</span>
+                    </button>
+                    <button id="guide-toggle-btn" class="header-link icon-pod-btn" title="Foydalanish Bo'yicha Ko'rsatma / Guide">
+                        <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> <span id="guide-toggle-text" class="pod-btn-text">Ko'rsatma</span>
+                    </button>
+                </div>
+
+                <!-- Group Toggle: Koinot Asboblari Chip -->
+                <button id="telemetry-island-toggle" class="header-link telemetry-island-toggle" title="Koinot Telemetriya Panelini ko'rsatish/yashirish" aria-expanded="true">
+                    <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(-30 12 12)"/></svg></span>
+                    <span class="telemetry-toggle-label">Asboblar</span>
+                    <svg class="chevron-svg" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
             </div>
         </div>
-        <div class="brand-actions">
-            <div class="lang-switch-container" aria-label="Tilni tanlash / Select language / Выберите язык">
-                <button class="lang-btn active" data-lang="uz" title="O'zbek tili">UZ</button>
-                <button class="lang-btn" data-lang="en" title="English">EN</button>
-                <button class="lang-btn" data-lang="ru" title="Русский">RU</button>
+
+        <!-- Group 3: Kosmik Telemetriya Orolchasi (Cosmic Telemetry Island) -->
+        <div class="cosmic-telemetry-island" id="cosmic-telemetry-island">
+            <div class="telemetry-island-badge">
+                <span class="telemetry-pulse"></span>
+                <span class="telemetry-badge-text">HUD TELEMETRIYA</span>
             </div>
-            <button id="gesture-toggle-btn" class="header-link gesture-inactive" title="Kamera orqali Qo'l Harakatlari Boshqaruvi (AI Vision)">
-                <span id="gesture-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v5"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v7"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.83L7 15"/></svg></span> <span id="gesture-toggle-text">Qo'l Boshqaruvi</span>
-            </button>
-            <button id="overview-btn" class="header-link" title="Butun Quyosh Tizimi / Solar Overview">
-                <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(-25 12 12)"/></svg></span> <span id="overview-btn-text">Umumiy Ko'rinish</span>
-            </button>
-            <button id="tour-toggle-btn" class="header-link highlight-tour" title="Kinematik Avto-Sayohat / Cinematic Autopilot Tour">
-                <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="6 4 19 12 6 20 6 4"/></svg></span> <span id="tour-toggle-text">Avto-Sayohat</span>
-            </button>
-            <a id="resume-download-btn" class="header-link highlight-resume" href="assets/Azimjon_Kamiljanov_Resume.pdf" download="Azimjon_Kamiljanov_Resume.pdf" title="Azimjon Kamiljanov • PDF Rezyume / CV">
-                <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg></span> <span id="resume-download-text">CV Yuklab Olish</span>
-            </a>
-            <button id="orbit-toggle-btn" class="header-link" title="Orbita Harakatini To'xtatish yoki Davom Ettirish">
-                <span id="orbit-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><rect x="6" y="4" width="3.5" height="16" rx="1"/><rect x="14.5" y="4" width="3.5" height="16" rx="1"/></svg></span> <span id="orbit-toggle-text">Orbita: Harakatda</span>
-            </button>
-            <button id="warp-speed-btn" class="header-link" title="Vaqt Oqimi Tezligi (1x / 5x / 20x)">
-                <span id="warp-speed-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> <span id="warp-speed-text">Vaqt: 1x</span>
-            </button>
-            <button id="orbits-toggle-btn" class="header-link" title="Orbita Chiziqlarini Yoqish yoki O'chirish (O)">
-                <span id="orbits-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="3"/></svg></span> <span id="orbits-toggle-text">Orbitalar: Yoniq</span>
-            </button>
-            <button id="constellations-toggle-btn" class="header-link" title="Yulduz Turkumlari (C) / Constellations Grid">
-                <span id="constellations-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span> <span id="constellations-toggle-text">Turkumlar: Yoniq</span>
-            </button>
-            <button id="scale-compare-btn" class="header-link" title="Hajmlar Taqqoslashi Rejimi / Scale Comparison Mode">
-                <span id="scale-compare-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h10M4 18h6"/></svg></span> <span id="scale-compare-text">Hajmlar Taqqoslashi</span>
-            </button>
-            <button id="surface-view-btn" class="header-link" title="Yuzadan Qarash Rejimi (Earthrise / Mars) / Surface View Mode">
-                <span id="surface-view-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg></span> <span id="surface-view-text">Yuzadan Qarash</span>
-            </button>
-            <button id="skyview-toggle-btn" class="header-link" title="Mobil Planetariy / Sky View Gyroscope">
-                <span id="skyview-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> <span id="skyview-toggle-text">Sky View</span>
-            </button>
-            <button id="cinematic-toggle-btn" class="header-link" title="Toza Koinot Rejimi (H) / Pure Space Cinematic Mode">
-                <span id="cinematic-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></span> <span id="cinematic-toggle-text">Toza Fazo</span>
-            </button>
-            <button id="audio-toggle-btn" class="header-link audio-muted" title="Kosmik Ovozni Yoqish yoki O'chirish">
-                <span id="audio-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg></span> <span id="audio-toggle-text">Ovoz: O'chiq</span>
-            </button>
-            <button id="catalog-btn" class="header-link highlight-link" title="Barcha Loyihalar Ro'yxati">
-                <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></span> <span id="catalog-btn-text">Loyihalar</span>
-            </button>
-            <button id="guide-toggle-btn" class="header-link" title="Foydalanish Bo'yicha Ko'rsatma / Guide">
-                <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> <span id="guide-toggle-text">Ko'rsatma</span>
-            </button>
-            <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="header-link" title="GitHub Profil">
-                <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></span> GitHub
-            </a>
-            <a href="https://t.me/KamiljanovAzimjon" target="_blank" rel="noopener noreferrer" class="header-link telegram-badge" title="Telegram Aloqa">
-                <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.28c-.15.65-.53.81-1.08.51l-2.99-2.2-1.44 1.39c-.16.16-.3.3-.61.3l.21-3.04 5.54-5.01c.24-.22-.05-.34-.38-.12L7.98 13.52l-2.94-.92c-.64-.2-.65-.64.13-.95l11.49-4.43c.53-.2 1 .12.9 1.04z"/></svg></span> Telegram
-            </a>
+            <div class="telemetry-buttons-track">
+                <button id="overview-btn" class="header-link" title="Butun Quyosh Tizimi / Solar Overview">
+                    <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(-25 12 12)"/></svg></span> <span id="overview-btn-text">Umumiy Ko'rinish</span>
+                </button>
+                <button id="orbit-toggle-btn" class="header-link" title="Orbita Harakatini To'xtatish yoki Davom Ettirish">
+                    <span id="orbit-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><rect x="6" y="4" width="3.5" height="16" rx="1"/><rect x="14.5" y="4" width="3.5" height="16" rx="1"/></svg></span> <span id="orbit-toggle-text">Orbita: Harakatda</span>
+                </button>
+                <button id="warp-speed-btn" class="header-link" title="Vaqt Oqimi Tezligi (1x / 5x / 20x)">
+                    <span id="warp-speed-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> <span id="warp-speed-text">Vaqt: 1x</span>
+                </button>
+                <button id="orbits-toggle-btn" class="header-link" title="Orbita Chiziqlarini Yoqish yoki O'chirish (O)">
+                    <span id="orbits-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="3"/></svg></span> <span id="orbits-toggle-text">Orbitalar: Yoniq</span>
+                </button>
+                <button id="constellations-toggle-btn" class="header-link" title="Yulduz Turkumlari (C) / Constellations Grid">
+                    <span id="constellations-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span> <span id="constellations-toggle-text">Turkumlar: Yoniq</span>
+                </button>
+                <button id="scale-compare-btn" class="header-link" title="Hajmlar Taqqoslashi Rejimi / Scale Comparison Mode">
+                    <span id="scale-compare-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h10M4 18h6"/></svg></span> <span id="scale-compare-text">Hajmlar Taqqoslashi</span>
+                </button>
+                <button id="surface-view-btn" class="header-link" title="Yuzadan Qarash Rejimi (Earthrise / Mars) / Surface View Mode">
+                    <span id="surface-view-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg></span> <span id="surface-view-text">Yuzadan Qarash</span>
+                </button>
+                <button id="skyview-toggle-btn" class="header-link" title="Mobil Planetariy / Sky View Gyroscope">
+                    <span id="skyview-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> <span id="skyview-toggle-text">Sky View</span>
+                </button>
+            </div>
         </div>
     </header>
 
