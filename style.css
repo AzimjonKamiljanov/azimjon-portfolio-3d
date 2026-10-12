@@ -98,16 +98,11 @@ body, html {
 .brand-actions {
     display: flex;
     align-items: center;
-    gap: 5px;
+    justify-content: flex-end;
+    gap: 4px;
     pointer-events: auto;
-    max-width: calc(100% - 320px);
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-}
-
-.brand-actions::-webkit-scrollbar {
-    display: none;
+    flex-wrap: wrap;
+    max-width: calc(100% - 240px);
 }
 
 /* Liquid Glass Capsule: Language Switcher */
@@ -154,7 +149,7 @@ body, html {
 .header-link {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 4.5px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.015) 50%, rgba(255, 255, 255, 0.04) 100%), rgba(8, 10, 16, 0.68);
     backdrop-filter: blur(28px) saturate(180%) contrast(102%);
     -webkit-backdrop-filter: blur(28px) saturate(180%) contrast(102%);
@@ -162,10 +157,10 @@ body, html {
     box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.45), 0 12px 30px rgba(0, 0, 0, 0.7);
     color: #c4c4cc;
     text-decoration: none;
-    padding: 5px 9px;
-    border-radius: 10px;
+    padding: 4px 7.5px;
+    border-radius: 9px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 500;
     cursor: pointer;
     white-space: nowrap;
@@ -2439,6 +2434,13 @@ body, html {
         align-items: center;
         gap: 3px;
         flex-shrink: 0;
+        max-width: calc(100vw - 105px);
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    .brand-actions::-webkit-scrollbar {
+        display: none;
     }
     .lang-switch-container {
         padding: 2px 2px;
@@ -2664,6 +2666,15 @@ body, html {
         width: 100%;
         text-align: center;
     }
+    .surface-view-bar {
+        bottom: 68px;
+        padding: 5px 10px;
+        gap: 6px;
+    }
+    .surface-bar-btn {
+        padding: 5px 9px;
+        font-size: 10px;
+    }
 }
 
 /* ==============================================================================
@@ -2691,12 +2702,13 @@ body, html {
 }
 
 /* Pure Space / Cinematic Mode */
-body.cinematic-active #main-header,
+body.cinematic-active #brand-header,
 body.cinematic-active #nav-container,
 body.cinematic-active #control-hints,
 body.cinematic-active #gesture-hud,
 body.cinematic-active #tour-hud,
-body.cinematic-active #guide-modal-container {
+body.cinematic-active #guide-modal-container,
+body.cinematic-active .surface-view-bar {
     opacity: 0 !important;
     pointer-events: none !important;
     transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2746,7 +2758,7 @@ body.cinematic-active #guide-modal-container {
 /* Surface View Floating HUD Bar */
 .surface-view-bar {
     position: fixed;
-    bottom: 24px;
+    bottom: 84px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 99999;

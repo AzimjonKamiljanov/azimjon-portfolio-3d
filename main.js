@@ -776,6 +776,62 @@ function createScaleLabelSprite(name, diameterKm, colorHex = '#38bdf8') {
     return sprite;
 }
 
+function updateScaleLabelSprite(sprite, name, diameterKm, colorHex = '#38bdf8') {
+    if (!sprite || !sprite.material || !sprite.material.map) return;
+    const canvas = sprite.material.map.image;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const r = 24, x = 16, y = 14, w = 352, h = 82;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(10, 14, 24, 0.90)';
+    ctx.fill();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = colorHex;
+    ctx.stroke();
+    ctx.font = 'bold 24px "Space Grotesk", sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText(name, canvas.width / 2, 45);
+    ctx.font = '600 20px "JetBrains Mono", monospace';
+    ctx.fillStyle = colorHex;
+    ctx.fillText(`⌀ ${diameterKm}`, canvas.width / 2, 74);
+    sprite.material.map.needsUpdate = true;
+}
+
+function updateLabelSprite(sprite, text, icon, colorHex = '#38bdf8') {
+    if (!sprite || !sprite.material || !sprite.material.map) return;
+    const canvas = sprite.material.map.image;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const r = 24, x = 16, y = 16, w = 352, h = 64;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(8, 10, 18, 0.82)';
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = colorHex;
+    ctx.stroke();
+    ctx.font = 'bold 27px "Space Grotesk", sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`${icon} ${text}`, canvas.width / 2, canvas.height / 2);
+    sprite.material.map.needsUpdate = true;
+}
+
 const sunScaleLabel = createScaleLabelSprite('Quyosh', '1,392,700 km', '#ffaa00');
 sunScaleLabel.position.y = 10.5;
 sun.add(sunScaleLabel);
@@ -1148,6 +1204,9 @@ Antigravity va terminal orqali Google Cloud VM'larida murakkab dasturlash vazifa
 
 let saturnGlobeMesh = null;
 let moonMeshRef = null;
+let moonOrbitCenterRef = null;
+let jupiterMoonsCenterRef = null;
+let saturnMoonsCenterRef = null;
 const earthEclipseUniforms = {
     uMoonWorldPos: { value: new THREE.Vector3(9999, 9999, 9999) },
     uEclipseRadius: { value: 0.65 }
@@ -1390,6 +1449,7 @@ planetsData.forEach(data => {
     if (data.hasMoon) {
         const moonOrbitCenter = new THREE.Group();
         moonOrbitCenter.position.x = data.distance;
+        moonOrbitCenterRef = moonOrbitCenter;
         orbitGroup.add(moonOrbitCenter);
         
         const moonOrbit = new THREE.Group();
@@ -1440,6 +1500,7 @@ Joylashuv: Toshkent, O'zbekiston`,
     if (data.id === 'Jupiter') {
         const jupiterMoonsCenter = new THREE.Group();
         jupiterMoonsCenter.position.x = data.distance;
+        jupiterMoonsCenterRef = jupiterMoonsCenter;
         orbitGroup.add(jupiterMoonsCenter);
 
         const jMoonsConfig = [
@@ -1486,6 +1547,7 @@ Joylashuv: Toshkent, O'zbekiston`,
     if (data.id === 'Saturn') {
         const saturnMoonsCenter = new THREE.Group();
         saturnMoonsCenter.position.x = data.distance;
+        saturnMoonsCenterRef = saturnMoonsCenter;
         orbitGroup.add(saturnMoonsCenter);
 
         const sMoonsConfig = [
@@ -2994,6 +3056,9 @@ function toggleScaleComparison(forceState) {
         if (typeof cometGroup !== 'undefined' && cometGroup) cometGroup.visible = false;
         if (typeof voyagerGroup !== 'undefined' && voyagerGroup) voyagerGroup.visible = false;
         if (typeof blackHoleGroup !== 'undefined' && blackHoleGroup) blackHoleGroup.visible = false;
+        if (moonOrbitCenterRef) moonOrbitCenterRef.visible = false;
+        if (jupiterMoonsCenterRef) jupiterMoonsCenterRef.visible = false;
+        if (saturnMoonsCenterRef) saturnMoonsCenterRef.visible = false;
 
         const scaleLayout = [
             { id: 'sun', x: -52 },
@@ -3053,6 +3118,9 @@ function toggleScaleComparison(forceState) {
         if (typeof cometGroup !== 'undefined' && cometGroup) cometGroup.visible = true;
         if (typeof voyagerGroup !== 'undefined' && voyagerGroup) voyagerGroup.visible = true;
         if (typeof blackHoleGroup !== 'undefined' && blackHoleGroup) blackHoleGroup.visible = true;
+        if (moonOrbitCenterRef) moonOrbitCenterRef.visible = true;
+        if (jupiterMoonsCenterRef) jupiterMoonsCenterRef.visible = true;
+        if (saturnMoonsCenterRef) saturnMoonsCenterRef.visible = true;
 
         resetView();
     }
@@ -3090,6 +3158,7 @@ function setSurfaceView(mode) {
         }
         currentSurfaceMode = mode;
         if (isScaleModeActive) toggleScaleComparison(false);
+        if (isSkyViewActive) toggleSkyView(false);
         if (isTourActive) exitTour(false);
         hideInfo();
         currentTarget = null;
@@ -3202,15 +3271,26 @@ function toggleSkyView(forceState) {
     playUiClick();
 
     if (isSkyViewActive) {
+        if (currentSurfaceMode) setSurfaceView(null);
+        if (isScaleModeActive) toggleScaleComparison(false);
+        if (isTourActive) exitTour(false);
+        if (currentTarget) hideInfo();
+        currentTarget = null;
+
         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-            DeviceOrientationEvent.requestPermission().catch(() => {});
+            DeviceOrientationEvent.requestPermission().then(state => {
+                if (state === 'granted') {
+                    window.addEventListener('deviceorientation', onDeviceOrientation, true);
+                }
+            }).catch(() => {});
+        } else {
+            window.addEventListener('deviceorientation', onDeviceOrientation, true);
         }
 
         skyViewSavedPos.copy(camera.position);
         controls.enabled = false;
         camera.position.set(0, 2, 0);
 
-        window.addEventListener('deviceorientation', onDeviceOrientation, true);
         if (skyviewExitBanner) skyviewExitBanner.classList.remove('hidden');
         if (skyViewToggleBtn) skyViewToggleBtn.classList.add('active');
     } else {
@@ -4229,6 +4309,34 @@ function setLanguage(lang) {
         const startText = document.getElementById('guide-start-text');
         if (startText) startText.innerText = uiTexts.guide.startBtn;
     }
+
+    // 10. Update Constellations Labels
+    if (typeof constellationsGroup !== 'undefined' && constellationsGroup) {
+        constellationsGroup.children.forEach(child => {
+            if (child.isSprite && child.userData?.constellationNameKey) {
+                const cKey = child.userData.constellationNameKey;
+                const locName = uiTexts.constellations?.[cKey] || child.userData.constellationNameKey.toUpperCase();
+                updateLabelSprite(child, locName, '✦', '#38bdf8');
+            }
+        });
+    }
+
+    // 11. Update Sun and Planets Scale Comparison Labels
+    if (typeof sun !== 'undefined' && sun && sun.userData && sun.userData.scaleLabel) {
+        const sunName = uiTexts.scaleSun || uiTexts.nav?.sun || 'Quyosh';
+        updateScaleLabelSprite(sun.userData.scaleLabel, sunName, '1,392,700 km', '#ffaa00');
+    }
+    if (typeof planets !== 'undefined' && planets) {
+        planets.forEach(p => {
+            if (p.mesh && p.mesh.userData && p.mesh.userData.scaleLabel && p.mesh.userData.isPlanet) {
+                const pId = p.mesh.userData.id;
+                const pData = planetsData.find(d => d.id === pId);
+                const locName = uiTexts.nav?.[pId.toLowerCase()] || uiTexts.nav?.[pId] || p.mesh.userData.name || pId;
+                const colHex = '#' + (pData && pData.color ? pData.color.toString(16).padStart(6, '0') : '38bdf8');
+                updateScaleLabelSprite(p.mesh.userData.scaleLabel, locName, pData?.diameterKm || '12,000 km', colHex);
+            }
+        });
+    }
 }
 
 // Language switch buttons click listener
@@ -4978,6 +5086,9 @@ window.addEventListener('keydown', (e) => {
 
 function focusOnObject(object, isTourCall = false) {
     if (!object || !object.userData || !object.userData.title) return;
+    if (typeof currentSurfaceMode !== 'undefined' && currentSurfaceMode) setSurfaceView(null);
+    if (typeof isSkyViewActive !== 'undefined' && isSkyViewActive) toggleSkyView(false);
+    if (typeof isScaleModeActive !== 'undefined' && isScaleModeActive) toggleScaleComparison(false);
     if (!isTourCall && isTourActive) {
         exitTour(false);
     }
@@ -5064,6 +5175,9 @@ function focusOnObject(object, isTourCall = false) {
 }
 
 function resetView() {
+    if (typeof currentSurfaceMode !== 'undefined' && currentSurfaceMode) setSurfaceView(null);
+    if (typeof isSkyViewActive !== 'undefined' && isSkyViewActive) toggleSkyView(false);
+    if (typeof isScaleModeActive !== 'undefined' && isScaleModeActive) toggleScaleComparison(false);
     if (isTourActive) {
         isTourActive = false;
         isTourPaused = false;
@@ -5866,7 +5980,7 @@ function animate() {
         milkyWayUniforms.uTime.value = clockTime;
     }
 
-    const shouldRotate = !currentTarget && !isOrbitPaused && currentGesture !== 'fist';
+    const shouldRotate = !currentTarget && !isOrbitPaused && currentGesture !== 'fist' && !isScaleModeActive;
     const effectiveSpeed = shouldRotate ? orbitSpeedMultiplier : 0.2;
     
     planets.forEach(p => {
@@ -5911,7 +6025,7 @@ function animate() {
         accretionMat.uniforms.uTime.value = clockTime;
     }
     if (typeof lensingMesh !== 'undefined' && lensingMesh) {
-        lensingMesh.quaternion.copy(camera.quaternion);
+        lensingMesh.lookAt(camera.position);
     }
 
     // Perseid Meteor Shower: Real-time shooting stars update
@@ -5969,7 +6083,9 @@ function animate() {
         coronaUniforms.uTime.value = clockTime;
     }
 
-    controls.update();
+    if (!isSkyViewActive) {
+        controls.update();
+    }
     composer.render();
 }
 

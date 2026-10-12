@@ -166,7 +166,14 @@ export const translations = {
                 comet: "Kometa",
                 blackHole: "Qora O'ra",
                 stars: "Yulduzlar"
-            }
+            },
+            constellations: {
+                orion: "ORION",
+                ursa_major: "KATTA AYIQ",
+                cassiopeia: "KASSIOPEYA",
+                sagittarius: "QAVS"
+            },
+            scaleSun: "Quyosh"
         },
         en: {
             brandTitle: "AZIMJON KAMILJANOV",
@@ -327,7 +334,14 @@ export const translations = {
                 comet: "Comet",
                 blackHole: "Black Hole",
                 stars: "Stars"
-            }
+            },
+            constellations: {
+                orion: "ORION",
+                ursa_major: "URSA MAJOR",
+                cassiopeia: "CASSIOPEIA",
+                sagittarius: "SAGITTARIUS"
+            },
+            scaleSun: "Sun"
         },
         ru: {
             brandTitle: "AZIMJON KAMILJANOV",
@@ -488,7 +502,14 @@ export const translations = {
                 comet: "Комета",
                 blackHole: "Черная Дыра",
                 stars: "Звезды"
-            }
+            },
+            constellations: {
+                orion: "ОРИОН",
+                ursa_major: "БОЛЬШАЯ МЕДВЕДИЦА",
+                cassiopeia: "КАССИОПЕЯ",
+                sagittarius: "СТРЕЛЕЦ"
+            },
+            scaleSun: "Солнце"
         }
     },
 
