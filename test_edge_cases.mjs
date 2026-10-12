@@ -69,10 +69,17 @@ async function run() {
         await send('Page.navigate', { url: 'http://127.0.0.1:8080/' });
 
         console.log("1. Dvigatel yuklanishi kutilmoqda...");
-        for (let i = 0; i < 20; i++) {
+        let isEngineReady = false;
+        for (let i = 0; i < 35; i++) {
             await sleep(500);
             const val = await evalExpr(`typeof window.__feedGestureLandmarks === 'function'`);
-            if (val) break;
+            if (val) {
+                isEngineReady = true;
+                break;
+            }
+        }
+        if (!isEngineReady) {
+            throw new Error("Timeout waiting for window.__feedGestureLandmarks to initialize!");
         }
 
         console.log("\n2. TEST: Natural Pinch with curled fingers into palm...");

@@ -5380,6 +5380,7 @@ window.addEventListener('resize', () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, curMaxDPR));
     renderer.setSize(window.innerWidth, window.innerHeight);
     composer.setSize(window.innerWidth, window.innerHeight);
+    bloomPass.setSize(Math.floor(window.innerWidth * 0.5), Math.floor(window.innerHeight * 0.5));
 });
 
 // Cinematic Initial Dive
@@ -5489,9 +5490,9 @@ function drawGestureCanvas(lm, gestureName) {
         ctx.fillStyle = 'rgba(2, 8, 20, 0.52)';
         ctx.fillRect(0, 0, w, h);
     } else {
-        ctx.fillStyle = '#050a14';
+        ctx.fillStyle = '#090a10';
         ctx.fillRect(0, 0, w, h);
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.12)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
         ctx.lineWidth = 1;
         for (let x = 0; x < w; x += 18) {
             ctx.beginPath();
@@ -5518,16 +5519,16 @@ function drawGestureCanvas(lm, gestureName) {
         [5, 9], [9, 13], [13, 17]
     ];
 
-    let strokeColor = '#00f0ff';
-    if (gestureName === 'pinch') strokeColor = '#ffd700';
-    else if (gestureName === 'fist') strokeColor = '#ff6b4a';
-    else if (gestureName === 'pointing') strokeColor = '#00ffaa';
+    let strokeColor = 'rgba(255, 255, 255, 0.4)';
+    if (gestureName === 'pinch') strokeColor = '#f4f4f5';
+    else if (gestureName === 'fist') strokeColor = '#fca5a5';
+    else if (gestureName === 'pointing') strokeColor = '#e4e4e7';
 
     ctx.save();
-    ctx.lineWidth = 2.2;
+    ctx.lineWidth = 1.2;
     ctx.strokeStyle = strokeColor;
-    ctx.shadowColor = strokeColor;
-    ctx.shadowBlur = 6;
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.2)';
+    ctx.shadowBlur = 2;
 
     for (const [i, j] of CONNECTIONS) {
         const p1 = lm[i];
@@ -5549,11 +5550,11 @@ function drawGestureCanvas(lm, gestureName) {
 
         ctx.beginPath();
         if (isTip) {
-            ctx.fillStyle = (i === 8 && (gestureName === 'pointing' || gestureName === 'pinch')) ? '#00ffaa' : '#ffffff';
-            ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+            ctx.fillStyle = (i === 8 && (gestureName === 'pointing' || gestureName === 'pinch')) ? '#ffffff' : 'rgba(255, 255, 255, 0.85)';
+            ctx.arc(px, py, 2.0, 0, Math.PI * 2);
         } else {
             ctx.fillStyle = strokeColor;
-            ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+            ctx.arc(px, py, 1.4, 0, Math.PI * 2);
         }
         ctx.fill();
     }

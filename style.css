@@ -67,8 +67,8 @@ body, html {
 }
 
 @keyframes pulseGlow {
-    0%, 100% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.25); opacity: 1; filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8)); }
+    0%, 100% { transform: scale(0.92); opacity: 0.7; }
+    50% { transform: scale(1.15); opacity: 1; }
 }
 
 .brand-title {
@@ -501,8 +501,8 @@ body, html {
 }
 
 @keyframes telemetryPulse {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.25); opacity: 1; box-shadow: 0 0 8px rgba(255, 255, 255, 0.9); }
+    0%, 100% { transform: scale(0.9); opacity: 0.55; }
+    50% { transform: scale(1.2); opacity: 1; }
 }
 
 .telemetry-buttons-track {
@@ -1000,8 +1000,8 @@ body, html {
 }
 
 @keyframes tourDotPulse {
-    0%, 100% { transform: scale(1); opacity: 0.7; }
-    50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 14px rgba(255, 255, 255, 0.95); }
+    0%, 100% { transform: scale(0.9); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 1; }
 }
 
 .tour-badge {
@@ -1218,8 +1218,8 @@ body, html {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #ffb300;
-    box-shadow: 0 0 8px #ffb300;
+    background: #fbbf24;
+    box-shadow: 0 0 6px rgba(251, 191, 36, 0.4);
     transition: all 0.3s ease;
 }
 
@@ -1230,8 +1230,8 @@ body, html {
 }
 
 .gesture-live-dot.status-error {
-    background: #ff3366;
-    box-shadow: 0 0 8px #ff3366;
+    background: #f87171;
+    box-shadow: 0 0 6px rgba(248, 113, 113, 0.4);
 }
 
 @keyframes gesture-pulse {
@@ -1244,7 +1244,7 @@ body, html {
     font-size: 8.5px;
     font-weight: 700;
     letter-spacing: 0.6px;
-    color: #e0f7fa;
+    color: #f4f4f5;
 }
 
 .gesture-close-btn {
@@ -1272,10 +1272,10 @@ body, html {
     position: relative;
     width: 100%;
     height: 125px;
-    background: rgba(2, 6, 14, 0.92);
+    background: rgba(14, 16, 22, 0.95);
     border-radius: 12px;
     overflow: hidden;
-    border: 1px solid rgba(0, 240, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1291,7 +1291,7 @@ body, html {
 .gesture-overlay-scanline {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, transparent 50%, rgba(0, 240, 255, 0.04) 51%);
+    background: linear-gradient(to bottom, transparent 50%, rgba(255, 255, 255, 0.02) 51%);
     background-size: 100% 4px;
     pointer-events: none;
 }
@@ -1351,9 +1351,9 @@ body, html {
 .reticle-ring {
     position: absolute;
     inset: 4px;
-    border: 1.5px solid rgba(0, 240, 255, 0.7);
+    border: 1.2px solid rgba(255, 255, 255, 0.45);
     border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
     transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
@@ -1421,8 +1421,8 @@ body, html {
 }
 
 .gesture-reticle.reticle-pinching .reticle-ring {
-    border-color: #ffd700;
-    box-shadow: 0 0 20px #ffd700;
+    border-color: #ffffff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
     transform: scale(0.68);
 }
 

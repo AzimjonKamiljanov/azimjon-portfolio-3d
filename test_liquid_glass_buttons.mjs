@@ -67,10 +67,17 @@ async function run() {
         await send('Page.enable');
 
         // Wait for ready
-        for (let i = 0; i < 20; i++) {
-            const ready = await evalExpr(`Boolean(window.__interactableObjects && window.__interactableObjects.length > 0)`);
-            if (ready) break;
-            await sleep(300);
+        let isEngineReady = false;
+        for (let i = 0; i < 35; i++) {
+            const ready = await evalExpr(`Boolean(window.__interactableObjects && window.__interactableObjects.length > 0 && document.querySelector('.brand-title'))`);
+            if (ready) {
+                isEngineReady = true;
+                break;
+            }
+            await sleep(400);
+        }
+        if (!isEngineReady) {
+            throw new Error("Timeout waiting for 3D Engine & DOM elements to initialize!");
         }
 
         console.log("✓ 3D Engine initialized with 0 startup exceptions.");
