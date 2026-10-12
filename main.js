@@ -2242,72 +2242,21 @@ function renderMoonTerminal() {
             const timeoutId = setTimeout(() => abortController.abort(), 15000);
 
             try {
-                // Smart auto-detection of contact type
                 const cleanContact = contact.trim();
-                let detectedType = currentContactType;
-                if (cleanContact.includes('@') && !cleanContact.startsWith('@')) {
-                    detectedType = 'email';
-                } else if (/^\+?\d[\d\s\-\(\)]{6,}$/.test(cleanContact)) {
-                    detectedType = 'phone';
-                } else if (cleanContact.startsWith('@')) {
-                    detectedType = 'tg';
-                }
-
-                const typeLabels = {
-                    tg: 'Telegram (@username)',
-                    email: 'Email Manzil',
-                    phone: 'Telefon Raqam'
-                };
-                const currentTypeLabel = typeLabels[detectedType] || typeLabels[currentContactType] || 'Aloqa Manzili';
-
-                const tgText = `🌌 <b>YANGI MUROJAAT (3D Portfolio Moon Terminal)</b>\n\n` +
-                    `👤 <b>F.I.SH / Ismi:</b> ${escapeTgHtml(name)}\n` +
-                    `📡 <b>Aloqa Turi:</b> ${escapeTgHtml(currentTypeLabel)}\n` +
-                    `📱 <b>Aloqa Manzili:</b> ${escapeTgHtml(cleanContact)}\n` +
-                    `📝 <b>Xabar Matni:</b>\n${escapeTgHtml(msg)}\n\n` +
-                    `⏱ <b>Vaqt:</b> ${new Date().toLocaleString()}\n` +
-                    `🌐 <b>Til:</b> ${currentLang.toUpperCase()}`;
-
-                const inlineButtons = [];
-                if (detectedType === 'tg') {
-                    const uname = cleanContact.replace(/^@/, '');
-                    inlineButtons.push([
-                        { text: "Telegramda Bog'lanish", url: `https://t.me/${uname}` },
-                        { text: "⚡ Javob Qaytarish (Bot)", callback_data: `reply_lead_tg_${uname.slice(0, 35)}` }
-                    ]);
-                } else if (detectedType === 'email') {
-                    // Telegram Bot API only allows HTTP/HTTPS or tg:// in button URLs (mailto causes BUTTON_URL_INVALID)
-                    const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(cleanContact)}&su=${encodeURIComponent("Azimjon Kamiljanovdan javob")}`;
-                    inlineButtons.push([
-                        { text: "📧 Gmail orqali yozish", url: gmailComposeUrl },
-                        { text: "⚡ Javob Qaytarish (Bot)", callback_data: `reply_lead_email_${cleanContact.slice(0, 35)}` }
-                    ]);
-                } else {
-                    const phoneNum = cleanContact.replace(/[^+\d]/g, '');
-                    inlineButtons.push([
-                        { text: "📞 Javob Qaytarish (Bot)", callback_data: `reply_lead_phone_${phoneNum.slice(0, 35)}` }
-                    ]);
-                }
-                inlineButtons.push([
-                    { text: "📞 Favqulodda Qo'ng'iroq (@CyberAgentNexus)", url: "https://t.me/CyberAgentNexus" }
-                ]);
-
-                const response = await fetch('https://api.telegram.org/bot8271458811:AAGlJ04RXOMKnDRbQGkrGVek0jeIFDFmjwg/sendMessage', {
+                const response = await fetch('/api/contact', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json; charset=utf-8' },
                     body: JSON.stringify({
-                        chat_id: 8048940366,
-                        text: tgText,
-                        parse_mode: 'HTML',
-                        reply_markup: {
-                            inline_keyboard: inlineButtons
-                        }
+                        name: name,
+                        contact: cleanContact,
+                        message: msg,
+                        lang: currentLang
                     }),
                     signal: abortController.signal
                 });
 
                 const resData = await response.json();
-                if (resData.ok) {
+                if (response.ok && resData.ok) {
                     playUiSuccess();
                     if (feedback) {
                         feedback.className = 'terminal-feedback success';
@@ -2317,7 +2266,7 @@ function renderMoonTerminal() {
                     container.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('active'));
                     updateCharCount(0);
                 } else {
-                    throw new Error(resData.description || 'Telegram API Error');
+                    throw new Error(resData.error || resData.description || 'API Error');
                 }
             } catch (err) {
                 playUiError();
@@ -3995,7 +3944,7 @@ function initHandsInstance() {
     if (!handsInstance && window.Hands) {
         try {
             handsInstance = new window.Hands({
-                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`
             });
             handsInstance.setOptions({
                 maxNumHands: 1,
