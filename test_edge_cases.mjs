@@ -12,6 +12,8 @@ const chrome = spawn('google-chrome-stable', [
     '--disable-gpu-sandbox',
     '--disable-setuid-sandbox',
     '--disable-dev-shm-usage',
+    '--use-gl=angle',
+    '--use-angle=swiftshader',
     `--remote-debugging-port=${port}`,
     `--user-data-dir=${userDataDir}`,
     'about:blank'

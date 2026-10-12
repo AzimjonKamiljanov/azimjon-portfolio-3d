@@ -214,10 +214,11 @@ const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerH
 // Elevated overview camera showing ALL 9 PLANETS immediately
 camera.position.set(0, 165, 195);
 
-// Setup Renderer
+// Setup Renderer with luxury calibrated DPR cap (prevents 4x pixel blowup on mobile & 4K screens)
+const maxDPR = window.innerWidth < 768 ? 1.25 : 1.35;
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxDPR));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 document.getElementById('canvas-container').appendChild(renderer.domElement);
@@ -226,6 +227,7 @@ document.getElementById('canvas-container').appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
+controls.rotateSpeed = 0.8;
 controls.maxDistance = 550;
 controls.minDistance = 15;
 controls.enablePan = false;
@@ -244,17 +246,17 @@ scene.add(sunLight);
 const hemiLight = new THREE.HemisphereLight(0x223344, 0x050510, 0.25);
 scene.add(hemiLight);
 
-// Post-processing (Balanced Bloom: Stars & Sun twinkle and glow tastefully without blinding)
+// Post-processing (Ultra-lightweight selective bloom: tight radius & half-res buffer so only emissive sun/plasma cores glow, zero screen-wide washing)
 const renderScene = new RenderPass(scene, camera);
 const bloomPass = new UnrealBloomPass(
-    new THREE.Vector2(window.innerWidth, window.innerHeight),
-    0.30,
-    0.30,
-    0.95
+    new THREE.Vector2(Math.floor(window.innerWidth * 0.5), Math.floor(window.innerHeight * 0.5)),
+    0.22,
+    0.20,
+    1.18
 );
-bloomPass.threshold = 1.15; // Realistic threshold: preserves rich solar surface contrast and colors without washing out
-bloomPass.strength = 0.35;
-bloomPass.radius = 0.35;
+bloomPass.threshold = 1.18; // Only highly energetic solar plasma and stellar cores bloom
+bloomPass.strength = 0.24;
+bloomPass.radius = 0.20;
 
 const outputPass = new OutputPass();
 
@@ -1548,7 +1550,7 @@ Joylashuv: Toshkent, O'zbekiston`,
             }
             const oLine = new THREE.Line(
                 new THREE.BufferGeometry().setFromPoints(orbitPts),
-                new THREE.LineBasicMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.12 })
+                new THREE.LineBasicMaterial({ color: 0x71717a, transparent: true, opacity: 0.06 })
             );
             jupiterMoonsCenter.add(oLine);
 
@@ -1593,7 +1595,7 @@ Joylashuv: Toshkent, O'zbekiston`,
             }
             const oLine = new THREE.Line(
                 new THREE.BufferGeometry().setFromPoints(orbitPts),
-                new THREE.LineBasicMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.12 })
+                new THREE.LineBasicMaterial({ color: 0x71717a, transparent: true, opacity: 0.06 })
             );
             saturnMoonsCenter.add(oLine);
 
@@ -1616,9 +1618,9 @@ planetsData.forEach(data => {
     }
     const orbitGeo = new THREE.BufferGeometry().setFromPoints(orbitPoints);
     const orbitMat = new THREE.LineBasicMaterial({ 
-        color: 0x6688aa, 
+        color: 0x71717a, 
         transparent: true, 
-        opacity: 0.22 
+        opacity: 0.08 
     });
     const orbitLine = new THREE.Line(orbitGeo, orbitMat);
     orbitLinesGroup.add(orbitLine);
@@ -2920,9 +2922,9 @@ constellationDefs.forEach(c => {
     const lineGeo = new THREE.BufferGeometry();
     lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(lineCoords, 3));
     const lineMat = new THREE.LineBasicMaterial({
-        color: 0x38bdf8,
+        color: 0xa1a1aa,
         transparent: true,
-        opacity: 0.38,
+        opacity: 0.18,
         linewidth: 1
     });
     const lineMesh = new THREE.LineSegments(lineGeo, lineMat);
@@ -3522,14 +3524,14 @@ function toggleAudio() {
             ambientMusicAudio.pause();
         }
         if (btn) btn.classList.add('audio-muted');
-        if (icon) icon.innerHTML = '<svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>';
+        if (icon) icon.innerHTML = '<svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>';
         if (text) text.innerText = uiTexts.audioOff;
     } else {
         if (ambientMusicAudio) {
             ambientMusicAudio.play().catch(e => console.log('Ambient music playback deferred:', e));
         }
         if (btn) btn.classList.remove('audio-muted');
-        if (icon) icon.innerHTML = '<svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+        if (icon) icon.innerHTML = '<svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
         if (text) text.innerText = uiTexts.audioOn;
         playUiClick();
     }
@@ -3658,7 +3660,7 @@ function renderMoonTerminal() {
             <p class="terminal-intro">${termTexts.intro}</p>
 
             <div class="terminal-notice-box">
-                <span class="notice-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.8;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+                <span class="notice-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.8;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
                 <p class="notice-text">${escapeHtmlText(termTexts.notice || "Mendan (ya'ni Azimjondan) aniq va tezroq javob olish uchun barcha ma'lumotlarni to'g'ri va to'liq kiriting.")}</p>
             </div>
 
@@ -3670,7 +3672,7 @@ function renderMoonTerminal() {
                 <div class="terminal-field">
                     <label for="terminal-name">${termTexts.nameLabel || "F.I.SH / ISMINGIZ"}</label>
                     <div class="input-glow-wrap">
-                        <span class="input-prefix"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.6;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                        <span class="input-prefix"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.6;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
                         <input type="text" id="terminal-name" placeholder="${escapeHtmlAttr(termTexts.namePlaceholder || "To'liq ismingizni kiriting...")}" maxlength="60" required autocomplete="name" value="${escapeHtmlAttr(prevName)}">
                     </div>
                 </div>
@@ -3697,7 +3699,7 @@ function renderMoonTerminal() {
                 </div>
 
                 <button type="submit" id="terminal-submit-btn" class="terminal-send-btn">
-                    <span class="send-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
+                    <span class="send-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
                     <span id="terminal-send-text">${termTexts.sendBtn}</span>
                 </button>
 
@@ -3715,14 +3717,14 @@ function renderMoonTerminal() {
                         </div>
                     </a>
                     <a href="mailto:azimjonkamiljanov@gmail.com" class="channel-btn channel-email">
-                        <span class="ch-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+                        <span class="ch-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
                         <div class="ch-info">
                             <span class="ch-name">Rasmiy Email</span>
                             <span class="ch-val">azimjonkamiljanov@gmail.com</span>
                         </div>
                     </a>
                     <a href="https://t.me/CyberAgentNexus" target="_blank" rel="noopener noreferrer" class="channel-btn channel-voip">
-                        <span class="ch-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+                        <span class="ch-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
                         <div class="ch-info">
                             <span class="ch-name">${escapeHtmlText(termTexts.voipCallTitle || "Favqulodda Onlayn Qo'ng'iroq")}</span>
                             <span class="ch-val">@CyberAgentNexus (AI & VoIP)</span>
@@ -3873,7 +3875,7 @@ function renderMoonTerminal() {
             isSending = true;
             playUiTransmit();
             if (submitBtn) submitBtn.disabled = true;
-            if (sendIcon) sendIcon.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;" class="spin"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
+            if (sendIcon) sendIcon.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;" class="spin"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
             if (sendText) sendText.innerText = termTexts.sending;
             if (feedback) {
                 feedback.className = 'terminal-feedback sending';
@@ -3922,13 +3924,13 @@ function renderMoonTerminal() {
                     const linkLabel = currentLang === 'en' 
                         ? 'Chat with @KamiljanovAzimjon on Telegram →' 
                         : (currentLang === 'ru' ? 'Написать @KamiljanovAzimjon в Telegram →' : '@KamiljanovAzimjon ga yozish →');
-                    feedback.innerHTML = `${termTexts.errorNetwork} <br><a href="https://t.me/KamiljanovAzimjon" target="_blank" rel="noopener noreferrer" style="color:#00d2ff;text-decoration:underline;margin-top:6px;display:inline-block;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>${linkLabel}</a>`;
+                    feedback.innerHTML = `${termTexts.errorNetwork} <br><a href="https://t.me/KamiljanovAzimjon" target="_blank" rel="noopener noreferrer" style="color:#f4f4f5;text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.3);margin-top:6px;display:inline-block;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.2" style="vertical-align:middle;margin-right:4px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>${linkLabel}</a>`;
                 }
             } finally {
                 clearTimeout(timeoutId);
                 isSending = false;
                 if (submitBtn) submitBtn.disabled = false;
-                if (sendIcon) sendIcon.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+                if (sendIcon) sendIcon.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
                 if (sendText) sendText.innerText = termTexts.sendBtn;
             }
         });
@@ -4489,11 +4491,11 @@ if (orbitToggleBtn) {
         isOrbitPaused = !isOrbitPaused;
         const uiTexts = translations.ui[currentLang] || translations.ui.uz;
         if (isOrbitPaused) {
-            if (orbitToggleIcon) orbitToggleIcon.innerHTML = '<svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>';
+            if (orbitToggleIcon) orbitToggleIcon.innerHTML = '<svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7 4 19 12 7 20 7 4"/></svg>';
             if (orbitToggleText) orbitToggleText.innerText = uiTexts.orbitPaused;
             orbitToggleBtn.classList.add('paused-state');
         } else {
-            if (orbitToggleIcon) orbitToggleIcon.innerHTML = '<svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><rect x="6" y="4" width="3.5" height="16" rx="1"/><rect x="14.5" y="4" width="3.5" height="16" rx="1"/></svg>';
+            if (orbitToggleIcon) orbitToggleIcon.innerHTML = '<svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="3.5" height="16" rx="1"/><rect x="14.5" y="4" width="3.5" height="16" rx="1"/></svg>';
             if (orbitToggleText) orbitToggleText.innerText = uiTexts.orbitActive;
             orbitToggleBtn.classList.remove('paused-state');
         }
@@ -4845,8 +4847,8 @@ function updateTourControlsUI() {
     const tourUi = uiTexts.tour || translations.ui.uz.tour;
     if (tourPlayIcon) {
         tourPlayIcon.innerHTML = isTourPaused 
-            ? '<svg class="btn-svg" viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>'
-            : '<svg class="btn-svg" viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><rect x="6" y="4" width="3.5" height="16" rx="1"/><rect x="14.5" y="4" width="3.5" height="16" rx="1"/></svg>';
+            ? '<svg class="btn-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7 4 19 12 7 20 7 4"/></svg>'
+            : '<svg class="btn-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="3.5" height="16" rx="1"/><rect x="14.5" y="4" width="3.5" height="16" rx="1"/></svg>';
     }
     if (tourPlayLabel) tourPlayLabel.innerText = isTourPaused ? (tourUi.play || "Davom ettirish") : (tourUi.pause || "To'xtatish");
 }
@@ -5374,6 +5376,8 @@ function hideInfo() {
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
+    const curMaxDPR = window.innerWidth < 768 ? 1.25 : 1.35;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, curMaxDPR));
     renderer.setSize(window.innerWidth, window.innerHeight);
     composer.setSize(window.innerWidth, window.innerHeight);
 });
