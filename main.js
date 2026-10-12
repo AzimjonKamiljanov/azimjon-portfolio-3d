@@ -4089,8 +4089,21 @@ function setLanguage(lang) {
             : (uiTexts.gestureBtn || "Qo'l Boshqaruvi");
     }
     const gestureToggleBtn = document.getElementById('gesture-toggle-btn');
-    if (gestureToggleBtn && uiTexts.gestureTitle) {
-        gestureToggleBtn.title = uiTexts.gestureTitle;
+    if (gestureToggleBtn) {
+        if (uiTexts.gestureTitle) gestureToggleBtn.title = uiTexts.gestureTitle;
+        gestureToggleBtn.setAttribute('data-tooltip', uiTexts.gestureBtn || "Qo'l Boshqaruvi");
+    }
+    const audioToggleBtn = document.getElementById('audio-toggle-btn');
+    if (audioToggleBtn) {
+        audioToggleBtn.setAttribute('data-tooltip', isAudioMuted ? uiTexts.audioOff : uiTexts.audioOn);
+    }
+    const cinematicToggleBtn = document.getElementById('cinematic-toggle-btn');
+    if (cinematicToggleBtn) {
+        cinematicToggleBtn.setAttribute('data-tooltip', uiTexts.cinematicBtn || "Toza Fazo");
+    }
+    const guideToggleBtn = document.getElementById('guide-toggle-btn');
+    if (guideToggleBtn) {
+        guideToggleBtn.setAttribute('data-tooltip', uiTexts.guideBtn || "Ko'rsatma");
     }
     const gestureBadgeText = document.getElementById('gesture-badge-text');
     if (gestureBadgeText && uiTexts.gestures?.hudTitle) {

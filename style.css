@@ -260,6 +260,30 @@ body, html {
     box-shadow: 0 0 14px rgba(239, 68, 68, 0.35) !important;
 }
 
+/* Liquid Glass Pressed / Active States with Soft Neon Glows */
+.header-link:active,
+.lang-btn:active,
+.telemetry-island-toggle:active {
+    transform: scale(0.96) !important;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.45), 0 0 16px rgba(56, 189, 248, 0.45) !important;
+    border-color: rgba(56, 189, 248, 0.6) !important;
+}
+
+.header-link.highlight-link:active {
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.45), 0 0 18px rgba(168, 85, 247, 0.55) !important;
+    border-color: rgba(168, 85, 247, 0.7) !important;
+}
+
+.header-link.highlight-tour:active {
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.45), 0 0 18px rgba(245, 158, 11, 0.55) !important;
+    border-color: rgba(245, 158, 11, 0.7) !important;
+}
+
+.header-link.highlight-resume:active {
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.45), 0 0 18px rgba(0, 240, 255, 0.55) !important;
+    border-color: rgba(0, 240, 255, 0.7) !important;
+}
+
 /* 2. Koinot Asboblari / Quick Toggles Pod (Icon Pod) */
 .brand-group-toggles {
     display: inline-flex;
@@ -300,6 +324,43 @@ body, html {
     color: #ffffff;
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 0 12px rgba(255, 255, 255, 0.12);
     transform: none;
+}
+
+.icon-pod-btn:active {
+    transform: scale(0.92) !important;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.5) !important;
+}
+
+/* Floating Glass Micro-Tooltip */
+.icon-pod-btn[data-tooltip]::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 7px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    background: rgba(10, 16, 28, 0.90);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 8px 20px rgba(0, 0, 0, 0.5);
+    color: #e2e8f0;
+    font-size: 9.5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap !important;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+    z-index: 100;
+}
+
+.icon-pod-btn[data-tooltip]:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
 }
 
 .icon-pod-btn.audio-muted {
@@ -2625,24 +2686,47 @@ body, html {
 /* ==============================================================================
    📱 MOBILE RESPONSIVENESS & NO HORIZONTAL OVERFLOW (100% CONTAINMENT)
    ============================================================================== */
-/* Tablet & Small Laptop (1024px - 1280px) Optimization */
+/* Tablet & Small Laptop (769px - 1280px) Optimization */
 @media (min-width: 769px) and (max-width: 1280px) {
     #brand-header {
         top: 14px;
         left: 14px;
         right: 14px;
+        max-width: calc(100vw - 28px);
         gap: 6px;
     }
     .brand-actions {
         gap: 4px;
+        max-width: calc(100% - 220px);
+    }
+    .brand-nav-group {
+        gap: 3px;
     }
     .brand-nav-group .header-link {
         padding: 3.5px 7px;
         font-size: 9.5px;
     }
+    .brand-nav-group .social-text {
+        display: none;
+    }
+    /* Critical fix: Prevent cosmic telemetry island from overflowing 1024px screens */
+    .cosmic-telemetry-island {
+        max-width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        padding: 3px 6px;
+    }
+    .cosmic-telemetry-island::-webkit-scrollbar {
+        display: none;
+    }
+    .telemetry-buttons-track {
+        gap: 3px;
+    }
     .telemetry-buttons-track .header-link {
         padding: 3px 6.5px;
         font-size: 9px;
+        flex-shrink: 0;
     }
 }
 
@@ -2654,23 +2738,31 @@ body, html {
         width: calc(100vw - 20px);
         max-width: calc(100vw - 20px);
         box-sizing: border-box;
+        gap: 6px;
+    }
+    .brand-main-bar {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        width: 100%;
     }
     .brand-left {
-        gap: 5px;
-        flex: 0 1 auto;
-        min-width: 0;
-        max-width: 85px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        max-width: 100%;
     }
     .brand-left > div {
         min-width: 0;
-        overflow: hidden;
+        overflow: visible;
     }
     .brand-title {
-        font-size: 10px;
-        letter-spacing: 0.3px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        white-space: nowrap !important;
+        overflow: visible;
     }
     .brand-subtitle {
         display: none;
@@ -2678,20 +2770,29 @@ body, html {
     .brand-actions {
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 100%;
         gap: 3px;
-        flex-shrink: 0;
-        max-width: calc(100vw - 95px);
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        box-sizing: border-box;
         flex-wrap: nowrap;
+    }
+    .brand-actions::-webkit-scrollbar {
+        display: none;
     }
     .brand-nav-group {
         display: inline-flex;
         align-items: center;
         gap: 2.5px;
-        flex-wrap: nowrap;
+        flex-shrink: 0;
     }
     .lang-switch-container {
         padding: 2px 2px;
         gap: 1px;
+        flex-shrink: 0;
     }
     .lang-btn {
         padding: 2.5px 4.5px;
@@ -2711,6 +2812,7 @@ body, html {
         font-size: 10px;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
     }
     .brand-nav-group #catalog-btn-text,
     .brand-nav-group #resume-download-text,
@@ -2720,14 +2822,20 @@ body, html {
     .brand-group-toggles {
         padding: 2px 2px;
         gap: 1px;
+        flex-shrink: 0;
     }
     .icon-pod-btn {
         width: 25px;
         height: 25px;
+        flex-shrink: 0;
+    }
+    .icon-pod-btn::before {
+        display: none !important;
     }
     .telemetry-island-toggle {
         padding: 3.5px 6px;
         gap: 2px;
+        flex-shrink: 0;
     }
     .telemetry-toggle-label {
         display: none !important;
@@ -2743,7 +2851,7 @@ body, html {
         padding: 3px 5px;
         border-radius: 999px;
         box-sizing: border-box;
-        margin-top: 2px;
+        margin-top: 0;
     }
     .cosmic-telemetry-island::-webkit-scrollbar {
         display: none;
@@ -2766,11 +2874,14 @@ body, html {
         flex-shrink: 0 !important;
         white-space: nowrap !important;
     }
+    /* Hide all text inside telemetry island on mobile for clean uniform icon pills */
     #gesture-toggle-text,
     #overview-btn-text,
     #tour-toggle-text,
     #resume-download-text,
     #orbit-toggle-text,
+    #warp-speed-text,
+    #orbits-toggle-text,
     #audio-toggle-text,
     #constellations-toggle-text,
     #scale-compare-text,
@@ -2778,7 +2889,7 @@ body, html {
     #skyview-toggle-text,
     #catalog-btn-text,
     #guide-toggle-text {
-        display: none;
+        display: none !important;
     }
     .gesture-hud {
         top: 52px;

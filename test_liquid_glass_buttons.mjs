@@ -185,6 +185,46 @@ async function run() {
         console.log("📸 Saved: desktop_liquid_glass_1366.png");
 
         // =========================================================================
+        // TEST 2B: TABLET DISPLAY 1024x768 (0px Overflow & Zero Collision Check)
+        // =========================================================================
+        console.log("\n--- TEST 2B: TABLET DISPLAY (1024x768) ---");
+        await send('Emulation.setDeviceMetricsOverride', { width: 1024, height: 768, deviceScaleFactor: 2, mobile: false });
+        await sleep(400);
+
+        const tabletInspection = await evalExpr(`
+            (() => {
+                const docScrollW = document.documentElement.scrollWidth;
+                const docClientW = document.documentElement.clientWidth;
+                const buttons = Array.from(document.querySelectorAll('#brand-header .header-link'));
+                const broken = [];
+                buttons.forEach(b => {
+                    const r = b.getBoundingClientRect();
+                    if (r.height > 36) broken.push({ id: b.id, height: r.height, text: b.innerText });
+                });
+
+                return {
+                    docScrollW,
+                    docClientW,
+                    hasOverflow: docScrollW > docClientW,
+                    broken
+                };
+            })()
+        `);
+
+        console.log("Tablet 1024x768 inspection:", tabletInspection);
+        if (tabletInspection.hasOverflow) {
+            throw new Error(`FAIL: 1024x768 tablet has horizontal page overflow! scrollWidth: ${tabletInspection.docScrollW} > clientWidth: ${tabletInspection.docClientW}`);
+        }
+        if (tabletInspection.broken.length > 0) {
+            throw new Error("FAIL: 1024x768 buttons broke into 2 lines: " + JSON.stringify(tabletInspection.broken));
+        }
+        console.log("✅ PASS: 1024x768 tablet layout has 0px overflow and single-line buttons!");
+
+        shot = await send('Page.captureScreenshot', { format: 'png' });
+        fs.writeFileSync('tablet_liquid_glass_1024.png', Buffer.from(shot.result.data, 'base64'));
+        console.log("📸 Saved: tablet_liquid_glass_1024.png");
+
+        // =========================================================================
         // TEST 3: MOBILE SMARTPHONE 390x844 (iPhone 14 / Android)
         // =========================================================================
         console.log("\n--- TEST 3: MOBILE SMARTPHONE (390x844) ---");
@@ -216,7 +256,12 @@ async function run() {
                     audioVisible: audioBtn && window.getComputedStyle(audioBtn).display !== 'none',
                     catalogVisible: catalogBtn && window.getComputedStyle(catalogBtn).display !== 'none',
                     tourVisible: tourBtn && window.getComputedStyle(tourBtn).display !== 'none',
-                    islandScrollable: island ? island.scrollWidth >= island.clientWidth : false
+                    islandScrollable: island ? island.scrollWidth >= island.clientWidth : false,
+                    hasCollision: (() => {
+                        const l = document.querySelector(".brand-left");
+                        const a = document.querySelector(".brand-actions");
+                        return !(l.getBoundingClientRect().bottom <= a.getBoundingClientRect().top);
+                    })()
                 };
             })()
         `);
@@ -225,13 +270,16 @@ async function run() {
         if (mobileCheck.hasOverflow) {
             throw new Error(`FAIL: Mobile has horizontal page overflow! scrollWidth: ${mobileCheck.docScrollW} > clientWidth: ${mobileCheck.docClientW}`);
         }
+        if (mobileCheck.hasCollision) {
+            throw new Error("FAIL: Mobile brand-left and brand-actions are colliding or overlapping!");
+        }
         if (!mobileCheck.orbitBtn.exists || mobileCheck.orbitBtn.width <= 0) {
             throw new Error("FAIL: #orbit-toggle-btn is not visible or has zero width on mobile!");
         }
         if (!mobileCheck.audioVisible || !mobileCheck.catalogVisible || !mobileCheck.tourVisible) {
             throw new Error("FAIL: Essential mobile buttons (Audio, Catalog, Tour) are not visible!");
         }
-        console.log("✅ PASS: Mobile 390x844 has 0px overflow and all essential buttons properly placed!");
+        console.log("✅ PASS: Mobile 390x844 has 0px overflow, zero collisions, and all essential buttons properly placed!");
 
         shot = await send('Page.captureScreenshot', { format: 'png' });
         fs.writeFileSync('mobile_liquid_glass_390.png', Buffer.from(shot.result.data, 'base64'));
@@ -248,10 +296,13 @@ async function run() {
             (() => {
                 const docScrollW = document.documentElement.scrollWidth;
                 const docClientW = document.documentElement.clientWidth;
+                const l = document.querySelector(".brand-left");
+                const a = document.querySelector(".brand-actions");
                 return {
                     docScrollW,
                     docClientW,
-                    hasOverflow: docScrollW > docClientW
+                    hasOverflow: docScrollW > docClientW,
+                    hasCollision: !(l.getBoundingClientRect().bottom <= a.getBoundingClientRect().top)
                 };
             })()
         `);
@@ -260,7 +311,10 @@ async function run() {
         if (compactMobileCheck.hasOverflow) {
             throw new Error(`FAIL: Compact mobile 375px has horizontal overflow! scrollW: ${compactMobileCheck.docScrollW} > clientW: ${compactMobileCheck.docClientW}`);
         }
-        console.log("✅ PASS: Compact mobile 375x812 has 0px overflow!");
+        if (compactMobileCheck.hasCollision) {
+            throw new Error("FAIL: Compact mobile 375px brand-left and brand-actions are colliding or overlapping!");
+        }
+        console.log("✅ PASS: Compact mobile 375x812 has 0px overflow and zero collisions!");
 
         shot = await send('Page.captureScreenshot', { format: 'png' });
         fs.writeFileSync('mobile_liquid_glass_375.png', Buffer.from(shot.result.data, 'base64'));
