@@ -8,7 +8,7 @@ import { translations } from './translations.js';
 
 // Setup Scene
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x010106);
+scene.background = new THREE.Color(0x000002);
 
 // ==============================================================================
 // 1-YO'NALISH: PROCEDURAL GLSL MILKY WAY GALAXY & COSMIC NEBULAE SKYDOME
@@ -23,6 +23,7 @@ void main() {
 
 const milkyWayFragmentShader = `
 uniform float uTime;
+uniform float uMode;
 varying vec3 vWorldDir;
 
 float hash3(vec3 p) {
@@ -102,29 +103,30 @@ void main() {
     float neb2Dist = length(gDir - normalize(vec3(0.24, -0.22, -0.94)));
     float neb2 = exp(-neb2Dist * neb2Dist * 12.0) * fbm3(gDir * 7.0 + 2.1);
     
-    // Deep cosmic palette
-    vec3 bgSpace = vec3(0.003, 0.003, 0.008);
-    vec3 discStarGlow = vec3(0.82, 0.78, 0.96) * 0.52; // Luminous stellar disc
-    vec3 coreWarmth = vec3(1.0, 0.80, 0.52) * 0.95;     // Golden galactic bulge
-    vec3 nebCyan = vec3(0.12, 0.55, 0.88) * 1.15;       // Cyan reflection nebulae
-    vec3 nebMagenta = vec3(0.72, 0.18, 0.55) * 1.05;    // Pink/magenta H-alpha gas
-    
+    // Deep cosmic palette (100% ZERO PINK / MAGENTA)
+    // Mode 0.0: Real NASA Deep Space (Silver-white starlight, deep midnight sapphire, subtle amber core)
+    // Mode 1.0: Pure Pitch-Black Void
+    vec3 bgSpace = vec3(0.0008, 0.001, 0.002);
+    vec3 discStarGlow = vec3(0.72, 0.80, 0.94) * 0.38; // Ethereal silver-white starlight
+    vec3 coreWarmth = vec3(0.92, 0.74, 0.44) * 0.52;   // Subtle warm amber galactic core
+    vec3 nebMidnightBlue = vec3(0.03, 0.10, 0.22) * 0.40; // Deep cold midnight sapphire
+
     vec3 col = bgSpace;
-    col += discStarGlow * diskBright;
-    col += coreWarmth * coreGlow * (1.0 - darkLanes * 0.45);
-    col += nebCyan * neb1;
-    col += nebMagenta * neb2;
-    
-    // Subtle star dust grain
-    float grain = pow(noise3(gDir * 32.0), 3.0) * disk * 0.3;
-    col += vec3(grain);
-    
+    if (uMode < 0.5) {
+        col += discStarGlow * diskBright;
+        col += coreWarmth * coreGlow * (1.0 - darkLanes * 0.55);
+        col += nebMidnightBlue * (neb1 + neb2 * 0.5);
+        float grain = pow(noise3(gDir * 32.0), 3.0) * disk * 0.22;
+        col += vec3(grain);
+    }
+
     gl_FragColor = vec4(col, 1.0);
 }
 `;
 
 const milkyWayUniforms = {
-    uTime: { value: 0.0 }
+    uTime: { value: 0.0 },
+    uMode: { value: 1.0 }
 };
 
 const milkyWayMat = new THREE.ShaderMaterial({
@@ -140,7 +142,19 @@ const milkyWaySphere = new THREE.Mesh(
     milkyWayMat
 );
 milkyWaySphere.renderOrder = -100;
+milkyWaySphere.visible = false; // Pure Pitch-Black Void by default
 scene.add(milkyWaySphere);
+window.__milkyWaySphere = milkyWaySphere;
+window.__milkyWayUniforms = milkyWayUniforms;
+window.__setCosmicBackground = function(mode) {
+    if (mode === 'nasa') {
+        milkyWayUniforms.uMode.value = 0.0;
+        milkyWaySphere.visible = true;
+    } else {
+        milkyWayUniforms.uMode.value = 1.0;
+        milkyWaySphere.visible = false;
+    }
+};
 
 // ==============================================================================
 // 2-YO'NALISH: FRESNEL RAYLEIGH SCATTERING ATMOSPHERIC RIM GLOW HELPER
