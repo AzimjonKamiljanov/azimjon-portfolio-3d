@@ -2483,9 +2483,10 @@ const solarWindMat = new THREE.PointsMaterial({
     depthWrite: false
 });
 const solarWindMesh = new THREE.Points(solarWindGeo, solarWindMat);
-scene.add(solarWindMesh);
+solarWindMesh.visible = false; // Butunlay olib tashlandi: "quyoshdan tarqalyotgan mayda zaralarni yoqot"
 
 function updateSolarWind(deltaSpeed = 1.0) {
+    if (!solarWindMesh.visible) return;
     const posAttr = solarWindGeo.attributes.position;
     for (let i = 0; i < SOLAR_WIND_COUNT; i++) {
         solarWindDistances[i] += 0.32 * deltaSpeed;
