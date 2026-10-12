@@ -149,20 +149,36 @@ function createAtmosphereGlow(radius, colorHex, intensity = 1.0, scale = 1.055) 
     const geo = new THREE.SphereGeometry(radius * scale, 48, 48);
     const mat = new THREE.ShaderMaterial({
         vertexShader: `
-            varying vec3 vNormal;
+            varying vec3 vNormalView;
+            varying vec3 vWorldPos;
+            varying vec3 vWorldNormal;
             void main() {
-                vNormal = normalize(normalMatrix * normal);
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                vNormalView = normalize(normalMatrix * normal);
+                vec4 worldP = modelMatrix * vec4(position, 1.0);
+                vWorldPos = worldP.xyz;
+                vWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
+                gl_Position = projectionMatrix * viewMatrix * worldP;
             }
         `,
         fragmentShader: `
             uniform vec3 uColor;
             uniform float uIntensity;
-            varying vec3 vNormal;
+            varying vec3 vNormalView;
+            varying vec3 vWorldPos;
+            varying vec3 vWorldNormal;
             void main() {
-                float rim = pow(0.68 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.8);
-                rim = clamp(rim, 0.0, 1.0);
-                gl_FragColor = vec4(uColor, rim * uIntensity);
+                // Peak limb rim at grazing silhouette
+                float rim = 1.0 - abs(vNormalView.z);
+                rim = smoothstep(0.0, 1.0, rim);
+                rim = pow(rim, 2.6);
+                
+                // Rayleigh scattering modulation by solar illumination (Sun at 0,0,0)
+                vec3 sunDir = normalize(-vWorldPos);
+                float sunDot = dot(vWorldNormal, sunDir);
+                float sunFactor = smoothstep(-0.25, 0.35, sunDot);
+                
+                float finalGlow = rim * mix(0.10, 1.0, sunFactor) * uIntensity;
+                gl_FragColor = vec4(uColor, finalGlow);
             }
         `,
         uniforms: {
@@ -1087,7 +1103,9 @@ function updateSaturnRingShadow() {
     saturnGlobeMesh.getWorldPosition(saturnWorldPos);
     // Sun is at (0, 0, 0) in world space
     const sunDirWorld = saturnWorldPos.clone().negate().normalize();
-    const invSaturnRot = saturnGlobeMesh.quaternion.clone().invert();
+    const saturnWorldQuat = new THREE.Quaternion();
+    saturnGlobeMesh.getWorldQuaternion(saturnWorldQuat);
+    const invSaturnRot = saturnWorldQuat.invert();
     const sunDirLocal = sunDirWorld.applyQuaternion(invSaturnRot);
     saturnRingUniforms.uSunDirLocal.value.copy(sunDirLocal);
 }
@@ -1139,13 +1157,15 @@ planetsData.forEach(data => {
                  varying vec3 vEarthWorldNormal;`
             );
             shader.fragmentShader = shader.fragmentShader.replace(
-                '#include <dithering_fragment>',
-                `#include <dithering_fragment>
+                '#include <emissivemap_fragment>',
+                `#include <emissivemap_fragment>
+                 #ifdef USE_MAP
                  vec3 lightToSun = normalize(-vEarthWorldPos);
                  float NdotL = dot(vEarthWorldNormal, lightToSun);
-                 float nightFactor = smoothstep(0.12, -0.22, NdotL);
-                 vec3 nightLights = texture2D(uNightTexture, vMapUv).rgb * nightFactor * 2.2;
-                 gl_FragColor.rgb += nightLights;`
+                 float nightFactor = smoothstep(0.10, -0.25, NdotL);
+                 vec3 nightLights = texture2D(uNightTexture, vMapUv).rgb * nightFactor * 2.5;
+                 totalEmissiveRadiance += nightLights;
+                 #endif`
             );
         };
     }
@@ -2120,13 +2140,18 @@ cometGroup.userData = cometNucleus.userData;
 
 let cometProgress = 0.0;
 function updateComet(deltaSpeed = 1.0) {
-    cometProgress += 0.0012 * deltaSpeed;
-    if (cometProgress > Math.PI * 2) cometProgress -= Math.PI * 2;
-    
     // Keplerian eccentric ellipse: a = 120, e = 0.86, inclination = 36 deg
     const a = 120;
     const e = 0.86;
     const r = (a * (1 - e * e)) / (1 + e * Math.cos(cometProgress));
+    
+    if (deltaSpeed > 0) {
+        // Kepler's 2nd Law: speed scales inversely with distance (dramatic fast flyby near Sun)
+        const perihelionDist = a * (1 - e); // ~16.8 units
+        const speedMultiplier = Math.pow(perihelionDist / Math.max(r, 12.0), 1.25);
+        cometProgress += 0.0010 * speedMultiplier * deltaSpeed;
+        if (cometProgress > Math.PI * 2) cometProgress -= Math.PI * 2;
+    }
     
     const cosInc = 0.81; // cos(36 deg)
     const sinInc = 0.58; // sin(36 deg)
@@ -2329,13 +2354,15 @@ voyagerGroup.lookAt(0, 0, 0);
 scene.add(voyagerGroup);
 
 function updateVoyager(deltaSpeed = 1.0) {
-    voyagerOrbitAngle += 0.00035 * deltaSpeed;
-    voyagerGroup.position.set(
-        Math.cos(voyagerOrbitAngle) * VOYAGER_DIST,
-        14 + Math.sin(clockTime * 0.5) * 1.2,
-        Math.sin(voyagerOrbitAngle) * VOYAGER_DIST
-    );
-    voyagerGroup.lookAt(0, 0, 0);
+    if (deltaSpeed > 0) {
+        voyagerOrbitAngle += 0.00035 * deltaSpeed;
+        voyagerGroup.position.set(
+            Math.cos(voyagerOrbitAngle) * VOYAGER_DIST,
+            14 + Math.sin(clockTime * 0.5) * 1.2,
+            Math.sin(voyagerOrbitAngle) * VOYAGER_DIST
+        );
+        voyagerGroup.lookAt(0, 0, 0);
+    }
     const pulse = 0.5 + 0.5 * Math.sin(clockTime * 4.0);
     beaconMat.color.setRGB(0.2, 0.8 + 0.2 * pulse, 1.0);
 }
@@ -2628,8 +2655,8 @@ function renderMoonTerminal() {
 
     const prefixes = {
         tg: '@',
-        email: '✉',
-        phone: '+'
+        email: '📧',
+        phone: '📞'
     };
 
     const contactPlaceholder = placeholders[currentContactType] || placeholders.tg;
@@ -3537,6 +3564,7 @@ window.addEventListener('keydown', (e) => {
         toggleOrbits();
     } else if (e.key === 'Escape' && isCinematicActive) {
         e.preventDefault();
+        e.stopImmediatePropagation();
         toggleCinematic(false);
     }
 });
@@ -4931,17 +4959,20 @@ function animate() {
         }
     });
 
+    const isCometFocused = currentTarget && (currentTarget.userData?.id === 'Comet' || currentTarget.userData?.isComet);
+    const isVoyagerFocused = currentTarget && (currentTarget.userData?.id === 'Voyager' || currentTarget.userData?.isProbe);
+
     if (typeof updateSaturnRingShadow === 'function') {
         updateSaturnRingShadow();
     }
     if (typeof updateComet === 'function') {
-        updateComet(effectiveSpeed);
+        updateComet(isCometFocused ? 0.0 : effectiveSpeed);
     }
     if (typeof updateSolarWind === 'function') {
         updateSolarWind(effectiveSpeed);
     }
     if (typeof updateVoyager === 'function') {
-        updateVoyager(effectiveSpeed);
+        updateVoyager(isVoyagerFocused ? 0.0 : effectiveSpeed);
     }
     
     if (shouldRotate) {

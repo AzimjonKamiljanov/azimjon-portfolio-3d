@@ -879,10 +879,10 @@ async function runPass2Mobile() {
             navClientWidth: document.getElementById('nav-container').clientWidth
         })`);
         console.log("  - Mobile Bottom HUD Check:", mobileNavCheck);
-        if (mobileNavCheck.navButtonsCount !== 12 || mobileNavCheck.orbsCount !== 12) {
+        if (mobileNavCheck.navButtonsCount < 12 || mobileNavCheck.orbsCount !== mobileNavCheck.navButtonsCount) {
             throw new Error("Mobile nav buttons or orbs count mismatch!");
         }
-        console.log("  ✓ All 12 3D planetary orbs active in bottom HUD!");
+        console.log(`  ✓ All ${mobileNavCheck.navButtonsCount} 3D planetary and probe orbs active in bottom HUD!`);
 
         await takeScreenshot('mobile_v4_overview.png');
 

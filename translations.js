@@ -238,7 +238,7 @@ export const translations = {
             },
             guide: {
                 badge: "SYSTEM GUIDE",
-                heading: "3D Cosmic Portfolio",
+                heading: "Welcome to 3D Cosmic Portfolio",
                 desc: "System navigation and interaction guide:",
                 step1Title: "Navigate the Cosmos",
                 step1Desc: "Drag to orbit 360°, scroll or pinch to zoom.",
