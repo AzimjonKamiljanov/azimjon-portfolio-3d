@@ -10,7 +10,7 @@ const SECURITY_HEADERS = {
     'X-Frame-Options': 'DENY',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'camera=(self), microphone=(), geolocation=(), payment=()',
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://unpkg.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://fonts.googleapis.com https://fonts.gstatic.com; worker-src 'self' blob: https://cdn.jsdelivr.net; child-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none';"
+    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://unpkg.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://*.jsdelivr.net blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' https://cdn.jsdelivr.net https://*.jsdelivr.net https://unpkg.com https://fonts.googleapis.com https://fonts.gstatic.com; worker-src 'self' blob: https://cdn.jsdelivr.net https://*.jsdelivr.net; child-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none';"
 };
 
 function applySecurityHeaders(headers) {
@@ -33,24 +33,22 @@ function isAllowedOrigin(origin, host) {
     if (ALLOWED_ORIGINS.has(origin)) return true;
     try {
         const parsed = new URL(origin);
-        if (parsed.host === host) return true;
+        if (host && parsed.host === host) return true;
         if (parsed.hostname === 'azimjon.dev' || parsed.hostname.endsWith('.azimjon.dev')) return true;
-        if (parsed.hostname.endsWith('.workers.dev')) return true;
+        if (parsed.hostname.endsWith('.workers.dev') || parsed.hostname.endsWith('.pages.dev')) return true;
     } catch (_) {}
     return false;
 }
 
-function getCorsHeaders(origin) {
+function getCorsHeaders(origin, host) {
     const headers = {
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
         'Access-Control-Max-Age': '86400',
         'Vary': 'Origin'
     };
-    if (origin) {
+    if (origin && isAllowedOrigin(origin, host)) {
         headers['Access-Control-Allow-Origin'] = origin;
-    } else {
-        headers['Access-Control-Allow-Origin'] = '*';
     }
     return headers;
 }
@@ -102,11 +100,11 @@ function escapeTg(str) {
 
 async function handleContact(request, env, url) {
     const origin = request.headers.get('Origin');
-    const corsHeaders = getCorsHeaders(origin);
+    const corsHeaders = getCorsHeaders(origin, url.host);
 
     // 1. Origin verification
     if (origin && !isAllowedOrigin(origin, url.host)) {
-        const headers = new Headers({ 'Content-Type': 'application/json', ...corsHeaders });
+        const headers = new Headers({ 'Content-Type': 'application/json', 'Vary': 'Origin' });
         applySecurityHeaders(headers);
         return new Response(JSON.stringify({ ok: false, error: 'Taqiqlangan manba (Forbidden origin).' }), {
             status: 403,
@@ -156,6 +154,8 @@ async function handleContact(request, env, url) {
     const topic = typeof body.topic === 'string' ? body.topic.trim() : '';
 
     const actualBody = message.replace(/^\[.*?\]\s*/, '').trim();
+    const topicFromMsg = message.match(/^\[(.*?)\]/)?.[1] || '';
+    const finalTopic = topic || topicFromMsg;
 
     // 4. Input validation
     if (!name || name.length < 2 || name.length > 100 ||
@@ -198,7 +198,7 @@ async function handleContact(request, env, url) {
         `👤 <b>F.I.SH / Ismi:</b> ${escapeTg(name)}\n` +
         `📡 <b>Aloqa Turi:</b> ${escapeTg(currentTypeLabel)}\n` +
         `📱 <b>Aloqa Manzili:</b> ${escapeTg(contact)}\n` +
-        (topic ? `🎯 <b>Mavzu:</b> ${escapeTg(topic)}\n` : '') +
+        (finalTopic ? `🎯 <b>Mavzu:</b> ${escapeTg(finalTopic)}\n` : '') +
         `📝 <b>Xabar Matni:</b>\n${escapeTg(message)}\n\n` +
         `⏱ <b>Vaqt:</b> ${dateStr}\n` +
         `🌐 <b>Til:</b> ${escapeTg(langStr)}`;
@@ -206,22 +206,27 @@ async function handleContact(request, env, url) {
     // Inline reply action buttons
     const inlineButtons = [];
     if (detectedType === 'tg') {
-        const uname = contact.replace(/^@/, '');
-        inlineButtons.push([
-            { text: "Telegramda Bog'lanish", url: `https://t.me/${uname}` },
-            { text: "⚡ Javob Qaytarish (Bot)", callback_data: `reply_lead_tg_${uname.slice(0, 35)}` }
-        ]);
+        const uname = contact.replace(/^@/, '').trim();
+        if (/^[a-zA-Z0-9_]{3,32}$/.test(uname)) {
+            inlineButtons.push([
+                { text: "Telegramda Bog'lanish", url: `https://t.me/${uname}` },
+                { text: "⚡ Javob Qaytarish (Bot)", callback_data: `reply_lead_tg_${uname.slice(0, 35)}` }
+            ]);
+        }
     } else if (detectedType === 'email') {
-        const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(contact)}&su=${encodeURIComponent("Azimjon Kamiljanovdan javob")}`;
+        const cleanEmail = contact.trim();
+        const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(cleanEmail)}&su=${encodeURIComponent("Azimjon Kamiljanovdan javob")}`;
         inlineButtons.push([
             { text: "📧 Gmail orqali yozish", url: gmailComposeUrl },
-            { text: "⚡ Javob Qaytarish (Bot)", callback_data: `reply_lead_email_${contact.slice(0, 35)}` }
+            { text: "⚡ Javob Qaytarish (Bot)", callback_data: `reply_lead_email_${cleanEmail.replace(/[^a-zA-Z0-9@._-]/g, '').slice(0, 35)}` }
         ]);
     } else {
         const phoneNum = contact.replace(/[^+\d]/g, '');
-        inlineButtons.push([
-            { text: "📞 Javob Qaytarish (Bot)", callback_data: `reply_lead_phone_${phoneNum.slice(0, 35)}` }
-        ]);
+        if (phoneNum.length >= 7) {
+            inlineButtons.push([
+                { text: "📞 Javob Qaytarish (Bot)", callback_data: `reply_lead_phone_${phoneNum.slice(0, 35)}` }
+            ]);
+        }
     }
     inlineButtons.push([
         { text: "📞 Favqulodda Qo'ng'iroq (@CyberAgentNexus)", url: "https://t.me/CyberAgentNexus" }
@@ -284,7 +289,15 @@ export default {
         // CORS preflight for /api/contact
         if (path === '/api/contact' && request.method === 'OPTIONS') {
             const origin = request.headers.get('Origin');
-            const headers = new Headers(getCorsHeaders(origin));
+            if (origin && !isAllowedOrigin(origin, url.host)) {
+                const headers = new Headers({ 'Content-Type': 'application/json', 'Vary': 'Origin' });
+                applySecurityHeaders(headers);
+                return new Response(JSON.stringify({ ok: false, error: 'Taqiqlangan manba (Forbidden origin).' }), {
+                    status: 403,
+                    headers
+                });
+            }
+            const headers = new Headers(getCorsHeaders(origin, url.host));
             applySecurityHeaders(headers);
             return new Response(null, { status: 204, headers });
         }
@@ -308,9 +321,10 @@ export default {
             const newHeaders = new Headers(assetRes.headers);
             applySecurityHeaders(newHeaders);
 
-            if (assetRes.status === 304) {
+            if (request.method === 'HEAD' || assetRes.status === 304 || assetRes.status === 204 || assetRes.status === 205) {
                 return new Response(null, {
-                    status: 304,
+                    status: assetRes.status,
+                    statusText: assetRes.statusText,
                     headers: newHeaders
                 });
             }

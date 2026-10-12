@@ -2243,6 +2243,8 @@ function renderMoonTerminal() {
 
             try {
                 const cleanContact = contact.trim();
+                const topicMatch = msg.match(/^\[(.*?)\]/);
+                const topicVal = topicMatch ? topicMatch[1] : '';
                 const response = await fetch('/api/contact', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json; charset=utf-8' },
@@ -2250,7 +2252,8 @@ function renderMoonTerminal() {
                         name: name,
                         contact: cleanContact,
                         message: msg,
-                        lang: currentLang
+                        lang: currentLang,
+                        topic: topicVal
                     }),
                     signal: abortController.signal
                 });

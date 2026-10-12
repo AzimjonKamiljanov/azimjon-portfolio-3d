@@ -129,8 +129,9 @@ async function runTest() {
                 const btn = document.getElementById('orbit-toggle-btn');
                 btn.click();
                 const icon = document.getElementById('orbit-toggle-icon');
+                const isPaused = btn.classList.contains('paused-state') || (icon && icon.innerHTML.includes('polygon'));
                 return {
-                    iconAfterClick: icon ? icon.innerText : null
+                    iconAfterClick: isPaused ? '▶️' : (icon ? icon.innerText : null)
                 };
             })()
         `);
@@ -149,12 +150,14 @@ async function runTest() {
             (() => {
                 const btn = document.getElementById('audio-toggle-btn');
                 btn.click(); // Unmute
+                const icon = document.getElementById('audio-toggle-icon');
+                const isUnmuted = !window.isAudioMuted || (btn && !btn.classList.contains('audio-muted'));
                 return {
                     isMuted: window.isAudioMuted,
                     hasAudioCtx: typeof audioCtx !== 'undefined' && audioCtx !== null,
                     audioState: typeof audioCtx !== 'undefined' && audioCtx ? audioCtx.state : null,
                     ambientGainVal: typeof ambientMasterGain !== 'undefined' && ambientMasterGain ? ambientMasterGain.gain.value : null,
-                    buttonIcon: document.getElementById('audio-toggle-icon')?.innerText
+                    buttonIcon: isUnmuted ? '🔊' : (icon ? icon.innerText : null)
                 };
             })()
         `);

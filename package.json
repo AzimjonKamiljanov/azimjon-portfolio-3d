@@ -4,6 +4,7 @@
   "description": "3D Solar System Developer Portfolio",
   "type": "module",
   "scripts": {
+    "dev": "wrangler dev --port 8080 --ip 127.0.0.1 --persist-to /tmp/wrangler-state",
     "deploy": "npx wrangler deploy"
   }
 }
