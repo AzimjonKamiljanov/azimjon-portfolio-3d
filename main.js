@@ -2374,6 +2374,8 @@ const cometTailMat = new THREE.PointsMaterial({
     depthWrite: false
 });
 const cometTailMesh = new THREE.Points(cometTailGeo, cometTailMat);
+cometGroup.visible = false; // Butunlay olib tashlandi: "quyosh oldidagi kametaniham yoqot"
+cometTailMesh.visible = false;
 scene.add(cometTailMesh);
 
 // UserData for interaction
@@ -2392,11 +2394,12 @@ Quyosh nurlanish bosimi va quyosh shamoli natijasida hosil bo'ladigan gaz (ion) 
     githubUrl: 'https://github.com/AzimjonKamiljanov',
     githubText: 'GitHub Profil'
 };
-interactableObjects.push(cometNucleus);
+// interactableObjects.push(cometNucleus); // Disabled when hidden
 cometGroup.userData = cometNucleus.userData;
 
 let cometProgress = 0.0;
 function updateComet(deltaSpeed = 1.0) {
+    if (!cometGroup.visible) return;
     // Keplerian eccentric ellipse: a = 120, e = 0.86, inclination = 36 deg
     const a = 120;
     const e = 0.86;
@@ -2792,8 +2795,9 @@ scene.add(blackHoleGroup);
 // 6. YULDUZ TURKUMLARI XARITASI (CONSTELLATIONS GRID)
 // ------------------------------------------------------------------------------
 const constellationsGroup = new THREE.Group();
+constellationsGroup.visible = false;
 scene.add(constellationsGroup);
-let areConstellationsVisible = true;
+let areConstellationsVisible = false;
 
 const constellationDefs = [
     {

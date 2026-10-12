@@ -1731,7 +1731,7 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #010106;
+    background: #000000 !important;
     opacity: 1;
     visibility: visible;
     transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
@@ -1748,7 +1748,7 @@ body, html {
 .preloader-backdrop {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.04) 0%, rgba(10, 14, 24, 0.35) 45%, #010106 80%);
+    background: #000000 !important;
 }
 
 .preloader-card {
