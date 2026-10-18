@@ -4923,6 +4923,7 @@ function openCatalog() {
     catalogModal.classList.remove('hidden');
     if (catalogContainer) catalogContainer.style.pointerEvents = 'auto';
     applyCatalogFilters();
+    initReactBitsSpotlightCards();
 }
 
 function closeCatalog() {
@@ -5306,10 +5307,45 @@ function animateCamera(finalCamPos, targetWorldPos, data) {
     });
 }
 
+// ==============================================================================
+// REACT BITS: DecryptedText (Cyberpunk Terminal Text Scrambler)
+// ==============================================================================
+const CYBER_DECRYPT_GLYPHS = '0123456789ABCDEF_#*!@%&<>/\\~+=';
+function animateDecryptedText(element, targetText, duration = 240) {
+    if (!element || !targetText) return;
+    const len = targetText.length;
+    const startTime = performance.now();
+    if (element.__decryptAnim) cancelAnimationFrame(element.__decryptAnim);
+
+    function step(now) {
+        const progress = Math.min(1, (now - startTime) / duration);
+        const revealedCount = Math.floor(progress * len);
+        let output = '';
+        for (let i = 0; i < len; i++) {
+            const char = targetText[i];
+            if (char === ' ' || char === '\n' || char === '•' || char === '-' || char === '(' || char === ')') {
+                output += char;
+            } else if (i < revealedCount) {
+                output += char;
+            } else {
+                output += CYBER_DECRYPT_GLYPHS[Math.floor(Math.random() * CYBER_DECRYPT_GLYPHS.length)];
+            }
+        }
+        element.textContent = output;
+        if (progress < 1) {
+            element.__decryptAnim = requestAnimationFrame(step);
+        } else {
+            element.textContent = targetText;
+            element.__decryptAnim = null;
+        }
+    }
+    element.__decryptAnim = requestAnimationFrame(step);
+}
+
 function showInfo(data) {
     if (!infoPanel || !data || !data.title) return;
     infoBadge.innerText = data.badge || 'KOSMIK OBYEKT';
-    infoTitle.innerText = data.title || '';
+    animateDecryptedText(infoTitle, data.title || '', 240);
     infoSubtitle.innerText = data.subtitle || '';
     infoContent.innerText = data.content || '';
     
@@ -6207,11 +6243,32 @@ Object.defineProperty(window, '__areConstellationsVisible', { get: () => areCons
 window.__toggleSkyView = toggleSkyView;
 Object.defineProperty(window, '__isSkyViewActive', { get: () => isSkyViewActive, configurable: true });
 window.__meteorShower = typeof perseidShower !== 'undefined' ? perseidShower : null;
-window.__earthEclipseUniforms = typeof earthEclipseUniforms !== 'undefined' ? earthEclipseUniforms : null;
-
+// ==============================================================================
+// REACT BITS: SpotlightCard Interactive Pointer Proximity
+// ==============================================================================
+function initReactBitsSpotlightCards() {
+    const cards = document.querySelectorAll('.catalog-card, .catalog-star-card');
+    cards.forEach(card => {
+        if (card.__hasSpotlight) return;
+        card.__hasSpotlight = true;
+        card.addEventListener('pointermove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x.toFixed(1)}px`);
+            card.style.setProperty('--mouse-y', `${y.toFixed(1)}px`);
+        });
+        card.addEventListener('pointerleave', () => {
+            card.style.setProperty('--mouse-x', '-999px');
+            card.style.setProperty('--mouse-y', '-999px');
+        });
+    });
+}
+window.__initReactBitsSpotlightCards = initReactBitsSpotlightCards;
 
 // Initialize localized UI & object states
 setLanguage(currentLang);
+initReactBitsSpotlightCards();
 
 hideInfo();
 animate();

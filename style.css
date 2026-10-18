@@ -71,15 +71,36 @@ body, html {
     50% { transform: scale(1.15); opacity: 1; }
 }
 
-.brand-title {
+/* ==============================================================================
+ * REACT BITS: ShinyText (Luxury Titanium Shimmer Effect)
+ * ============================================================================== */
+@keyframes shinyTextSweep {
+    0% { background-position: 150% center; }
+    100% { background-position: -150% center; }
+}
+
+.shiny-text, .brand-title {
     font-family: 'Orbitron', 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.6px;
     text-transform: uppercase;
-    color: #ffffff;
     margin: 0;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+    background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.82) 0%,
+        rgba(255, 255, 255, 1) 35%,
+        rgba(160, 205, 255, 0.95) 50%,
+        rgba(255, 255, 255, 1) 65%,
+        rgba(255, 255, 255, 0.82) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shinyTextSweep 8s linear infinite;
+    display: inline-block;
 }
 
 .brand-subtitle {
@@ -221,26 +242,68 @@ body, html {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
-.header-link.highlight-tour {
+/* ==============================================================================
+ * REACT BITS: StarBorder (Cosmic Stardust Trailing Light Beam)
+ * ============================================================================== */
+@keyframes starBorderRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.header-link.highlight-tour,
+.header-link.highlight-resume,
+.star-border-btn {
     background: rgba(22, 24, 32, 0.75);
     border-color: rgba(255, 255, 255, 0.12);
     color: #f4f4f5;
+    position: relative;
+    overflow: hidden;
+}
+
+.header-link.highlight-tour::before,
+.header-link.highlight-resume::before,
+.star-border-btn::before {
+    content: '';
+    position: absolute;
+    inset: -1.5px;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: conic-gradient(
+        from 0deg at 50% 50%,
+        transparent 0deg,
+        rgba(255, 255, 255, 0.04) 50deg,
+        rgba(160, 200, 255, 0.85) 110deg,
+        #ffffff 125deg,
+        rgba(160, 200, 255, 0.85) 140deg,
+        transparent 190deg,
+        transparent 360deg
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    animation: starBorderRotate 5s linear infinite;
+    opacity: 0.65;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.header-link.highlight-tour:hover::before,
+.header-link.highlight-resume:hover::before,
+.star-border-btn:hover::before {
+    opacity: 1;
+    animation-duration: 2.2s;
+}
+
+.header-link.highlight-tour > *,
+.header-link.highlight-resume > *,
+.star-border-btn > * {
+    position: relative;
+    z-index: 2;
 }
 
 .header-link.highlight-tour:hover,
-.header-link.highlight-tour.active {
-    background: rgba(30, 34, 46, 0.85);
-    border-color: rgba(255, 255, 255, 0.22);
-    color: #ffffff;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-}
-
-.header-link.highlight-resume {
-    background: rgba(22, 24, 32, 0.75);
-    border-color: rgba(255, 255, 255, 0.12);
-    color: #f4f4f5;
-}
-
+.header-link.highlight-tour.active,
 .header-link.highlight-resume:hover {
     background: rgba(30, 34, 46, 0.85);
     border-color: rgba(255, 255, 255, 0.22);
@@ -1535,7 +1598,12 @@ body, html {
     gap: 16px;
 }
 
+/* ==============================================================================
+ * REACT BITS: SpotlightCard (Dynamic Cursor Tracking & Glowing Border)
+ * ============================================================================== */
 .catalog-card {
+    position: relative;
+    overflow: hidden;
     background: rgba(18, 20, 26, 0.65);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -1545,9 +1613,58 @@ body, html {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
     cursor: pointer;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.catalog-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        320px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+        rgba(160, 200, 255, 0.09),
+        transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.catalog-card:hover::before {
+    opacity: 1;
+}
+
+.catalog-card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+        220px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+        rgba(255, 255, 255, 0.4),
+        transparent 65%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+}
+
+.catalog-card:hover::after {
+    opacity: 1;
+}
+
+.catalog-card > * {
+    position: relative;
+    z-index: 3;
 }
 
 .catalog-card:hover {
@@ -1645,6 +1762,8 @@ body, html {
 }
 
 .catalog-star-card {
+    position: relative;
+    overflow: hidden;
     background: rgba(18, 20, 26, 0.65);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -1654,9 +1773,58 @@ body, html {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
     cursor: pointer;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.catalog-star-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        320px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+        rgba(160, 200, 255, 0.09),
+        transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.catalog-star-card:hover::before {
+    opacity: 1;
+}
+
+.catalog-star-card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+        220px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+        rgba(255, 255, 255, 0.4),
+        transparent 65%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+}
+
+.catalog-star-card:hover::after {
+    opacity: 1;
+}
+
+.catalog-star-card > * {
+    position: relative;
+    z-index: 3;
 }
 
 .catalog-star-card:hover {
