@@ -5266,6 +5266,12 @@ function resetView() {
 
 let activeCameraTween = null;
 function animateCamera(finalCamPos, targetWorldPos, data) {
+    if (typeof initialDiveTween !== 'undefined' && initialDiveTween) {
+        initialDiveTween.kill();
+        initialDiveTween = null;
+    }
+    gsap.killTweensOf(camera.position);
+    gsap.killTweensOf(controls.target);
     if (activeCameraTween) {
         activeCameraTween.kill();
         activeCameraTween = null;
@@ -5345,6 +5351,7 @@ function animateDecryptedText(element, targetText, duration = 240) {
 function showInfo(data) {
     if (!infoPanel || !data || !data.title) return;
     infoBadge.innerText = data.badge || 'KOSMIK OBYEKT';
+    infoTitle.innerText = data.title || '';
     animateDecryptedText(infoTitle, data.title || '', 240);
     infoSubtitle.innerText = data.subtitle || '';
     infoContent.innerText = data.content || '';
@@ -5419,12 +5426,13 @@ window.addEventListener('resize', () => {
     bloomPass.setSize(Math.floor(window.innerWidth * 0.5), Math.floor(window.innerHeight * 0.5));
 });
 
+let initialDiveTween = null;
 // Cinematic Initial Dive
 function startInitialDive() {
     const isMobile = window.innerWidth < 768;
     const finalPos = isMobile ? { x: 0, y: 225, z: 235 } : { x: 0, y: 165, z: 195 };
     
-    gsap.to(camera.position, {
+    initialDiveTween = gsap.to(camera.position, {
         x: finalPos.x,
         y: finalPos.y,
         z: finalPos.z,
@@ -5432,6 +5440,9 @@ function startInitialDive() {
         ease: "power2.out",
         onUpdate: () => {
             controls.update();
+        },
+        onComplete: () => {
+            initialDiveTween = null;
         }
     });
 }
@@ -6243,6 +6254,7 @@ Object.defineProperty(window, '__areConstellationsVisible', { get: () => areCons
 window.__toggleSkyView = toggleSkyView;
 Object.defineProperty(window, '__isSkyViewActive', { get: () => isSkyViewActive, configurable: true });
 window.__meteorShower = typeof perseidShower !== 'undefined' ? perseidShower : null;
+window.__earthEclipseUniforms = typeof earthEclipseUniforms !== 'undefined' ? earthEclipseUniforms : null;
 // ==============================================================================
 // REACT BITS: SpotlightCard Interactive Pointer Proximity
 // ==============================================================================
