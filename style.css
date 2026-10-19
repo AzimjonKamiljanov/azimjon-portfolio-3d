@@ -104,11 +104,7 @@ body, html {
 }
 
 .brand-subtitle {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9.5px;
-    letter-spacing: 0.8px;
-    color: #828290;
-    margin: 3px 0 0 0;
+    display: none !important;
 }
 
 .btn-svg {
@@ -614,10 +610,10 @@ body, html {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 22px;
-    padding: 6px 10px;
+    border-radius: 999px;
+    padding: 6px 12px;
     display: inline-flex;
-    gap: 3px;
+    gap: 6px;
     align-items: center;
     justify-content: center;
     overflow-x: auto;
@@ -633,29 +629,39 @@ body, html {
 
 .nav-btn {
     flex: 0 0 auto;
-    min-width: 54px;
+    min-width: unset;
+    width: 32px;
+    height: 32px;
     background: transparent;
     border: 1px solid transparent;
     color: #94a3b8;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 500;
-    padding: 6px 8px;
-    border-radius: 13px;
+    padding: 0;
+    border-radius: 50%;
     cursor: pointer;
     transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
     white-space: nowrap;
     user-select: none;
+    position: relative;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-2px) scale(1.12);
+}
+
+.nav-btn.active-state {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 0 14px rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px) scale(1.1);
 }
 
 .nav-btn span.label {
-    font-size: 9.5px;
-    letter-spacing: 0.4px;
-    transition: color 0.2s ease;
+    display: none !important;
 }
 
 /* Realistic Astronomical Micro-Spheres for HUD Dock */
@@ -3139,8 +3145,10 @@ body, html {
         justify-content: flex-start;
     }
     .nav-btn {
-        min-width: 52px;
-        padding: 6px 7px;
+        min-width: unset;
+        width: 30px;
+        height: 30px;
+        padding: 0;
     }
     .planet-orb {
         width: 13px;

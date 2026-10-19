@@ -9,7 +9,7 @@ export const translations = {
     ui: {
         uz: {
             brandTitle: "AZIMJON KAMILJANOV",
-            brandSubtitle: "Lead AI Systems Architect • 9 Sayyora Koinot Portfoliosi",
+            brandSubtitle: "",
             overviewBtn: "Umumiy Ko'rinish",
             orbitActive: "Orbita: Harakatda",
             orbitPaused: "Orbita: To'xtatildi",
@@ -179,7 +179,7 @@ export const translations = {
         },
         en: {
             brandTitle: "AZIMJON KAMILJANOV",
-            brandSubtitle: "Lead AI Systems Architect • 9-Planet Cosmic Portfolio",
+            brandSubtitle: "",
             overviewBtn: "Solar Overview",
             orbitActive: "Orbit: Running",
             orbitPaused: "Orbit: Paused",
@@ -349,7 +349,7 @@ export const translations = {
         },
         ru: {
             brandTitle: "AZIMJON KAMILJANOV",
-            brandSubtitle: "Lead AI Systems Architect • Портфолио 9 Планет",
+            brandSubtitle: "",
             overviewBtn: "Обзор Системы",
             orbitActive: "Орбита: В движении",
             orbitPaused: "Орбита: На паузе",
