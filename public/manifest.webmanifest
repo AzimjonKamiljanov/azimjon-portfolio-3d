@@ -1,0 +1,22 @@
+{
+  "name": "Azimjon Kamiljanov | 3D Solar System Developer Portfolio",
+  "short_name": "Azimjon 3D",
+  "description": "Interactive 3D WebGL Solar System Developer Portfolio featuring 9 planets and autonomous AI platforms",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#010106",
+  "theme_color": "#010106",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

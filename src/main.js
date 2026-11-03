@@ -1,0 +1,428 @@
+// ==============================================================================
+// AZIMJON KAMILJANOV • 3D SOLAR DEVELOPER PORTFOLIO (VITE MODULAR CORE)
+// ==============================================================================
+
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/plus-jakarta-sans/700.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/700.css";
+
+import * as THREE from "three";
+import gsap from "gsap";
+
+import { initErrorTracking } from "./errors.js";
+import { initScene } from "./scene/setup.js";
+import { initPostprocessing } from "./scene/postprocessing.js";
+import { initControls, resetToOverview } from "./input/controls.js";
+import { initRaycaster } from "./input/raycaster.js";
+import { initGestureControl } from "./input/gestures.js";
+
+import { initSun } from "./bodies/sun.js";
+import { initPlanets } from "./bodies/planets.js";
+import { initAsteroidBelt } from "./bodies/asteroids.js";
+import { initStars } from "./bodies/stars.js";
+import { initCosmicBodies } from "./bodies/cosmic.js";
+
+import {
+  initSoundscape,
+  playUiClick,
+  playUiHover,
+  toggleAudioMute,
+} from "./audio/soundscape.js";
+
+import { initHud } from "./ui/hud.js";
+import { initModals } from "./ui/modals.js";
+import { initCatalog } from "./ui/catalog.js";
+import { initTour } from "./ui/tour.js";
+import { initGuide } from "./ui/guide.js";
+import { initTerminal } from "./ui/terminal.js";
+import { initSpotlightCards } from "./ui/effects.js";
+
+import {
+  initLanguageSwitcher,
+  getTranslations,
+  onLanguageChange,
+} from "./i18n/i18n.js";
+
+// Initialize error tracking early
+initErrorTracking();
+
+// 1. Setup Scene, Camera, Renderer
+const { scene, camera, renderer, skydomeMesh } = initScene();
+const { composer, bloomPass } = initPostprocessing(renderer, scene, camera);
+const controls = initControls(camera, renderer);
+
+// Global interactable objects array for raycasting and UI
+const interactableObjects = [];
+const textureLoader = new THREE.TextureLoader();
+
+// 2. Setup Celestial Bodies
+const { sun, update: updateSun } = initSun(
+  scene,
+  textureLoader,
+  interactableObjects,
+);
+const {
+  planetMeshes,
+  moonMesh,
+  update: updatePlanets,
+} = initPlanets(scene, textureLoader, interactableObjects);
+const { update: updateAsteroids } = initAsteroidBelt(scene);
+const { starMeshes, update: updateStars } = initStars(
+  scene,
+  interactableObjects,
+);
+const {
+  voyagerGroup,
+  blackHoleGroup,
+  update: updateCosmic,
+} = initCosmicBodies(scene, interactableObjects);
+
+// 3. UI Modules Initialization
+initTerminal();
+
+const modals = initModals({
+  onReturnToOrbit: () => {
+    resetToOverview(camera, controls, () => {
+      raycasterController.clearTarget();
+      updateNavActiveState(null);
+    });
+  },
+});
+
+function focusTargetById(targetId) {
+  let target = null;
+  if (targetId === "sun") target = sun;
+  else if (targetId === "moon") target = moonMesh;
+  else if (targetId === "Voyager")
+    target = voyagerGroup?.children[0] || voyagerGroup;
+  else if (targetId === "BlackHole")
+    target = blackHoleGroup?.children[0] || blackHoleGroup;
+  else {
+    const pObj = planetMeshes.find((p) => p.mesh.userData?.id === targetId);
+    if (pObj) {
+      target = pObj.mesh;
+    } else {
+      const sObj = starMeshes.find((s) => s.userData?.id === targetId);
+      if (sObj) target = sObj;
+    }
+  }
+
+  if (target) {
+    raycasterController.focusOnObject(target);
+    updateNavActiveStateForObject(target);
+  }
+}
+
+const catalog = initCatalog({
+  onSelectTarget: (targetId) => {
+    focusTargetById(targetId);
+  },
+});
+
+const tour = initTour({
+  onFocusObject: (object, isTour) => {
+    raycasterController.focusOnObject(object, isTour);
+    updateNavActiveStateForObject(object);
+  },
+  onShowDetails: (object) => {
+    modals.openInfoModal(object.userData);
+  },
+  getObjectById: (id) => {
+    if (id === "sun") return sun;
+    if (id === "moon") return moonMesh;
+    const pObj = planetMeshes.find((p) => p.mesh.userData?.id === id);
+    return pObj ? pObj.mesh : null;
+  },
+  getTranslations: () => getTranslations(),
+});
+
+const guide = initGuide();
+
+// 4. Raycaster Setup
+const raycasterController = initRaycaster(
+  camera,
+  controls,
+  interactableObjects,
+  (selectedObject) => {
+    modals.openInfoModal(selectedObject.userData);
+    updateNavActiveStateForObject(selectedObject);
+  },
+  (hoveredObject) => {
+    // Hover state handled inside raycaster
+  },
+);
+
+// 5. Soundscape Setup
+initSoundscape();
+
+// 6. HUD and Controls Setup
+let currentOrbitSpeed = 1;
+initHud(
+  (speed) => {
+    currentOrbitSpeed = speed;
+  },
+  () => {
+    if (tour.isActive()) tour.exitTour();
+    modals.closeInfoModal();
+    catalog.closeCatalog();
+    resetToOverview(camera, controls, () => {
+      raycasterController.clearTarget();
+      updateNavActiveState(null);
+    });
+  },
+  () => {
+    const muted = toggleAudioMute();
+    const audioText = document.getElementById("audio-toggle-text");
+    const audioBtn = document.getElementById("audio-toggle-btn");
+    const uiTexts = getTranslations().ui;
+    if (audioText)
+      audioText.innerText = muted ? uiTexts.audioOff : uiTexts.audioOn;
+    if (audioBtn) audioBtn.classList.toggle("audio-muted", muted);
+  },
+  () => {
+    if (tour.isActive()) tour.exitTour();
+    modals.closeInfoModal();
+    catalog.openCatalog();
+  },
+  () => {
+    if (tour.isActive()) tour.exitTour();
+    else tour.startTour();
+  },
+);
+
+// 7. Hand Gesture AI Vision Control
+initGestureControl({
+  onOrbit: (deltaX, deltaY) => {
+    const rotSpeed = 0.005;
+    controls.object.position.applyAxisAngle(
+      new THREE.Vector3(0, 1, 0),
+      -deltaX * rotSpeed,
+    );
+    controls.update();
+  },
+  onZoom: (delta) => {
+    const zoomSpeed = 0.5;
+    camera.position.addScaledVector(
+      camera.getWorldDirection(new THREE.Vector3()),
+      delta * zoomSpeed,
+    );
+    controls.update();
+  },
+  onSelect: () => {
+    // Selection
+  },
+  getReticleTarget: (normX, normY) => {
+    return null;
+  },
+});
+
+// 8. Navigation Active State
+function updateNavActiveState(activeBtn) {
+  document.querySelectorAll("#nav-container .nav-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn === activeBtn);
+  });
+}
+
+function updateNavActiveStateForObject(object) {
+  if (!object || !object.userData) return;
+  const id = object.userData.id;
+  let selector = `.nav-btn[data-target="${id}"]`;
+  if (object.userData.isSun) selector = '.nav-btn[data-target="sun"]';
+  else if (object.userData.isMoon) selector = '.nav-btn[data-target="moon"]';
+  else if (object.userData.isStar) selector = '.nav-btn[data-target="star"]';
+  else if (object.userData.isProbe)
+    selector = '.nav-btn[data-target="Voyager"]';
+  else if (object.userData.isBlackHole)
+    selector = '.nav-btn[data-target="BlackHole"]';
+
+  const btn = document.querySelector(selector);
+  if (btn) updateNavActiveState(btn);
+}
+
+// Bottom nav bar button listeners
+document.querySelectorAll("#nav-container .nav-btn").forEach((btn) => {
+  btn.addEventListener("mouseenter", () => playUiHover());
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    playUiClick();
+    const targetId = btn.getAttribute("data-target");
+    focusTargetById(targetId);
+  });
+});
+
+// Sound listeners for general interactive elements
+document
+  .querySelectorAll(".header-link, .lang-btn, .close-btn, #back-button")
+  .forEach((el) => {
+    el.addEventListener("mouseenter", () => playUiHover());
+  });
+
+// 9. Preloader and Initial Dive
+const preloaderEl = document.getElementById("preloader");
+const preloaderBar = document.getElementById("preloader-bar");
+const preloaderPct = document.getElementById("preloader-pct");
+const controlHintsEl = document.getElementById("control-hints");
+
+function updatePreloaderProgress(pct) {
+  if (preloaderBar) preloaderBar.style.width = `${Math.min(pct, 100)}%`;
+  if (preloaderPct)
+    preloaderPct.innerText = `${Math.round(Math.min(pct, 100))}%`;
+}
+
+function dismissControlHints() {
+  if (controlHintsEl && !controlHintsEl.classList.contains("hint-hidden")) {
+    controlHintsEl.classList.add("hint-hidden");
+  }
+}
+
+let hasFinishedLoading = false;
+function finishLoading() {
+  if (hasFinishedLoading) return;
+  hasFinishedLoading = true;
+  updatePreloaderProgress(100);
+
+  if (preloaderEl) {
+    preloaderEl.classList.add("preloader-hidden");
+    setTimeout(() => {
+      if (preloaderEl.parentNode) preloaderEl.style.display = "none";
+    }, 850);
+  }
+
+  if (controlHintsEl) {
+    controlHintsEl.classList.remove("hint-hidden");
+    setTimeout(dismissControlHints, 4500);
+  }
+
+  if (!guide.isDismissed()) {
+    setTimeout(() => {
+      if (window.__guideInteracted) return;
+      guide.showGuide();
+    }, 1200);
+  }
+}
+
+function startInitialDive() {
+  const isMobile = window.innerWidth < 768;
+  const finalPos = isMobile
+    ? { x: 0, y: 225, z: 235 }
+    : { x: 0, y: 165, z: 195 };
+
+  gsap.to(camera.position, {
+    x: finalPos.x,
+    y: finalPos.y,
+    z: finalPos.z,
+    duration: 2.4,
+    ease: "power2.out",
+    onUpdate: () => {
+      controls.update();
+    },
+  });
+}
+
+// 10. Window Event Handlers
+function onWindowResize() {
+  const isMobile = window.innerWidth <= 768;
+  const maxPixelRatio = isMobile
+    ? 1.5
+    : Math.min(window.devicePixelRatio || 1, 2);
+
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(maxPixelRatio);
+
+  composer.setSize(window.innerWidth, window.innerHeight);
+  if (bloomPass) {
+    const bloomRes = isMobile
+      ? new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2)
+      : new THREE.Vector2(window.innerWidth, window.innerHeight);
+    bloomPass.setSize(bloomRes.x, bloomRes.y);
+  }
+}
+window.addEventListener("resize", onWindowResize);
+
+// WebGL context loss handling
+renderer.domElement.addEventListener(
+  "webglcontextlost",
+  (e) => {
+    e.preventDefault();
+    console.warn("WebGL context lost. Pausing rendering.");
+  },
+  false,
+);
+
+renderer.domElement.addEventListener(
+  "webglcontextrestored",
+  () => {
+    console.info("WebGL context restored. Re-initializing renderer.");
+    onWindowResize();
+  },
+  false,
+);
+
+// 11. Multi-language setup & callbacks
+initLanguageSwitcher();
+onLanguageChange((lang) => {
+  catalog.setLanguage(lang);
+  tour.updateHud();
+});
+
+// Spotlight cards
+initSpotlightCards();
+
+// 12. Main Animation Loop with visibility pause
+let isPageVisible = true;
+document.addEventListener("visibilitychange", () => {
+  isPageVisible = !document.hidden;
+});
+
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  if (!isPageVisible) return;
+
+  const delta = clock.getDelta();
+  const elapsedTime = clock.getElapsedTime();
+
+  controls.update();
+
+  // Update Celestial Bodies
+  updateSun(elapsedTime, camera);
+  updatePlanets(elapsedTime, delta, currentOrbitSpeed);
+  updateAsteroids(elapsedTime, delta, currentOrbitSpeed);
+  updateStars(elapsedTime, delta);
+  updateCosmic(elapsedTime, delta, camera);
+
+  // Update skydome
+  if (skydomeMesh && skydomeMesh.material.uniforms?.uTime) {
+    skydomeMesh.material.uniforms.uTime.value = elapsedTime;
+  }
+
+  composer.render();
+}
+
+// Start rendering
+animate();
+
+// Simulate smooth preloading progression & finish
+setTimeout(() => updatePreloaderProgress(40), 100);
+setTimeout(() => updatePreloaderProgress(75), 250);
+setTimeout(() => {
+  finishLoading();
+  startInitialDive();
+}, 450);
+
+// Global debug handles
+window.__solarEngine = {
+  camera,
+  scene,
+  renderer,
+  controls,
+  focusTargetById,
+  resetToOverview: () => resetToOverview(camera, controls),
+};

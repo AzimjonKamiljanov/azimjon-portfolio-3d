@@ -9,7 +9,7 @@ export const translations = {
     ui: {
         uz: {
             brandTitle: "AZIMJON KAMILJANOV",
-            brandSubtitle: "Lead AI Systems Architect • 9 Sayyora Koinot Portfoliosi",
+            brandSubtitle: "AI & Full-Stack Dasturchi (Talaba) • 9 Sayyora Koinot Portfoliosi",
             overviewBtn: "Umumiy Ko'rinish",
             orbitActive: "Orbita: Harakatda",
             orbitPaused: "Orbita: To'xtatildi",
@@ -91,7 +91,7 @@ export const translations = {
                 exit: "Chiqish",
                 details: "To'liq Ma'lumot",
                 stops: {
-                    sun: { name: "Quyosh", role: "Markaziy Yulduz • Lead AI Systems Architect" },
+                    sun: { name: "Quyosh", role: "Markaziy Yulduz • AI & Full-Stack Dasturchi (Talaba)" },
                     mercury: { name: "Merkuriy", role: "1-Sayyora • CareTrack Clinic Medical ERP" },
                     venus: { name: "Venera", role: "2-Sayyora • Jarvis-X Autonomous Voice AI" },
                     earth: { name: "Yer", role: "3-Sayyora • CyberAgent TITAN NEXUS (VoIP Flagship)" },
@@ -179,7 +179,7 @@ export const translations = {
         },
         en: {
             brandTitle: "AZIMJON KAMILJANOV",
-            brandSubtitle: "Lead AI Systems Architect • 9-Planet Cosmic Portfolio",
+            brandSubtitle: "AI & Full-Stack Developer (Student) • 9-Planet Cosmic Portfolio",
             overviewBtn: "Solar Overview",
             orbitActive: "Orbit: Running",
             orbitPaused: "Orbit: Paused",
@@ -261,7 +261,7 @@ export const translations = {
                 exit: "Exit Tour",
                 details: "Full Details",
                 stops: {
-                    sun: { name: "Sun", role: "Central Star • Lead AI Systems Architect" },
+                    sun: { name: "Sun", role: "Central Star • AI & Full-Stack Developer (Student)" },
                     mercury: { name: "Mercury", role: "Planet 1 • CareTrack Clinic Medical ERP" },
                     venus: { name: "Venus", role: "Planet 2 • Jarvis-X Autonomous Voice AI" },
                     earth: { name: "Earth", role: "Planet 3 • CyberAgent TITAN NEXUS (VoIP Flagship)" },
@@ -349,7 +349,7 @@ export const translations = {
         },
         ru: {
             brandTitle: "AZIMJON KAMILJANOV",
-            brandSubtitle: "Lead AI Systems Architect • Портфолио 9 Планет",
+            brandSubtitle: "AI & Full-Stack Разработчик (Студент) • Портфолио 9 Планет",
             overviewBtn: "Обзор Системы",
             orbitActive: "Орбита: В движении",
             orbitPaused: "Орбита: На паузе",
@@ -431,7 +431,7 @@ export const translations = {
                 exit: "Выйти",
                 details: "Подробнее",
                 stops: {
-                    sun: { name: "Солнце", role: "Центральная Звезда • Lead AI Systems Architect" },
+                    sun: { name: "Солнце", role: "Центральная Звезда • AI & Full-Stack Разработчик (Студент)" },
                     mercury: { name: "Меркурий", role: "Планета 1 • CareTrack Clinic Medical ERP" },
                     venus: { name: "Венера", role: "Планета 2 • Jarvis-X Autonomous Voice AI" },
                     earth: { name: "Земля", role: "Планета 3 • CyberAgent TITAN NEXUS (VoIP Флагман)" },
@@ -525,71 +525,59 @@ export const translations = {
     celestial: {
         sun: {
             uz: {
-                badge: 'Markaziy Yulduz • Developer Profili',
-                title: 'Azimjon Kamiljanov (Lead AI Architect)',
-                subtitle: 'Lead AI Systems Architect • Senior Full-Stack Engineer',
-                content: `Assalomu alaykum! Men Azimjon Kamiljanov — sun'iy intellekt agentlari, yuqori yuklamali mikroxizmatlar, 3D WebGL interfeyslar va xavfsiz taqsimlangan tizimlar me'moriman.
+                badge: 'Markaziy Yulduz • Dasturchi Profili',
+                title: 'Azimjon Kamiljanov (AI & Full-Stack Dasturchi)',
+                subtitle: 'AI & Full-Stack Dasturchi (Talaba) • PDP University & School 21',
+                content: `Assalomu alaykum! Men Azimjon Kamiljanov — PDP Universiteti 2-kurs talabasi (AI yo'nalishi) va School 21 Tashkent ishtirokchisiman (kiberxavfsizlik). Sun'iy intellekt agentlari, real vaqtli WebRTC/VoIP tizimlari hamda 3D WebGL interfeyslarini yaratishga ixtisoslashganman.
 
-Apparat & Laboratoriya:
-• Model: Lenovo Legion Pro 5
-• CPU: AMD Ryzen 9 9955HX (32 vCPU threads)
-• GPU: NVIDIA GeForce RTX 5070 Laptop GPU (8GB VRAM)
-• RAM: 32 GB DDR5 | SSD: 1 TB NVMe SSD
-• Tizim: EndeavourOS Linux (Linux 7.2.3-zen kernel)
+Ta'lim:
+• PDP University — Sun'iy intellekt (AI) yo'nalishi (2-kurs talabasi, 2024 — hozirgacha)
+• School 21 Tashkent — Kiberxavfsizlik va tizimli dasturlash (2024 — hozirgacha)
 
 Asosiy Texnologik Stack:
-• AI & ML: Python 3.12, PyTorch 2.14 + CUDA 13, Transformers, Whisper Large-v3-Turbo, Kokoro TTS, Gemini 3.8 Flash, DeepSeek R1, Groq LPU.
+• AI & ML: Python 3.12, PyTorch, Whisper STT, Kokoro TTS, Gemini Flash, DeepSeek R1, Groq.
 • Frontend & 3D: Three.js / WebGL, GLSL Shaders, React, Next.js, TypeScript, TailwindCSS.
-• Backend & DevOps: Node.js, Express, Docker Engine 29.7.2, Portainer, PostgreSQL, Redis, Cloudflare Tunnels, DevSecOps (OWASP GenAI).
-
-Dizaynda minimalist estetika, qat'iy mantiq va 100% ishonchlilik tarafdoriman.`,
-                tags: ['Azimjon Kamiljanov', 'Three.js / WebGL', 'PyTorch CUDA 13', 'AI Agents', 'Docker', 'DevSecOps', 'RTX 5070'],
+• Backend & DevOps: Node.js, Express, FastAPI, PostgreSQL, Docker, Redis, Cloudflare.
+• Tillar: O'zbek tili (Native), Ingliz tili (B1), Rus tili (A1).`,
+                tags: ['Azimjon Kamiljanov', 'Three.js / WebGL', 'AI Agents', 'PyTorch', 'Docker', 'PDP University', 'School 21'],
                 actionText: 'Telegram Aloqa',
                 githubText: 'GitHub Profil'
             },
             en: {
-                badge: 'Central Star • Architect Profile',
-                title: 'Azimjon Kamiljanov (Lead AI Architect)',
-                subtitle: 'Lead AI Systems Architect • Senior Full-Stack Engineer',
-                content: `Welcome! I am Azimjon Kamiljanov — autonomous AI agent systems architect, high-throughput microservices engineer, 3D WebGL developer, and distributed security specialist.
+                badge: 'Central Star • Developer Profile',
+                title: 'Azimjon Kamiljanov (AI & Full-Stack Developer)',
+                subtitle: 'AI & Full-Stack Developer (Student) • PDP University & School 21',
+                content: `Hello! I am Azimjon Kamiljanov — a 2nd-year AI student at PDP University and a cybersecurity learner at School 21 Tashkent. I build autonomous AI agents, real-time WebRTC/VoIP pipelines, and interactive 3D WebGL interfaces.
 
-Hardware & Laboratory:
-• Rig: Lenovo Legion Pro 5
-• CPU: AMD Ryzen 9 9955HX (32 vCPU threads)
-• GPU: NVIDIA GeForce RTX 5070 Laptop GPU (8GB VRAM)
-• RAM: 32 GB DDR5 | SSD: 1 TB NVMe SSD
-• OS: EndeavourOS Linux (Linux 7.2.3-zen kernel)
+Education:
+• PDP University — Artificial Intelligence (AI) Direction (2nd Year Student, 2024 — Present)
+• School 21 Tashkent — Cybersecurity & Systems Programming (2024 — Present)
 
 Core Technology Stack:
-• AI & ML: Python 3.12, PyTorch 2.14 + CUDA 13, Transformers, Whisper Large-v3-Turbo, Kokoro TTS, Gemini 3.8 Flash, DeepSeek R1, Groq LPU.
-• Frontend & 3D: Three.js / WebGL, Custom GLSL Shaders, React, Next.js, TypeScript, TailwindCSS.
-• Backend & DevOps: Node.js, Express, Docker Engine 29.7.2, Portainer, PostgreSQL, Redis, Cloudflare Tunnels, DevSecOps (OWASP GenAI).
-
-Driven by radical minimalist aesthetics, rock-solid logic, and 100% architectural reliability.`,
-                tags: ['Azimjon Kamiljanov', 'Three.js / WebGL', 'PyTorch CUDA 13', 'AI Agents', 'Docker', 'DevSecOps', 'RTX 5070'],
+• AI & ML: Python 3.12, PyTorch, Whisper STT, Kokoro TTS, Gemini Flash, DeepSeek R1, Groq.
+• Frontend & 3D: Three.js / WebGL, GLSL Shaders, React, Next.js, TypeScript, TailwindCSS.
+• Backend & DevOps: Node.js, Express, FastAPI, PostgreSQL, Docker, Redis, Cloudflare.
+• Languages: Uzbek (Native), English (B1), Russian (A1).`,
+                tags: ['Azimjon Kamiljanov', 'Three.js / WebGL', 'AI Agents', 'PyTorch', 'Docker', 'PDP University', 'School 21'],
                 actionText: 'Contact via Telegram',
                 githubText: 'GitHub Profile'
             },
             ru: {
-                badge: 'Центральная Звезда • Профиль Архитектора',
-                title: 'Азимжон Камильджанов (Lead AI Architect)',
-                subtitle: 'Ведущий Архитектор AI Систем • Senior Full-Stack Инженер',
-                content: `Приветствую! Я Азимжон Камильджанов — архитектор автономных AI-агентов, высоконагруженных микросервисов, 3D WebGL интерфейсов и защищенных распределенных систем.
+                badge: 'Центральная Звезда • Профиль Разработчика',
+                title: 'Азимжон Камильджанов (AI & Full-Stack Разработчик)',
+                subtitle: 'AI & Full-Stack Разработчик (Студент) • PDP University & School 21',
+                content: `Здравствуйте! Я Азимжон Камильджанов — студент 2-го курса PDP University (направление AI) и участник Школы 21 в Ташкенте (кибербезопасность). Специализируюсь на разработке AI-агентов, WebRTC/VoIP систем и 3D WebGL интерфейсов.
 
-Аппаратный Профиль & Лаборатория:
-• Модель: Lenovo Legion Pro 5
-• ЦП: AMD Ryzen 9 9955HX (32 потока vCPU)
-• ГП: NVIDIA GeForce RTX 5070 Laptop GPU (8GB VRAM)
-• ОЗУ: 32 GB DDR5 | Накопитель: 1 TB NVMe SSD
-• ОС: EndeavourOS Linux (ядро Linux 7.2.3-zen)
+Образование:
+• PDP University — Направление искусственного интеллекта (AI) (Студент 2-го курса, 2024 — по наст. время)
+• School 21 Tashkent — Кибербезопасность и системное программирование (2024 — по наст. время)
 
 Основной Технологический Стек:
-• AI & ML: Python 3.12, PyTorch 2.14 + CUDA 13, Transformers, Whisper Large-v3-Turbo, Kokoro TTS, Gemini 3.8 Flash, DeepSeek R1, Groq LPU.
-• Frontend & 3D: Three.js / WebGL, Процедурные GLSL шейдеры, React, Next.js, TypeScript, TailwindCSS.
-• Backend & DevOps: Node.js, Express, Docker Engine 29.7.2, Portainer, PostgreSQL, Redis, Туннели Cloudflare, DevSecOps (OWASP GenAI).
-
-Приверженец минималистичной эстетики, бескомпромиссной логики и 100% отказоустойчивости.`,
-                tags: ['Азимжон Камильджанов', 'Three.js / WebGL', 'PyTorch CUDA 13', 'AI Agents', 'Docker', 'DevSecOps', 'RTX 5070'],
+• AI & ML: Python 3.12, PyTorch, Whisper STT, Kokoro TTS, Gemini Flash, DeepSeek R1, Groq.
+• Frontend & 3D: Three.js / WebGL, GLSL Shaders, React, Next.js, TypeScript, TailwindCSS.
+• Backend & DevOps: Node.js, Express, FastAPI, PostgreSQL, Docker, Redis, Cloudflare.
+• Языки: Узбекский (Родной), Английский (B1), Русский (A1).`,
+                tags: ['Азимжон Камильджанов', 'Three.js / WebGL', 'AI Agents', 'Docker', 'PDP University', 'School 21'],
                 actionText: 'Связаться в Telegram',
                 githubText: 'Профиль GitHub'
             }

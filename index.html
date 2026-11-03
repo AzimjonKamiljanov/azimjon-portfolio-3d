@@ -1,28 +1,19 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <script>
-        window.__errors = []; 
-        window.addEventListener("error", (e) => window.__errors.push({msg: e.message, src: e.filename, line: e.lineno})); 
-        window.addEventListener("unhandledrejection", (e) => window.__errors.push({msg: e.reason.message || String(e.reason)}));
-        const _origConsoleError = console.error;
-        console.error = function(...args) {
-            window.__errors.push({msg: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), src: 'console.error'});
-            _origConsoleError.apply(console, args);
-        };
-    </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Azimjon Kamiljanov | 3D Koinot Portfoliom • 9 Sayyora</title>
     
-    <!-- Favicon (Realistic Golden Saturn / Sun SVG) -->
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="alternate icon" href="favicon.ico">
+    <link rel="manifest" href="manifest.webmanifest">
 
     <!-- Canonical & SEO Meta Tags -->
     <link rel="canonical" href="https://azimjon.dev/">
-    <meta name="description" content="Azimjon Kamiljanov (Azimjon) — Lead AI Systems Architect & Full-Stack Engineer. Interactive 3D WebGL Solar System Portfolio featuring 9 planets, 18 cyber star systems, autonomous AI agents, and engineering platforms.">
-    <meta name="keywords" content="Azimjon, Azimjon Kamiljanov, azimjon dev, azimjon.dev, AI Architect, 3D Portfolio, Three.js, WebGL, CyberAgent, Telegram VoIP, Deep Learning, Uzbekistan Developer, Lead Engineer">
+    <meta name="description" content="Azimjon Kamiljanov — AI & Full-Stack Developer (Student) at PDP University and School 21 Tashkent. Interactive 3D WebGL Solar System Portfolio featuring 9 planets, 18 cyber stars, and autonomous AI agents.">
+    <meta name="keywords" content="Azimjon, Azimjon Kamiljanov, azimjon dev, azimjon.dev, AI Developer, Full-Stack Developer, 3D Portfolio, Three.js, WebGL, CyberAgent, Telegram VoIP, Deep Learning, Uzbekistan Developer">
     <meta name="author" content="Azimjon Kamiljanov">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#010106">
@@ -31,7 +22,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://azimjon.dev/">
     <meta property="og:title" content="Azimjon Kamiljanov | 3D Solar System Developer Portfolio">
-    <meta property="og:description" content="Azimjon Kamiljanov — Lead AI Systems Architect • 9-Planet 3D WebGL Cosmic Portfolio, CyberAgent Titans, and Autonomous AI Ecosystems.">
+    <meta property="og:description" content="Azimjon Kamiljanov — AI & Full-Stack Developer (Student) • 9-Planet 3D WebGL Cosmic Portfolio, CyberAgent Titans, and Autonomous AI Ecosystems.">
     <meta property="og:image" content="https://azimjon.dev/desktop_overview_clean.png">
     <meta property="og:image:width" content="1920">
     <meta property="og:image:height" content="1080">
@@ -41,7 +32,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://azimjon.dev/">
     <meta name="twitter:title" content="Azimjon Kamiljanov | 3D Solar System Developer Portfolio">
-    <meta name="twitter:description" content="Azimjon Kamiljanov — Lead AI Systems Architect • 9-Planet 3D WebGL Cosmic Portfolio.">
+    <meta name="twitter:description" content="Azimjon Kamiljanov — AI & Full-Stack Developer (Student) • 9-Planet 3D WebGL Cosmic Portfolio.">
     <meta name="twitter:image" content="https://azimjon.dev/desktop_overview_clean.png">
 
     <!-- Structured Data (JSON-LD) for Google Knowledge Graph & Search -->
@@ -56,11 +47,12 @@
           "alternateName": ["Azimjon", "azimjon.dev"],
           "url": "https://azimjon.dev",
           "image": "https://azimjon.dev/desktop_overview_clean.png",
-          "jobTitle": "Lead AI Systems Architect & Full-Stack Engineer",
-          "description": "Lead AI Systems Architect and Full-Stack Engineer specializing in autonomous multi-agent ecosystems, Three.js/WebGL, and real-time VoIP AI agents.",
+          "jobTitle": "AI & Full-Stack Developer (Student)",
+          "description": "AI & Full-Stack Developer (Student) at PDP University and School 21 Tashkent specializing in autonomous multi-agent ecosystems, Three.js/WebGL, and real-time VoIP AI agents.",
           "sameAs": [
             "https://github.com/AzimjonKamiljanov",
-            "https://t.me/CyberAgentNexus"
+            "https://t.me/CyberAgentNexus",
+            "https://t.me/KamiljanovAzimjon"
           ]
         },
         {
@@ -77,25 +69,13 @@
     }
     </script>
 
-    <link rel="stylesheet" href="style.css?v=20">
-    <!-- Import maps polyfill -->
-    <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js" crossorigin="anonymous"></script>
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-            }
-        }
-    </script>
-    <script defer src="gsap.min.js"></script>
-    <!-- MediaPipe Hands & Camera Utils for Real-time AI Vision Gesture Control (Pinned Stable Versions) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Asosiy kontentga o\x27tish / Skip to content</a>
+
     <!-- Futuristic Sci-Fi Preloader Screen -->
-    <div id="preloader">
+    <div id="preloader" aria-live="polite">
         <div class="preloader-backdrop"></div>
         <div class="preloader-card">
             <div class="preloader-orbital">
@@ -120,13 +100,246 @@
     </div>
 
     <!-- Cosmic Control Hints Overlay -->
-    <!-- Cosmic Control Hints Overlay -->
     <div id="control-hints" class="control-hints">
         <span class="hint-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="3" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="21" y2="12"/></svg></span>
-        <span id="control-hints-text">Tortish: Orbit • Skroll: Zoom • Bosish: Ko'rish</span>
+        <span id="control-hints-text">Tortish: Orbit • Skroll: Zoom • Bosish: Ko\x27rish</span>
     </div>
 
-    <div id="canvas-container"></div>
+    <main id="main-content">
+        <div id="canvas-container" role="application" aria-label="3D Solar System View"></div>
+
+        <!-- Accessible Fallback View for Screen Readers & Search Bots -->
+        <div id="accessible-fallback" class="accessible-fallback" role="region" aria-label="Accessible Portfolio Summary">
+            <h2>Azimjon Kamiljanov — Portfolio (Matnli Rejim / Accessible Fallback)</h2>
+            <p><strong>Unvon:</strong> AI & Full-Stack Dasturchi (Talaba) (AI & Full-Stack Developer (Student))</p>
+            <p><strong>Joylashuv:</strong> Tashkent, Uzbekistan</p>
+            <p><strong>Tavsif:</strong> Assalomu alaykum! Men Azimjon Kamiljanov — PDP Universiteti 2-kurs talabasi (AI yo'nalishi) va School 21 Tashkent kiberxavfsizlik ishtirokchisi. Sun'iy intellekt agentlari, real vaqtli WebRTC/VoIP tizimlari hamda 3D WebGL interfeyslarini yaratishga qiziqaman.</p>
+
+            <section id="education-section">
+                <h3>Ta'lim</h3>
+                <ul>
+                    <li><strong>PDP University</strong> — Sun'iy intellekt (AI) yo'nalishi • 2-kurs talabasi (2024 — Present)</li><li><strong>School 21 Tashkent</strong> — Kiberxavfsizlik va past darajadagi dasturlash (2024 — Present)</li>
+                </ul>
+            </section>
+
+            <section id="contact-section">
+                <h3>Aloqa Kanallari</h3>
+                <ul>
+                    <li>Telegram: <a href="https://t.me/KamiljanovAzimjon">@KamiljanovAzimjon</a></li>
+                    <li>Telegram Kanal / VoIP Bot: <a href="https://t.me/CyberAgentNexus">@CyberAgentNexus</a></li>
+                    <li>GitHub: <a href="https://github.com/AzimjonKamiljanov">github.com/AzimjonKamiljanov</a></li>
+                    <li>Veb-sayt: <a href="https://azimjon.dev">azimjon.dev</a></li>
+                </ul>
+            </section>
+
+            <section id="projects-section">
+                <h3>Mualliflik Loyihalari (18)</h3>
+                
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>CyberAgent TITAN NEXUS</h3>
+                <p><strong>Shaxsiy Avtonom Super-Agent va Telegram Ovozli Duplex VoIP Tizimi</strong></p>
+                
+                <p>Azimjon Kamiljanovning bosh flagman loyihasi.
+Gemini 3.8 Flash, Groq, DeepSeek R1 va mahalliy RTX 5070 GPU (Whisper + Kokoro TTS) vositasida ishlovchi avtonom kiber-agent.
+
+Hydrogram VoIP dvigateli orqali 1-on-1 telefon qo'ng'iroqlari, jonli duplex ovozli muloqot va tizimdagi 180 dan ortiq vositalarni (Docker, bash, fayllar, skriptlar) avtonom boshqarish qobiliyatiga ega.</p>
+                <p><small>Teglar: Gemini 3.8 Flash, Telegram VoIP, WebRTC Duplex, RTX 5070 CUDA, PyTorch, Docker</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>UstaPro Master CAD 3D</h3>
+                <p><strong>Telegram Mini App & Web 3D CAD Qurilish va Smeta Dvigateli</strong></p>
+                
+                <p>Murakkab tom, shift, pol va devor yog'och karkaslarini 3D da loyihalovchi va smetasini millimetrgacha hisoblovchi muhandislik platformasi.
+
+Har bir detalni 3D sochish (Exploded View), 0 dan bosqichma-bosqich avto-qurish, 2D chizmalar, materiallar ro'yxati va eksport. 98/98 avtomatlashtirilgan test 100% PASS qilingan.</p>
+                <p><small>Teglar: Three.js CAD, Telegram WebApp, Wood Engineering, Cost Estimation, WebGL</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>Jarvis-X • Autonomous Desktop Voice Assistant</h3>
+                <p><strong>Ovozli Buyruqlar, Desktop Avtomatizatsiyasi va Aqlli Yordamchi</strong></p>
+                
+                <p>Foydalanuvchi ovozini real vaqtda tushunib, dasturlar ochish, skriptlar yurgizish, brauzerni boshqarish va murakkab operatsion tizim vazifalarini bajaruvchi mustaqil yordamchi.
+
+Modular, offline-capable, multilingual (EN/UZ) arxitektura, mahalliy STT/TTS dvigatellari va FastAPI backend.</p>
+                <p><small>Teglar: Python, Voice AI, SpeechRecognition, Kokoro TTS, System Automation, FastAPI</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>CareTrack Clinic • Medical ERP & Clinic CRM</h3>
+                <p><strong>Klinikalar va Tibbiy Muassasalar Uchun Katta Hajmli Boshqaruv Tizimi</strong></p>
+                
+                <p>Klinikalar, shifokorlar va bemorlar o'rtasidagi to'liq siklni raqamlashtiruvchi zamonaviy enterprise ERP platformasi.
+
+Bemorlarni ro'yxatga olish, elektron tibbiy kartalar (EMR), laboratoriya tahlillari tahlili, shifokorlar ish jadvallari, dorixona inventarizatsiyasi va moliya/billing modullarini qamrab oladi.</p>
+                <p><small>Teglar: Next.js, PostgreSQL, TailwindCSS, Prisma ORM, Healthcare ERP, TypeScript</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>Sentinel ECC Matrix & Docker Sandboxing</h3>
+                <p><strong>68 Agent, 48 Skill va OWASP GenAI Xavfsizlik Qalqoni</strong></p>
+                
+                <p>Murakkab dasturchi agentlar (Everything Claude Code) uchun ko'p tilli (Go, Python, Rust, TypeScript) himoyalangan sandboxing poligoni.
+
+TDD, arxitektura qarorlari (ADR), xavfsiz terminal izolyatsiyasi va doimiy avtonom auditi bilan jihozlangan.</p>
+                <p><small>Teglar: Go / Rust / Python, Docker Sandboxing, DevSecOps, OWASP GenAI, TDD</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>Elite AI Agent • Multi-Agent Swarm</h3>
+                <p><strong>Avtonom Vazifalarni Taqsimlovchi Ko'p Agentli AI Tizimi</strong></p>
+                
+                <p>Murakkab kiber va dasturlash vazifalarini parallel bajaruvchi ierarxik agentlar to'dasi (Swarm Intelligence).
+
+Rejalashtiruvchi (Architect), kodlovchi (Coder), sinovchi (Tester) va xavfsizlik auditori (SecOps) rollari o'rtasida muvofiqlashtirilgan ish oqimi.</p>
+                <p><small>Teglar: Multi-Agent Swarm, LLM Orchestration, Python, Asyncio, Auto-Evaluation</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>Modern Full-Stack Cloud Ecosystem</h3>
+                <p><strong>Masshtablanuvchi Veb Arxitektura va Bulut Servislari</strong></p>
+                
+                <p>Zamonaviy veb-ilovalarni noldan ishlab chiqarish darajasigacha ko'taruvchi to'liq stekli arxitektura.
+
+Next.js App Router, TypeScript, PostgreSQL, Redis kesh tizimi, TailwindCSS va Docker orqali avtomatlashtirilgan CI/CD konveyeri.</p>
+                <p><small>Teglar: Next.js 14, TypeScript, PostgreSQL, Redis, Docker CI/CD, TailwindCSS</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>AI & Deep Learning Research Lab</h3>
+                <p><strong>Lenovo Legion RTX 5070 Blackwell CUDA 13 Neyron Tizimi</strong></p>
+                
+                <p>Mahalliy GPU quvvatida ishlovchi sun'iy intellekt va neyron tarmoqlar ilmiy laboratoriyasi.
+
+Whisper large-v3-turbo nutqni aniqlash, Kokoro neyron ovoz sintezi, PyTorch 2.14 + CUDA 13 tezlatgichlari va 180 dan ortiq AI kutubxonalar bazasi.</p>
+                <p><small>Teglar: PyTorch 2.14, CUDA 13, Whisper Turbo, Kokoro TTS, Jupyter Lab, RTX 5070</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>Google Jules Cloud Fleet & Poco Orchestrator</h3>
+                <p><strong>Bulutli Repozitoriylar Sinxronizatsiyasi va Avtonom Flot</strong></p>
+                
+                <p>Google Jules AI agenti orqali 8 dan ortiq GitHub repozitoriylarini bulutda avtonom sinxronlashtiruvchi va boshqaruvchi flot tizimi.
+
+Poco CLI orqali ko'p omborli (multi-repo) o'zgarishlarni kuzatish, avtomatik testlar va versiyalarni yetkazish.</p>
+                <p><small>Teglar: Google Jules, Cloud Fleet, Poco CLI, Multi-Repo, Automated DevOps</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>Azimjon Kamiljanov (Lead AI Architect)</h3>
+                <p><strong>Lead AI Systems Architect • Senior Full-Stack Engineer</strong></p>
+                
+                <p>Assalomu alaykum! Men Azimjon Kamiljanov — sun'iy intellekt agentlari, yuqori yuklamali mikroxizmatlar, 3D WebGL interfeyslar va xavfsiz taqsimlangan tizimlar me'moriman.
+
+Apparat & Laboratoriya:
+• Model: Lenovo Legion Pro 5
+• CPU: AMD Ryzen 9 9955HX (32 vCPU threads)
+• GPU: NVIDIA GeForce RTX 5070 Laptop GPU (8GB VRAM)
+• RAM: 32 GB DDR5 | SSD: 1 TB NVMe SSD
+• Tizim: EndeavourOS Linux (Linux 7.2.3-zen kernel)
+
+Asosiy Texnologik Stack:
+• AI & ML: Python 3.12, PyTorch 2.14 + CUDA 13, Transformers, Whisper Large-v3-Turbo, Kokoro TTS, Gemini 3.8 Flash, DeepSeek R1, Groq LPU.
+• Frontend & 3D: Three.js / WebGL, GLSL Shaders, React, Next.js, TypeScript, TailwindCSS.
+• Backend & DevOps: Node.js, Express, Docker Engine 29.7.2, Portainer, PostgreSQL, Redis, Cloudflare Tunnels, DevSecOps (OWASP GenAI).
+
+Dizaynda minimalist estetika, qat'iy mantiq va 100% ishonchlilik tarafdoriman.</p>
+                <p><small>Teglar: Azimjon Kamiljanov, Three.js / WebGL, PyTorch CUDA 13, AI Agents, Docker, DevSecOps, RTX 5070</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>Legion Power Optimizer • Hardware & Battery Automation</h3>
+                <p><strong>Lenovo Legion Pro 5 Avtomatlashtirilgan Tejamkorlik va Himoya Tizimi</strong></p>
+                
+                <p>Lenovo Legion Pro 5 uchun maxsus yaratilgan apparat nazorati va batareya tejamkorligi avtomatizatsiyasi.
+Tok manbaidan uzilganda ekran chastotasini avtomatik 165Hz dan 60Hz ga tushiradi, noutbukni Quiet/Power-Saver rejimiga o'tkazadi, klaviatura RGB yoritgichlarini o'chiradi va batareya degradatsiyasini oldini oluvchi Conservation Mode (80% chegara) boshqaradi.</p>
+                <p><small>Teglar: Lenovo Legion Pro 5, Battery Automation, Bash / Systemd, Linux Kernel, Hardware Control</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>Titan Centurion • Hybrid Cyber & OSINT Arsenal</h3>
+                <p><strong>100+ Kiberxavfsizlik, Pentesting va OSINT Vositalari Integratsiyasi</strong></p>
+                
+                <p>BlackArch, AUR va maxsus skriptlar orqali birlashtirilgan 100+ jangovar kiberxavfsizlik va tahlil asboblari laboratoriyasi.
+RTX 5070 CUDA bilan tezlashtirilgan Hashcat, Nmap, Radare2, Lynis, Volatility3, Nuclei, NetExec va 760+ manbali OSINT razvedka dvigateli.</p>
+                <p><small>Teglar: Cybersecurity, OSINT, Hashcat CUDA, Nmap, Penetration Testing, DevSecOps</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>B.Tech Cloud Fundamentals Lab</h3>
+                <p><strong>Bulutli Hisoblash va Taqsimlangan Tizimlar Laboratoriyasi</strong></p>
+                
+                <p>B.Tech universiteti Cloud Fundamentals fani laboratoriyasi. Jupyter Notebooklar (01_Cloud_Basics.ipynb), taqsimlangan tizimlar, IaaS/PaaS va Obsidian xotira konspektlari.</p>
+                <p><small>Teglar: Cloud Computing, B.Tech, Jupyter Lab, Distributed Systems, IaaS / PaaS</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>Titan OSINT Massive Threat Intelligence</h3>
+                <p><strong>769 Ta Vositasi va Manbasi va Manbalardan Iborat Global Kiber-Razvedka</strong></p>
+                
+                <p>769 ta kiber-razvedka va OSINT vositasi (OSINT_TOOL_INVENTORY.md). Maigret, Sherlock, Holehe, Cloudfox, Sublist3r va xavf-xatarlarni avtomatlashtirilgan qidiruvi.</p>
+                <p><small>Teglar: OSINT, 769 Tools, Threat Intel, Reconnaissance, Python CLI</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>System Sentinel & Sudo Shield</h3>
+                <p><strong>Linux Yadro Himoyasi va Buzilmas Barqarorlik</strong></p>
+                
+                <p>Linux OS tizim darajasidagi himoyasi. 'sudo rm -rf' buyrug'ini butunlay bloklash, 8GB ZRAM swap, va apparat resurslarini 24/7 nazorat qiluvchi avtonom soqchi.</p>
+                <p><small>Teglar: Linux Hardening, Sudo Shield, ZRAM Swap, Kernel Watchdog, System Stability</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>Cosmic Portfolio 3D Three.js Engine</h3>
+                <p><strong>Ushbu Giper-Realistik 3D Quyosh Tizimi Portfoliosi</strong></p>
+                
+                <p>Three.js r160, maxsus GLSL plazma shaderi, 1:1 NASA SDO fotosferasi, 9 ta sayyora, ACESFilmic tonemapping va UnrealBloomPass bilan yaratilgan dunyodagi ilk koinot portfoliosi.</p>
+                <p><small>Teglar: Three.js, GLSL Shaders, WebGL, GSAP, Space UI, Clean HUD</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>School 21 Crypto & Network Lab</h3>
+                <p><strong>Past Darajadagi C/C++ Tarmoq va Kriptografiya Dasturlari</strong></p>
+                
+                <p>School 21 loyihalari: CbS2-CbS4 past darajadagi POSIX tarmoq protokollari va CbS7-CbS8 zamonaviy simmetrik/asimmetrik kriptografiya tadqiqotlari (C/C++).</p>
+                <p><small>Teglar: School 21, C / C++, POSIX Sockets, Cryptography, Algorithms</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            <article class="fallback-project-card" style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #334155; border-radius: 8px;">
+                <h3>Task Observer & Mnemoverse Telemetry</h3>
+                <p><strong>Multi-Agent Tizimlarda Har Bir Qadam Telemetriyasi</strong></p>
+                
+                <p>Ko'p agentli tizimlarda har bir agent qadamlari, asboblari, xatoliklari va kognitiv xotirasini real vaqtda monitoring qiluvchi va tahlil etuvchi telemetriya infratuzilmasi.</p>
+                <p><small>Teglar: Agent Telemetry, Mnemoverse, Task Observer, Observability, Multi-Agent</small></p>
+                <p><a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer">GitHub Profil</a></p>
+            </article>
+        
+            </section>
+
+            <section id="tools-section">
+                <h3>Ishlatiladigan Vositalar & Ochiq Kodli Tizimlar (0)</h3>
+                
+            </section>
+        </div>
+    </main>
 
     <!-- Top Brand Header -->
     <header id="brand-header">
@@ -135,18 +348,17 @@
                 <div class="pulsing-dot"></div>
                 <div>
                     <h1 class="brand-title">AZIMJON KAMILJANOV</h1>
-                    <p class="brand-subtitle sr-only">Lead AI Systems Architect • 9 Sayyora Koinot Portfoliosi</p>
+                    <p class="brand-subtitle sr-only">AI & Full-Stack Dasturchi (Talaba) • 9 Sayyora Koinot Portfoliosi</p>
                 </div>
             </div>
             <div class="brand-actions">
-                <!-- Group 1: Boshqaruv / Profil guruhi -->
                 <div class="brand-nav-group" id="brand-nav-group">
                     <div class="lang-switch-container" aria-label="Tilni tanlash / Select language / Выберите язык">
-                        <button class="lang-btn active" data-lang="uz" title="O'zbek tili">UZ</button>
+                        <button class="lang-btn active" data-lang="uz" title="O\x27zbek tili">UZ</button>
                         <button class="lang-btn" data-lang="en" title="English">EN</button>
                         <button class="lang-btn" data-lang="ru" title="Русский">RU</button>
                     </div>
-                    <button id="catalog-btn" class="header-link highlight-link" title="Barcha Loyihalar Ro'yxati">
+                    <button id="catalog-btn" class="header-link highlight-link" title="Barcha Loyihalar Ro\x27yxati">
                         <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></span> <span id="catalog-btn-text">Loyihalar</span>
                     </button>
                     <a id="resume-download-btn" class="header-link highlight-resume" href="assets/Azimjon_Kamiljanov_Resume.pdf" download="Azimjon_Kamiljanov_Resume.pdf" title="Azimjon Kamiljanov • PDF Rezyume / CV">
@@ -163,21 +375,19 @@
                     </a>
                 </div>
 
-                <!-- Group 2: Koinot Asboblari / Quick Toggles Pod (Icon Pod) -->
                 <div class="brand-group-toggles" id="brand-quick-toggles" aria-label="Tezkor boshqaruvlar">
-                    <button id="audio-toggle-btn" class="header-link audio-muted icon-pod-btn" title="Kosmik Ovozni Yoqish yoki O'chirish" data-tooltip="Kosmik Ovoz">
-                        <span id="audio-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg></span> <span id="audio-toggle-text" class="pod-btn-text">Ovoz: O'chiq</span>
+                    <button id="audio-toggle-btn" class="header-link audio-muted icon-pod-btn" title="Kosmik Ovozni Yoqish yoki O\x27chirish" data-tooltip="Kosmik Ovoz">
+                        <span id="audio-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg></span> <span id="audio-toggle-text" class="pod-btn-text">Ovoz: O\x27chiq</span>
                     </button>
                     <button id="cinematic-toggle-btn" class="header-link icon-pod-btn" title="Toza Koinot Rejimi (H) / Pure Space Cinematic Mode" data-tooltip="Toza Fazo (H)">
                         <span id="cinematic-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></span> <span id="cinematic-toggle-text" class="pod-btn-text">Toza Fazo</span>
                     </button>
-                    <button id="guide-toggle-btn" class="header-link icon-pod-btn" title="Foydalanish Bo'yicha Ko'rsatma / Guide" data-tooltip="Ko'rsatma">
-                        <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> <span id="guide-toggle-text" class="pod-btn-text">Ko'rsatma</span>
+                    <button id="guide-toggle-btn" class="header-link icon-pod-btn" title="Foydalanish Bo\x27yicha Ko\x27rsatma / Guide" data-tooltip="Ko\x27rsatma">
+                        <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> <span id="guide-toggle-text" class="pod-btn-text">Ko\x27rsatma</span>
                     </button>
                 </div>
 
-                <!-- Group Toggle: Koinot Asboblari Chip -->
-                <button id="telemetry-island-toggle" class="header-link telemetry-island-toggle" title="Koinot Telemetriya Panelini ko'rsatish/yashirish" aria-expanded="true">
+                <button id="telemetry-island-toggle" class="header-link telemetry-island-toggle" title="Koinot Telemetriya Panelini ko\x27rsatish/yashirish" aria-expanded="false">
                     <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg></span>
                     <span class="telemetry-toggle-label">Asboblar</span>
                     <svg class="chevron-svg" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -185,91 +395,72 @@
             </div>
         </div>
 
-        <!-- Group 3: Kosmik Telemetriya Orolchasi (Cosmic Telemetry Island) -->
-        <div class="cosmic-telemetry-island" id="cosmic-telemetry-island">
+        <div class="cosmic-telemetry-island island-collapsed" id="cosmic-telemetry-island">
             <div class="telemetry-island-badge">
                 <span class="telemetry-pulse"></span>
                 <span class="telemetry-badge-text">HUD TELEMETRIYA</span>
             </div>
             <div class="telemetry-buttons-track">
                 <button id="overview-btn" class="header-link" title="Butun Quyosh Tizimi / Solar Overview">
-                    <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(-25 12 12)"/></svg></span> <span id="overview-btn-text">Umumiy Ko'rinish</span>
+                    <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(-25 12 12)"/></svg></span> <span id="overview-btn-text">Umumiy Ko\x27rinish</span>
                 </button>
-                <button id="orbit-toggle-btn" class="header-link" title="Orbita Harakatini To'xtatish yoki Davom Ettirish">
-                    <span id="orbit-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="3.5" height="16" rx="1"/><rect x="14.5" y="4" width="3.5" height="16" rx="1"/></svg></span> <span id="orbit-toggle-text">Orbita: Harakatda</span>
+                <button id="warp-speed-btn" class="header-link" title="Koinot Vaqt Tezligi (1x / 5x / 20x)">
+                    <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> <span id="warp-speed-text">Vaqt: 1x</span>
                 </button>
-                <button id="orbits-toggle-btn" class="header-link" title="Orbita Chiziqlarini Yoqish yoki O'chirish (O)">
-                    <span id="orbits-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="3"/></svg></span> <span id="orbits-toggle-text">Orbitalar: Yoniq</span>
+                <button id="gesture-toggle-btn" class="header-link" title="Kamera orqali Qo\x27l Boshqaruvi (AI Vision)">
+                    <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v4m-4-7a2 2 0 0 0-4 0v7m-4-3a2 2 0 0 0-4 0v7a8 8 0 0 0 16 0v-4a2 2 0 0 0-4 0"/></svg></span> <span id="gesture-toggle-text">Qo\x27l Boshqaruvi</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Auxiliary controls kept in DOM for programmatic & shortcut support -->
-    <div class="aux-hidden-controls" style="display: none;" aria-hidden="true">
-        <button id="gesture-toggle-btn" class="header-link gesture-inactive icon-pod-btn"><span id="gesture-toggle-icon"></span><span id="gesture-toggle-text"></span></button>
-        <button id="warp-speed-btn" class="header-link"><span id="warp-speed-icon"></span><span id="warp-speed-text">Vaqt: 1x</span></button>
-        <button id="constellations-toggle-btn" class="header-link"><span id="constellations-toggle-icon"></span><span id="constellations-toggle-text">Turkumlar: O'chiq</span></button>
-        <button id="scale-compare-btn" class="header-link"><span id="scale-compare-icon"></span><span id="scale-compare-text">Hajmlar Taqqoslashi</span></button>
-        <button id="surface-view-btn" class="header-link"><span id="surface-view-icon"></span><span id="surface-view-text">Yuzadan Qarash</span></button>
-        <button id="skyview-toggle-btn" class="header-link"><span id="skyview-toggle-icon"></span><span id="skyview-toggle-text">Sky View</span></button>
-    </div>
-
-    <!-- Bottom Navigation HUD -->
-    <nav id="nav-container" aria-label="Koinot navigatsiyasi">
-        <button class="nav-btn active-state" data-target="sun" title="Quyosh (Developer Profile)">
+    <!-- Bottom Navigation Dock -->
+    <nav id="nav-container" aria-label="Sayyoralar navigatsiyasi">
+        <button class="nav-btn" data-target="sun" title="Quyosh (Sun) • Markaziy Yulduz">
             <span class="planet-orb orb-sun"></span>
             <span class="label sr-only">Quyosh</span>
         </button>
-        <button class="nav-btn" data-target="Mercury" title="1. Merkuriy - CareTrack ERP">
+        <button class="nav-btn" data-target="Mercury" title="Merkuriy (Mercury) • 1-Sayyora">
             <span class="planet-orb orb-mercury"></span>
             <span class="label sr-only">Merkuriy</span>
         </button>
-        <button class="nav-btn" data-target="Venus" title="2. Venera - Jarvis-X AI">
+        <button class="nav-btn" data-target="Venus" title="Venera (Venus) • 2-Sayyora">
             <span class="planet-orb orb-venus"></span>
             <span class="label sr-only">Venera</span>
         </button>
-        <button class="nav-btn" data-target="Earth" title="3. Yer - CyberAgent Flagship">
+        <button class="nav-btn" data-target="Earth" title="Yer (Earth) • 3-Sayyora">
             <span class="planet-orb orb-earth"></span>
             <span class="label sr-only">Yer</span>
         </button>
-        <button class="nav-btn special-moon" data-target="moon" title="Yer Yo'ldoshi - Aloqa Kanallari">
+        <button class="nav-btn" data-target="moon" title="Oy (Moon) • Yer Yo\x27ldoshi">
             <span class="planet-orb orb-moon"></span>
             <span class="label sr-only">Oy</span>
         </button>
-        <button class="nav-btn" data-target="Mars" title="4. Mars - UstaPro CAD 3D">
+        <button class="nav-btn" data-target="Mars" title="Mars • 4-Sayyora">
             <span class="planet-orb orb-mars"></span>
             <span class="label sr-only">Mars</span>
         </button>
-        <button class="nav-btn" data-target="Jupiter" title="5. Yupiter - Sentinel ECC Matrix">
+        <button class="nav-btn" data-target="Jupiter" title="Yupiter (Jupiter) • 5-Sayyora">
             <span class="planet-orb orb-jupiter"></span>
             <span class="label sr-only">Yupiter</span>
         </button>
-        <button class="nav-btn" data-target="Saturn" title="6. Saturn - Elite AI Swarm">
+        <button class="nav-btn" data-target="Saturn" title="Saturn • 6-Sayyora">
             <span class="planet-orb orb-saturn"></span>
             <span class="label sr-only">Saturn</span>
         </button>
-        <button class="nav-btn" data-target="Uranus" title="7. Uran - Modern Full-Stack">
+        <button class="nav-btn" data-target="Uranus" title="Uran (Uranus) • 7-Sayyora">
             <span class="planet-orb orb-uranus"></span>
             <span class="label sr-only">Uran</span>
         </button>
-        <button class="nav-btn" data-target="Neptune" title="8. Neptun - AI & Deep Learning Lab">
+        <button class="nav-btn" data-target="Neptune" title="Neptun (Neptune) • 8-Sayyora">
             <span class="planet-orb orb-neptune"></span>
             <span class="label sr-only">Neptun</span>
         </button>
-        <button class="nav-btn" data-target="Pluto" title="9. Pluton - Google Jules & Poco">
+        <button class="nav-btn" data-target="Pluto" title="Pluton (Pluto) • 9-Sayyora">
             <span class="planet-orb orb-pluto"></span>
             <span class="label sr-only">Pluton</span>
         </button>
-        <button class="nav-btn special-voyager" data-target="Voyager" title="Voyager 1 - Koinot Zondi Missiyasi">
-            <span class="planet-orb orb-voyager"></span>
-            <span class="label sr-only">Voyager</span>
-        </button>
-        <button class="nav-btn special-blackhole" data-target="BlackHole" title="Sagittarius A* - Qora O'ra (Black Hole)">
-            <span class="planet-orb orb-blackhole"></span>
-            <span class="label sr-only">Qora O'ra</span>
-        </button>
-        <button class="nav-btn special-star" data-target="star" title="Haqiqiy Astronomik Yulduzlar & Kiber-Arsenal (18 ta Loyiha)">
+        <button class="nav-btn special-star" data-target="star" title="Astronomik Yulduzlar & Kiber-Arsenal">
             <span class="planet-orb orb-stars"></span>
             <span class="label sr-only">Yulduzlar</span>
         </button>
@@ -283,36 +474,11 @@
         </button>
     </div>
 
-    <!-- Floating Surface View Mode Bar -->
-    <div id="surface-view-bar" class="surface-view-bar hidden">
-        <button id="surface-earthrise-btn" class="surface-bar-btn active">
-            <svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
-            <span id="surface-earthrise-text">Oy: Earthrise</span>
-        </button>
-        <button id="surface-mars-btn" class="surface-bar-btn">
-            <svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="6"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
-            <span id="surface-mars-text">Mars: Moviy Botish</span>
-        </button>
-        <button id="surface-exit-btn" class="surface-bar-btn exit-btn">
-            <svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <span id="surface-exit-text">Orbitaga Qaytish</span>
-        </button>
-    </div>
-
-    <!-- Floating Sky View Exit Banner -->
-    <div id="skyview-exit-banner" class="skyview-exit-banner hidden">
-        <div class="skyview-banner-text" id="skyview-banner-text">Sky View: Telefonni osmonga qarating</div>
-        <button id="skyview-exit-btn" class="skyview-exit-btn">
-            <svg class="btn-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <span id="skyview-exit-text">Chiqish</span>
-        </button>
-    </div>
-
-    <!-- Interactive Cosmic Onboarding & User Guide Modal -->
+    <!-- Onboarding Guide Modal -->
     <div id="guide-modal-container" class="guide-modal-container hidden">
         <div class="guide-modal">
             <button class="close-btn" id="guide-close-btn" aria-label="Yopish">✕</button>
-            <div class="badge-tag" id="guide-badge">TIZIM KO'RSATMASI</div>
+            <div class="badge-tag" id="guide-badge">TIZIM KO\x27RSATMASI</div>
             <h2 class="guide-heading" id="guide-heading">3D Koinot Portfoliosi</h2>
             <p class="guide-desc" id="guide-desc">Asosiy navigatsiya va boshqaruv qoidalari:</p>
             
@@ -338,8 +504,8 @@
                         <span class="step-num">03</span>
                         <span class="step-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
                     </div>
-                    <h3 id="guide-step3-title">Oy — To'g'ridan-to'g'ri Aloqa</h3>
-                    <p id="guide-step3-desc">Yer yonidagi Oy — Telegram botga xabar yuborish va VoIP qo'ng'iroq markazi.</p>
+                    <h3 id="guide-step3-title">Oy — To\x27g\x27ridan-to\x27g\x27ri Aloqa</h3>
+                    <p id="guide-step3-desc">Yer yonidagi Oy — Telegram botga xabar yuborish va VoIP markazi.</p>
                 </div>
                 <div class="guide-step-card">
                     <div class="step-badge-wrap">
@@ -354,16 +520,16 @@
             <div class="guide-footer">
                 <label class="guide-dont-show-wrap">
                     <input type="checkbox" id="guide-dont-show-checkbox">
-                    <span id="guide-dont-show-text">Keyingi safar avtomatik ko'rsatmaslik</span>
+                    <span id="guide-dont-show-text">Keyingi safar avtomatik ko\x27rsatmaslik</span>
                 </label>
                 <button id="guide-start-btn" class="guide-start-btn">
-                    <span id="guide-start-text">Koinotni Ko'rish</span>
+                    <span id="guide-start-text">Koinotni Ko\x27rish</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- AI Vision Hand Gesture Control Telemetry PIP HUD -->
+    <!-- Hand Gesture Control Telemetry HUD -->
     <div id="gesture-hud" class="gesture-hud hidden">
         <div class="gesture-hud-card">
             <div class="gesture-hud-header">
@@ -371,7 +537,7 @@
                     <span class="gesture-live-dot" id="gesture-status-dot"></span>
                     <span class="gesture-badge" id="gesture-badge-text">AI VISION TELEMETRIYA</span>
                 </div>
-                <button class="gesture-close-btn" id="gesture-close-btn" aria-label="Yopish" title="Qo'l boshqaruvini yopish">✕</button>
+                <button class="gesture-close-btn" id="gesture-close-btn" aria-label="Yopish" title="Qo\x27l boshqaruvini yopish">✕</button>
             </div>
             <div class="gesture-canvas-wrapper">
                 <video id="gesture-video" playsinline muted style="display:none;"></video>
@@ -381,21 +547,20 @@
             <div class="gesture-hud-body">
                 <div class="gesture-state-row">
                     <span class="gesture-indicator-icon" id="gesture-indicator-icon">🖐</span>
-                    <span class="gesture-state-text" id="gesture-state-text">Qo'l qidirilmoqda...</span>
+                    <span class="gesture-state-text" id="gesture-state-text">Qo\x27l qidirilmoqda...</span>
                 </div>
                 <div class="gesture-quick-guide" id="gesture-quick-guide">🖐 Orbit • 👆 Reticle • 🤏 Zoom/Tanlash • ✊ Stop</div>
             </div>
         </div>
     </div>
 
-    <!-- Holographic Gesture Reticle -->
     <div id="gesture-reticle" class="gesture-reticle hidden">
         <div class="reticle-ring"></div>
         <div class="reticle-crosshair"></div>
         <div class="reticle-target-label" id="reticle-target-label"></div>
     </div>
 
-    <!-- Futuristic Cinematic Autopilot Tour Floating Telemetry HUD -->
+    <!-- Tour Floating HUD -->
     <div id="tour-hud" class="tour-hud hidden">
         <div class="tour-hud-card">
             <div class="tour-header-row">
@@ -411,7 +576,7 @@
                 <div class="tour-icon-wrap" id="tour-stop-icon"><span class="planet-orb orb-sun"></span></div>
                 <div class="tour-info-wrap">
                     <h3 class="tour-title" id="tour-title-text">Quyosh • Azimjon Kamiljanov</h3>
-                    <p class="tour-role" id="tour-role-text">Markaziy Yulduz • Lead AI Systems Architect</p>
+                    <p class="tour-role" id="tour-role-text">Markaziy Yulduz • AI & Full-Stack Dasturchi (Talaba)</p>
                 </div>
             </div>
 
@@ -425,13 +590,13 @@
                 <button class="tour-btn" id="tour-prev-btn" title="Oldingi">
                     <svg class="btn-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> <span class="tour-btn-label" id="tour-prev-label">Oldingi</span>
                 </button>
-                <button class="tour-btn tour-btn-play" id="tour-play-btn" title="To'xtatish / Davom ettirish">
-                    <span id="tour-play-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="3.5" height="16" rx="1"/><rect x="14.5" y="4" width="3.5" height="16" rx="1"/></svg></span> <span class="tour-btn-label" id="tour-play-label">To'xtatish</span>
+                <button class="tour-btn tour-btn-play" id="tour-play-btn" title="To\x27xtatish / Davom ettirish">
+                    <span id="tour-play-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="3.5" height="16" rx="1"/><rect x="14.5" y="4" width="3.5" height="16" rx="1"/></svg></span> <span class="tour-btn-label" id="tour-play-label">To\x27xtatish</span>
                 </button>
                 <button class="tour-btn" id="tour-next-btn" title="Keyingi">
                     <svg class="btn-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg> <span class="tour-btn-label" id="tour-next-label">Keyingi</span>
                 </button>
-                <button class="tour-btn tour-btn-detail" id="tour-detail-btn" title="To'liq Ma'lumot">
+                <button class="tour-btn tour-btn-detail" id="tour-detail-btn" title="To\x27liq Ma\x27lumot">
                     <svg class="btn-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> <span class="tour-btn-label" id="tour-detail-label">Batafsil</span>
                 </button>
             </div>
@@ -444,8 +609,8 @@
             <button class="close-btn" id="modal-close" aria-label="Yopish">✕</button>
             <div class="badge-tag" id="info-badge">LOYIHA</div>
             <h2 id="info-title">Sarlavha</h2>
-            <p id="info-subtitle">Qisqacha ta'rif</p>
-            <div id="info-content">Ma'lumotlar...</div>
+            <p id="info-subtitle">Qisqacha ta\x27rif</p>
+            <div id="info-content">Ma\x27lumotlar...</div>
             <div id="moon-terminal-container" class="hidden"></div>
             <div class="tags-container" id="info-tags"></div>
             <div class="modal-actions">
@@ -456,7 +621,7 @@
                     <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;margin-right:6px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span id="info-action-text">Telegramda Yozish</span>
                 </a>
                 <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="btn-secondary" id="info-github-btn">
-                    <svg class="btn-svg" viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;margin-right:6px;"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span id="info-github-text">GitHub Repo</span>
+                    <svg class="btn-svg" viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;margin-right:6px;"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg><span id="info-github-text">GitHub Repo</span>
                 </a>
                 <button id="back-button">Orbitaga Qaytish</button>
             </div>
@@ -471,7 +636,6 @@
             <h2 class="catalog-heading" id="catalog-heading">Azimjon Kamiljanov • Barcha Loyihalar</h2>
             <p class="catalog-desc" id="catalog-desc">Flagman tizimlar va ishlab chiqishlar:</p>
             
-            <!-- Interactive Live Search & Category Filter Bar -->
             <div class="catalog-filter-bar">
                 <div class="catalog-search-wrap">
                     <span class="search-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
@@ -487,446 +651,16 @@
                 </div>
             </div>
 
-            <!-- Empty Search State Placeholder -->
             <div id="catalog-empty-state" class="catalog-empty-state hidden">
                 <div class="empty-icon"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.4;"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg></div>
                 <h4 id="catalog-empty-title">Loyiha topilmadi</h4>
-                <p id="catalog-empty-desc">Kiritilgan so'rov bo'yicha hech qanday loyiha topilmadi. Boshqa so'z bilan izlab ko'ring.</p>
+                <p id="catalog-empty-desc">Kiritilgan so\x27rov bo\x27yicha hech qanday loyiha topilmadi. Boshqa so\x27z bilan izlab ko\x27ring.</p>
             </div>
             
-            <div class="catalog-grid" id="catalog-planets-grid">
-                <div class="catalog-card" data-target="Earth" data-categories="ai systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-earth"></span></span>
-                        <div>
-                            <h3>CyberAgent TITAN NEXUS</h3>
-                            <span class="card-type">Bosh Flagman Loyiha</span>
-                        </div>
-                    </div>
-                    <p>Telegram duplex ovozli VoIP (WebRTC), RTX 5070 GPU Whisper + Kokoro TTS, Gemini 3.8 Flash kognitiv miyasi va 180+ avtonom boshqaruv vositasi.</p>
-                    <div class="card-tags">
-                        <span>#Gemini 3.8</span><span>#Telegram VoIP</span><span>#RTX 5070</span><span>#Python</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov/CyberAgent" target="_blank" rel="noopener noreferrer" class="card-link">CyberAgent Repo →</a>
-                </div>
-
-                <div class="catalog-card" data-target="Mars" data-categories="systems web">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-mars"></span></span>
-                        <div>
-                            <h3>UstaPro Master CAD 3D</h3>
-                            <span class="card-type">3D Muhandislik & Smeta</span>
-                        </div>
-                    </div>
-                    <p>Telegram Mini App va web 3D CAD tizimi. Tom, shift, pol, zina materiallari va smetasini avtomatik hisoblaydi. 98/98 testlar 100% PASS.</p>
-                    <div class="card-tags">
-                        <span>#Three.js</span><span>#3D CAD</span><span>#Telegram WebApp</span><span>#Cloudflare</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">UstaPro Profil →</a>
-                </div>
-
-                <div class="catalog-card" data-target="Venus" data-categories="ai">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-venus"></span></span>
-                        <div>
-                            <h3>Jarvis-X AI Assistant</h3>
-                            <span class="card-type">Autonomous Voice AI</span>
-                        </div>
-                    </div>
-                    <p>Modular, offline-capable, multilingual (EN/UZ) desktop yordamchisi. Ovozli buyruqlar, tizim avtomatizatsiyasi va FastAPI integratsiyasi.</p>
-                    <div class="card-tags">
-                        <span>#Python</span><span>#Voice AI</span><span>#Kokoro TTS</span><span>#FastAPI</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov/Jarvis-x" target="_blank" rel="noopener noreferrer" class="card-link">Jarvis-x Repo →</a>
-                </div>
-
-                <div class="catalog-card" data-target="Mercury" data-categories="web">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-mercury"></span></span>
-                        <div>
-                            <h3>CareTrack Clinic ERP</h3>
-                            <span class="card-type">Medical Platform</span>
-                        </div>
-                    </div>
-                    <p>Tibbiyot muassasalari uchun enterprise CRM/ERP. Bemorlar qabuli, EMR, laboratoriya tahlillari va moliya hisobotlari.</p>
-                    <div class="card-tags">
-                        <span>#Next.js</span><span>#PostgreSQL</span><span>#TailwindCSS</span><span>#REST API</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov/caretrack-clinic" target="_blank" rel="noopener noreferrer" class="card-link">CareTrack Repo →</a>
-                </div>
-
-                <div class="catalog-card" data-target="Jupiter" data-categories="security systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-jupiter"></span></span>
-                        <div>
-                            <h3>Sentinel ECC Matrix</h3>
-                            <span class="card-type">DevSecOps & Sandboxing</span>
-                        </div>
-                    </div>
-                    <p>Xatoliklarga chidamli ECC hisoblash matritsasi va xavfsiz izolyatsiyalangan Docker sandboxing platformasi. OWASP GenAI 2026 himoyasi.</p>
-                    <div class="card-tags">
-                        <span>#DevSecOps</span><span>#Docker</span><span>#Python</span><span>#OWASP</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">Sentinel Profil →</a>
-                </div>
-
-                <div class="catalog-card" data-target="Saturn" data-categories="ai">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-saturn"></span></span>
-                        <div>
-                            <h3>Elite AI Agent Swarm</h3>
-                            <span class="card-type">Multi-Agent Swarm</span>
-                        </div>
-                    </div>
-                    <p>Planner, Coder, Critic va Tester kabi ixtisoslashgan avtonom agentlar to'dasi. Dastur kodlarini mustaqil ishlab chiqish va testlash.</p>
-                    <div class="card-tags">
-                        <span>#Multi-Agent</span><span>#LangChain</span><span>#AsyncIO</span><span>#Python</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov/elite-ai-agent" target="_blank" rel="noopener noreferrer" class="card-link">Elite AI Repo →</a>
-                </div>
-
-                <div class="catalog-card" data-target="Uranus" data-categories="web">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-uranus"></span></span>
-                        <div>
-                            <h3>Modern Full-Stack Ecosystem</h3>
-                            <span class="card-type">Enterprise Web Architecture</span>
-                        </div>
-                    </div>
-                    <p>React/Next.js frontend, Node.js/Express mikroxizmatlari, Redis kesh, PostgreSQL va Docker Compose klasteri.</p>
-                    <div class="card-tags">
-                        <span>#React</span><span>#TypeScript</span><span>#Node.js</span><span>#Docker</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov/full-stack-" target="_blank" rel="noopener noreferrer" class="card-link">Full-Stack Repo →</a>
-                </div>
-
-                <div class="catalog-card" data-target="Neptune" data-categories="ai">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-neptune"></span></span>
-                        <div>
-                            <h3>AI & Deep Learning Lab</h3>
-                            <span class="card-type">RTX 5070 CUDA Lab</span>
-                        </div>
-                    </div>
-                    <p>PyTorch 2.14, CUDA 13 va 200+ AI kutubxona bilan jihozlangan laboratoriya. Kompyuter ko'rishi, NLP, Fine-tuning va Optuna.</p>
-                    <div class="card-tags">
-                        <span>#PyTorch</span><span>#CUDA 13</span><span>#RTX 5070</span><span>#Transformers</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">AI Lab Profil →</a>
-                </div>
-
-                <div class="catalog-card" data-target="Pluto" data-categories="systems web">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-pluto"></span></span>
-                        <div>
-                            <h3>Google Jules Cloud Fleet</h3>
-                            <span class="card-type">Cloud VM & Edge</span>
-                        </div>
-                    </div>
-                    <p>Google Labs Jules SDK orqali 8 ta GitHub repo integratsiyasi, Google Cloud VM avtonom PR generatori va Poco mobil boshqaruv.</p>
-                    <div class="card-tags">
-                        <span>#Google Jules</span><span>#Cloud Fleet</span><span>#Poco</span><span>#DevOps</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov/Poco" target="_blank" rel="noopener noreferrer" class="card-link">Poco Repo →</a>
-                </div>
-
-                <div class="catalog-card" data-target="sun" data-categories="web systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-sun"></span></span>
-                        <div>
-                            <h3>Cosmic Portfolio 3D</h3>
-                            <span class="card-type">WebGL 3D Engine</span>
-                        </div>
-                    </div>
-                    <p>Ushbu giper-realistik 3D Quyosh tizimi portfoliosi. Three.js r160, maxsus GLSL plazma shaderi, 9 ta sayyora, ACESFilmic va UnrealBloomPass.</p>
-                    <div class="card-tags">
-                        <span>#Three.js</span><span>#GLSL Shader</span><span>#WebGL</span><span>#GSAP</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov/Cosmic_portifolio" target="_blank" rel="noopener noreferrer" class="card-link">Cosmic Repo →</a>
-                </div>
-            </div>
-
-            <!-- Stellar Projects & Cyber Arsenal Section -->
-            <div class="catalog-section-divider">
-                <div class="badge-tag stellar-badge">YULDUZLAR & KIBER-ARSENAL</div>
-                <h3 class="catalog-subheading">Tizim Loyihalari, Xavfsizlik Arsenali & AI Infratuzilmasi</h3>
-                <p class="catalog-subdesc">Kiberxavfsizlik, infratuzilma va avtonom agent platformalari:</p>
-            </div>
-
-            <div class="catalog-grid catalog-stars-grid" id="catalog-stars-grid">
-                <div class="catalog-star-card" data-target="star_legion_power" data-categories="systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>Legion Power Optimizer</h3>
-                            <span class="card-type star-type">Apparat & Batareya</span>
-                        </div>
-                    </div>
-                    <p>Lenovo Legion Pro 5 uchun avtomatlashtirilgan tejamkorlik tizimi. 165Hz/60Hz avto-almashish, Quiet rejim, RGB off, Conservation Mode va status CLI.</p>
-                    <div class="card-tags">
-                        <span>#Legion Pro 5</span><span>#Battery</span><span>#Linux Kernel</span><span>#Bash</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">Legion Power Profil →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_titan_cyber" data-categories="security">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>Titan Centurion Cyber Arsenal</h3>
-                            <span class="card-type star-type">Kiberxavfsizlik & OSINT</span>
-                        </div>
-                    </div>
-                    <p>BlackArch va AUR asosidagi 100+ kiber-qurol. Hashcat RTX 5070 CUDA, Nmap, Radare2, Lynis, Volatility3, Nuclei va 760+ manbali OSINT dvigateli.</p>
-                    <div class="card-tags">
-                        <span>#Cybersecurity</span><span>#OSINT</span><span>#Hashcat CUDA</span><span>#DevSecOps</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">Cyber Arsenal Profil →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_graphify" data-categories="ai systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>Graphify Visual Architecture</h3>
-                            <span class="card-type star-type">Arxitektura Grafigi</span>
-                        </div>
-                    </div>
-                    <p>Kod bazalari uchun 373 tugun va 766 bog'lanishli D3 interaktiv bilimlar grafigi va Obsidian Canvas modeli. AST tahlili va God nodes qidiruvi.</p>
-                    <div class="card-tags">
-                        <span>#AST Analysis</span><span>#Knowledge Graph</span><span>#D3.js</span><span>#Canvas</span>
-                    </div>
-                    <a href="https://github.com/Graphify-Labs/graphify" target="_blank" rel="noopener noreferrer" class="card-link">Graphify Repo →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_newapi" data-categories="ai web">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>New API Multi-AI Gateway</h3>
-                            <span class="card-type star-type">Docker AI Shlyuzi</span>
-                        </div>
-                    </div>
-                    <p>Port 3001 da universal AI marshrutizatori. Gemini 3.8, DeepSeek-R1, Claude 3.5, OpenAI va Groq modellarini yagona API orqali boshqaradi.</p>
-                    <div class="card-tags">
-                        <span>#Docker</span><span>#AI Gateway</span><span>#Multi-LLM</span><span>#Port 3001</span>
-                    </div>
-                    <a href="https://github.com/Calcium-Ion/new-api" target="_blank" rel="noopener noreferrer" class="card-link">New API Repo →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_agentzero" data-categories="ai systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>Agent Zero Dual-Brain System</h3>
-                            <span class="card-type star-type">Avtonom Docker Agent</span>
-                        </div>
-                    </div>
-                    <p>Port 5080 da izolyatsiyalangan Docker ekotizimi. Mustaqil terminal, brauzer, fayl manipulyatsiyasi va Antigravity bilan Master-Slave simbiozi.</p>
-                    <div class="card-tags">
-                        <span>#Docker</span><span>#Agent Zero</span><span>#Sandboxing</span><span>#Port 5080</span>
-                    </div>
-                    <a href="https://github.com/frdel/agent-zero" target="_blank" rel="noopener noreferrer" class="card-link">Agent Zero Repo →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_aider_nv" data-categories="ai systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>Aider & NVIDIA NIM Architect</h3>
-                            <span class="card-type star-type">AI Coding CLI</span>
-                        </div>
-                    </div>
-                    <p>Dual-Brain arxitekturasi: DeepSeek-R1 (rejalashtiruvchi) + Qwen 2.5 Coder 32B (ijrochi) va 81 ta NVIDIA NIM modeli. Git avto-commit va AST.</p>
-                    <div class="card-tags">
-                        <span>#Aider</span><span>#NVIDIA NIM</span><span>#DeepSeek-R1</span><span>#Qwen Coder</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">Aider NIM Profil →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_openshell" data-categories="security ai">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>NVIDIA OpenShell Safety Sandbox</h3>
-                            <span class="card-type star-type">AI Xavfsizlik Qalqoni</span>
-                        </div>
-                    </div>
-                    <p>OpenShell v0.1.2 gateway va T3 AI agentlari uchun 100% izolyatsiyalangan sandbox qobig'i. Tizim yadrosini avtonom xatarlardan himoyalaydi.</p>
-                    <div class="card-tags">
-                        <span>#OpenShell</span><span>#AI Safety</span><span>#Docker Sandbox</span><span>#Zero-Trust</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">OpenShell Profil →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_btech" data-categories="systems web">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>B.Tech Cloud Fundamentals Lab</h3>
-                            <span class="card-type star-type">Akademik Bulut Tizimi</span>
-                        </div>
-                    </div>
-                    <p>B.Tech universiteti Cloud Fundamentals fani laboratoriyasi. Jupyter Notebooklar (01_Cloud_Basics.ipynb), taqsimlangan tizimlar va IaaS/PaaS.</p>
-                    <div class="card-tags">
-                        <span>#Cloud Computing</span><span>#B.Tech</span><span>#Jupyter</span><span>#Obsidian</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">Cloud Lab Profil →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_gsd" data-categories="systems ai">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>GSD Core Spec Framework</h3>
-                            <span class="card-type star-type">Spec-Driven Dvigatel</span>
-                        </div>
-                    </div>
-                    <p>Murakkab topshiriqlarni spec-contract (SPEC/PLAN/VERIFY) asosida fazalarga bo'lib bajaruvchi 72 ko'nikmali avtonom tizim.</p>
-                    <div class="card-tags">
-                        <span>#Spec-Driven</span><span>#Bun / TS</span><span>#Multi-Agent</span><span>#TDD</span>
-                    </div>
-                    <a href="https://github.com/open-gsd/gsd-core" target="_blank" rel="noopener noreferrer" class="card-link">GSD Core Repo →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_claudemem" data-categories="ai systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>Claude-Mem Cognitive Vector DB</h3>
-                            <span class="card-type star-type">AI Vektor Xotirasi</span>
-                        </div>
-                    </div>
-                    <p>Port 37700 da SQLite + Chroma vektor bazasi. AI agentlar o'rtasida kontekst va xotirani yo'qotmasdan uzluksiz tiklash tizimi.</p>
-                    <div class="card-tags">
-                        <span>#ChromaDB</span><span>#SQLite</span><span>#Cognitive Memory</span><span>#Port 37700</span>
-                    </div>
-                    <a href="https://github.com/thedotmack/claude-mem" target="_blank" rel="noopener noreferrer" class="card-link">Claude-Mem Repo →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_headroom" data-categories="ai systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>Headroom Context Optimization</h3>
-                            <span class="card-type star-type">Token Kompressiyasi</span>
-                        </div>
-                    </div>
-                    <p>Katta kod bazalarini til modellariga uzatishda tokenlar sarfini 40% gacha siquvchi AST parsing va kompressiya qatlami.</p>
-                    <div class="card-tags">
-                        <span>#Compression</span><span>#AST Parsing</span><span>#MCP Server</span><span>#SmartCrusher</span>
-                    </div>
-                    <a href="https://github.com/headroomlabs-ai/headroom" target="_blank" rel="noopener noreferrer" class="card-link">Headroom Repo →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_ralph" data-categories="systems ai">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>Ralph Loop Self-Healing Runner</h3>
-                            <span class="card-type star-type">Avtonom TDD Sikli</span>
-                        </div>
-                    </div>
-                    <p>Xatolik yuz berganda toza yangi kontekst bilan qayta ishga tushib, testlar 100% yashil bo'lmaguncha to'xtamaydigan avtonom sikl dvigateli.</p>
-                    <div class="card-tags">
-                        <span>#Self-Healing</span><span>#TDD Loops</span><span>#Bash CLI</span><span>#Resilient</span>
-                    </div>
-                    <a href="https://github.com/ghuntley/how-to-ralph-wiggum" target="_blank" rel="noopener noreferrer" class="card-link">Ralph Loop Repo →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_deepseek_harness" data-categories="ai web">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>DeepSeek Harness (dsh)</h3>
-                            <span class="card-type star-type">Modulli Agent Harness</span>
-                        </div>
-                    </div>
-                    <p>DeepSeek AI ochiq kodli agent xobiti. Everything-is-a-plugin arxitekturasi, Cordis spatiotemporal dvigateli va port 3080 Web UI paneli.</p>
-                    <div class="card-tags">
-                        <span>#DeepSeek</span><span>#Cordis</span><span>#TypeScript</span><span>#Port 3080</span>
-                    </div>
-                    <a href="https://github.com/deepseek-ai/deepseek-harness" target="_blank" rel="noopener noreferrer" class="card-link">DeepSeek Harness Repo →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_titan_osint" data-categories="security">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>Titan OSINT Massive Engine</h3>
-                            <span class="card-type star-type">Global Kiber-Razvedka</span>
-                        </div>
-                    </div>
-                    <p>769 ta qudratli kiber-razvedka va OSINT vositasi (OSINT_TOOL_INVENTORY.md). Maigret, Sherlock, Holehe, Cloudfox va avtomatlashtirilgan parserlar.</p>
-                    <div class="card-tags">
-                        <span>#OSINT</span><span>#769 Tools</span><span>#Threat Intel</span><span>#Python</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">Titan OSINT Profil →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_sentinel_shield" data-categories="security systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>System Sentinel & Sudo Shield</h3>
-                            <span class="card-type star-type">Linux Yadro Himoyasi</span>
-                        </div>
-                    </div>
-                    <p>Linux OS tizim darajasidagi himoyasi. 'sudo rm -rf' buyrug'ini butunlay bloklash, 8GB ZRAM swap va suspend/resume watchdog nazorati.</p>
-                    <div class="card-tags">
-                        <span>#Linux Hardening</span><span>#Sudo Guard</span><span>#ZRAM</span><span>#Kernel</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">Sentinel Shield Profil →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_solar_portfolio" data-categories="web">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>SolarPortfolio 3D (React + Vite)</h3>
-                            <span class="card-type star-type">Vite WebGL Komponentlar</span>
-                        </div>
-                    </div>
-                    <p>React + TypeScript + Vite asosidagi tezkor 3D platforma. Oxlint statik tahlili, zamonaviy UI va 3D WebGL komponentlar arxitekturasi.</p>
-                    <div class="card-tags">
-                        <span>#React</span><span>#TypeScript</span><span>#Vite</span><span>#Oxlint</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">SolarPortfolio Profil →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_school21" data-categories="security systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>School 21 Crypto & Network Lab</h3>
-                            <span class="card-type star-type">Kriptografiya & Tarmoq</span>
-                        </div>
-                    </div>
-                    <p>School 21 loyihalari: CbS2-CbS4 past darajadagi tarmoq protokollari va CbS7-CbS8 zamonaviy simmetrik/asimmetrik kriptografiya tadqiqotlari.</p>
-                    <div class="card-tags">
-                        <span>#School 21</span><span>#Networking</span><span>#Cryptography</span><span>#C/C++</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">School 21 Profil →</a>
-                </div>
-
-                <div class="catalog-star-card" data-target="star_task_observer" data-categories="ai systems">
-                    <div class="card-header">
-                        <span class="card-icon"><span class="planet-orb orb-stars"></span></span>
-                        <div>
-                            <h3>Task Observer & Mnemoverse</h3>
-                            <span class="card-type star-type">Agent Telemetriyasi</span>
-                        </div>
-                    </div>
-                    <p>Ko'p agentli tizimlarda har bir agent qadamlari, asboblari va kognitiv xotirasini real vaqtda monitoring qiluvchi telemetriya infratuzilmasi.</p>
-                    <div class="card-tags">
-                        <span>#Telemetry</span><span>#Mnemoverse</span><span>#Task Observer</span><span>#Multi-Agent</span>
-                    </div>
-                    <a href="https://github.com/AzimjonKamiljanov" target="_blank" rel="noopener noreferrer" class="card-link">Task Observer Profil →</a>
-                </div>
-            </div>
+            <div class="catalog-grid" id="catalog-planets-grid"></div>
         </div>
     </div>
 
-    <script type="module" src="main.js?v=20"></script>
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,66 @@
+{
+  "name": "Azimjon Kamiljanov",
+  "preferredName": "Azimjon",
+  "title": {
+    "uz": "AI & Full-Stack Dasturchi (Talaba)",
+    "en": "AI & Full-Stack Developer (Student)",
+    "ru": "AI & Full-Stack Разработчик (Студент)"
+  },
+  "tagline": {
+    "uz": "Sun'iy intellekt agentlari, 3D WebGL va taqsimlangan tizimlar",
+    "en": "Autonomous AI Agents, 3D WebGL & Distributed Systems",
+    "ru": "Автономные AI-агенты, 3D WebGL и распределенные системы"
+  },
+  "bio": {
+    "uz": "Assalomu alaykum! Men Azimjon Kamiljanov — PDP Universiteti 2-kurs talabasi (AI yo'nalishi) va School 21 Tashkent kiberxavfsizlik ishtirokchisi. Sun'iy intellekt agentlari, real vaqtli WebRTC/VoIP tizimlari hamda 3D WebGL interfeyslarini yaratishga qiziqaman.",
+    "en": "Hello! I am Azimjon Kamiljanov — a 2nd-year AI student at PDP University and a cybersecurity learner at School 21 Tashkent. I build autonomous AI agents, real-time WebRTC/VoIP pipelines, and interactive 3D WebGL interfaces.",
+    "ru": "Здравствуйте! Я Азимжон Камильджанов — студент 2-го курса PDP University (направление AI) и участник Школы 21 в Ташкенте (кибербезопасность). Занимаюсь разработкой AI-агентов, WebRTC/VoIP систем и 3D WebGL интерфейсов."
+  },
+  "location": "Tashkent, Uzbekistan",
+  "contactEmail": "TODO(owner): azimjonkomiljonov@gmail.com or azimjon.kamiljanov@gmail.com",
+  "links": {
+    "github": "https://github.com/AzimjonKamiljanov",
+    "telegram": "https://t.me/CyberAgentNexus",
+    "telegramPersonal": "https://t.me/KamiljanovAzimjon",
+    "website": "https://azimjon.dev"
+  },
+  "education": [
+    {
+      "institution": "PDP University",
+      "degree": {
+        "uz": "Sun'iy intellekt (AI) yo'nalishi • 2-kurs talabasi",
+        "en": "Artificial Intelligence (AI) Direction • 2nd Year Student",
+        "ru": "Направление искусственного интеллекта (AI) • Студент 2-го курса"
+      },
+      "period": "2024 — Present",
+      "location": "Tashkent, Uzbekistan"
+    },
+    {
+      "institution": "School 21 Tashkent",
+      "degree": {
+        "uz": "Kiberxavfsizlik va past darajadagi dasturlash",
+        "en": "Cybersecurity & Systems Programming",
+        "ru": "Кибербезопасность и системное программирование"
+      },
+      "period": "2024 — Present",
+      "location": "Tashkent, Uzbekistan"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Uzbek",
+      "level": "Native",
+      "cefr": "Native"
+    },
+    {
+      "name": "English",
+      "level": "Intermediate",
+      "cefr": "B1"
+    },
+    {
+      "name": "Russian",
+      "level": "Elementary",
+      "cefr": "A1"
+    }
+  ]
+}
