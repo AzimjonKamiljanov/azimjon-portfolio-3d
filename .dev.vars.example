@@ -1,0 +1,6 @@
+# Cloudflare Workers local development secrets
+# Copy this file to .dev.vars for local testing with wrangler dev
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
+TELEGRAM_CHAT_ID=your_telegram_chat_id_here
+ENVIRONMENT=dev
+TURNSTILE_SECRET_KEY=optional_turnstile_secret_key_here

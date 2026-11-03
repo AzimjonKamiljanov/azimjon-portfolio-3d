@@ -10,5 +10,9 @@
   "dependencies": {
     "motion": "^12.43.0",
     "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.12",
+    "wrangler": "^4.157.0"
   }
 }
