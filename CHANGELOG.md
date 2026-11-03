@@ -1,0 +1,73 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [2.0.0] - 2026-11-04
+
+### Added
+- **Vite 6 Modern Build Pipeline**:
+  - Vanilla ES Module setup with `npm run dev`, `npm run build`, `npm run preview`, `npm test`, `npm run test:e2e`, `npm run lint`, and `npm run format:check`.
+  - Production code splitting with manual chunks for `three`, `gsap`, and application modules.
+  - Hashed asset outputs, CSS extraction, minification, and tree-shaking.
+- **Self-Hosted Assets & Zero External CDNs**:
+  - Self-hosted fonts via `@fontsource/inter`, `@fontsource/plus-jakarta-sans`, and `@fontsource/jetbrains-mono`, eliminating render-blocking external Google Fonts / gstatic CDNs.
+  - Self-hosted Google MediaPipe Hands WASM, SIMD, and TFLite model files in `public/mediapipe/hands/`.
+  - Lazy-loaded gesture recognition module with explicit user consent/privacy dialog before activating webcam.
+- **Strict Security & Worker Hardening**:
+  - Production `worker.js` with zero fallback secrets; reads exclusively from `env.TELEGRAM_BOT_TOKEN` and `env.TELEGRAM_CHAT_ID`.
+  - Honeypot anti-spam field (`_hp`) on contact form, returning generic rejection on bot auto-fill.
+  - Cloudflare Turnstile CAPTCHA server-side validation support.
+  - Strict Origin header verification: only `https://azimjon.dev` and `https://www.azimjon.dev` in production (and localhost when `env.ENVIRONMENT === 'dev'`), removing wildcard domains.
+  - Enforced 10 KB body size cap, control character stripping, and safe Telegram HTML truncation (≤ 4096 characters).
+  - Sanitized error responses preventing upstream Telegram Bot API error leakage.
+  - CSP with zero `'unsafe-inline'` / `'unsafe-eval'`; added `form-action 'self'`, `upgrade-insecure-requests`, `Cross-Origin-Opener-Policy: same-origin`, and `Cross-Origin-Resource-Policy: same-origin`.
+  - `.dev.vars.example` template added and `.dev.vars` added to `.gitignore`.
+- **Modular Application Architecture**:
+  - Split 6,200-line monolithic `main.js` into modular structure under `src/`:
+    - `src/scene/setup.js` & `src/scene/postprocessing.js`: Canvas, camera, renderer with DPR clamp (≤ 2.0), procedural Milky Way skybox, and UnrealBloomPass.
+    - `src/bodies/`: Sun (NASA SDO photosphere, prominences, coronal rays), 9 planets + rings, 1,450 instanced asteroids, stars, and cosmic objects.
+    - `src/input/`: OrbitControls, Bézier camera transitions, pointer raycaster, and gesture recognition.
+    - `src/audio/`: Web Audio API procedural synthesizer and space ambient soundscape.
+    - `src/ui/`: Floating HUD, focus-trapped accessible modals, catalog with debounced live search, onboarding guide, tour controller, and Moon contact terminal.
+    - `src/i18n/`: Trilingual engine (UZ, EN, RU) with persistent state and DOM updates.
+    - `src/errors.js`: Runtime global error tracker and safe client-side telemetry.
+- **Single Source of Truth**:
+  - `src/data/profile.json`: Truthful developer background (PDP University 2nd-year AI student, School 21 Tashkent, languages: Uzbek Native, English B1, Russian A1).
+  - `src/data/projects.json`: All 28 projects categorized with original author attributions and taxonomy tags.
+  - `scripts/prerender_catalog.mjs`: Automated injection of semantic fallback HTML for search engine crawlers and screen readers.
+- **Comprehensive Automated Testing**:
+  - Vitest test suite (`tests/worker.test.js`, `tests/data.test.js`, `tests/dist.test.js`) with 20 unit tests verifying API security, data schema integrity, and build outputs.
+  - Playwright E2E test suite (`tests/e2e.spec.js`) with 7 end-to-end tests validating 3D canvas rendering, trilingual switcher, project catalog search, tour mode, contact terminal, viewport overflow, and accessibility.
+  - GitHub Actions CI workflow (`.github/workflows/ci.yml`) automating linting, formatting checks, production build, unit tests, and E2E tests.
+
+### Changed
+- **Asset Optimization**:
+  - Converted 2048px planet and solar textures from PNG/JPG to WebP, saving ~5.0 MB (from 7.7 MB down to 2.7 MB, a 64.9% reduction).
+  - Re-encoded ambient audio to 64 kbps mono MP3 with volume attenuation.
+- **Repository Organization**:
+  - Cleaned root folder: tests moved to `tests/`, build and verification scripts moved to `scripts/`, test screenshots moved to `docs/screenshots/`.
+  - Configured Cloudflare Worker assets directory to `./dist` (in `wrangler.jsonc`), ensuring source code, scripts, and private configs are never publicly served.
+- **Identity & Project Attribution**:
+  - Unified title across all files: `"AI & Full-Stack Developer (Student)"`.
+  - Removed misleading hardware specifications (GPU/CPU specs) from portfolio and resume.
+  - Clarified project catalog: distinct sections for personal creations ("Mening Loyihalarim") versus open-source tools and security kits ("Ochiq Kodli Vositalar & Kiber-Arsenal"), crediting original authors (e.g. Gordon Lyon for Nmap, Bernardo Damele for sqlmap).
+  - Replaced aggressive "cyber-weapons" terminology with "Security Toolkit & Defense Lab".
+- **Resume Generation**:
+  - Refactored `scripts/generate_resume_pdf.mjs` to eliminate hardcoded absolute paths (`/home/cyber/...`) and suppressed browser headers/footers (`printBackground: true`, `displayHeaderFooter: false`).
+
+### Fixed
+- Fixed Telegram token and chat ID fallback exposure in `worker.js`.
+- Fixed mobile viewport accessibility by removing `user-scalable=no` and `maximum-scale=1` in `index.html`.
+- Added keyboard skip link (`.skip-link`) for WCAG accessibility compliance.
+- Fixed Three.js texture and geometry disposal to prevent memory leaks during long browsing sessions.
+- Fixed terminal feedback display in `src/ui/terminal.js` by aligning server response schema (`{ ok: true, message: ... }`).
+
+---
+
+## [1.0.0] - 2026-10-19
+- Initial release of the 3D Solar System Developer Portfolio with Three.js r160, 9 planets, audio synthesizer, gesture control, and Cloudflare Worker backend.
