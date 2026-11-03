@@ -4,6 +4,11 @@ export default defineConfig({
   testDir: './tests',
   testMatch: '**/*.spec.js',
   timeout: 30000,
+  webServer: {
+    command: 'npx vite preview --port 8080 --host 127.0.0.1',
+    port: 8080,
+    reuseExistingServer: true,
+  },
   projects: [
     {
       name: 'chrome',

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://azimjon.dev/</loc>
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-11-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://azimjon.dev/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://azimjon.dev/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://azimjon.dev/?lang=ru"/>
   </url>
 </urlset>

@@ -174,4 +174,31 @@ describe('Cloudflare Worker Security & API Unit Tests', () => {
             globalThis.fetch = originalFetch;
         }
     });
+
+    it('enforces Cloudflare Rate Limiting binding when env.RATE_LIMITER rejects request', async () => {
+        const rateLimitEnv = {
+            ...mockEnv,
+            RATE_LIMITER: {
+                limit: vi.fn().mockResolvedValue({ success: false })
+            }
+        };
+        const req = new Request('https://azimjon.dev/api/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Origin': 'https://azimjon.dev',
+                'CF-Connecting-IP': '198.51.100.42'
+            },
+            body: JSON.stringify({
+                name: 'Rate Limit Test',
+                contact: '@ratelimit',
+                message: 'Testing rate limit binding'
+            })
+        });
+        const res = await worker.fetch(req, rateLimitEnv);
+        expect(res.status).toBe(429);
+        const data = await res.json();
+        expect(data.ok).toBe(false);
+        expect(res.headers.get('Retry-After')).toBe('60');
+    });
 });

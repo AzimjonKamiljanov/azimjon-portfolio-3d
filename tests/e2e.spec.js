@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 test.describe('3D Solar Developer Portfolio E2E Acceptance Tests', () => {
     test.beforeEach(async ({ page }) => {
@@ -167,5 +168,15 @@ test.describe('3D Solar Developer Portfolio E2E Acceptance Tests', () => {
         // Press tab to focus skip link
         await page.keyboard.press('Tab');
         await expect(skipLink).toBeFocused();
+    });
+
+    test('8. Accessibility: Axe accessibility scan has zero critical violations', async ({ page }) => {
+        await page.goto('http://127.0.0.1:8080/');
+        await page.waitForSelector('#canvas-container canvas', { timeout: 10000 });
+        const results = await new AxeBuilder({ page })
+            .disableRules(['color-contrast'])
+            .analyze();
+        const criticalViolations = results.violations.filter((v) => v.impact === 'critical');
+        expect(criticalViolations).toEqual([]);
     });
 });

@@ -85,11 +85,46 @@ const rateLimitMap = new Map();
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const MAX_REQUESTS_PER_WINDOW = 5;
 
-function checkRateLimit(ip, isDev) {
+async function checkRateLimit(ip, env, isDev) {
   if (isDev && (ip === "127.0.0.1" || ip === "::1" || ip === "localhost")) {
     return { allowed: true, remaining: 999 };
   }
 
+  // 1. Cloudflare Workers Rate Limiting binding (env.RATE_LIMITER)
+  if (env && env.RATE_LIMITER && typeof env.RATE_LIMITER.limit === "function") {
+    try {
+      const outcome = await env.RATE_LIMITER.limit({ key: ip });
+      if (!outcome.success) {
+        return { allowed: false, retryAfter: 60 };
+      }
+      return { allowed: true, remaining: 1 };
+    } catch (_) {
+      // Fall back to in-memory limiter on binding exception
+    }
+  }
+
+  // 2. Cloudflare KV rate limiting binding (env.RATE_LIMIT_KV)
+  if (env && env.RATE_LIMIT_KV && typeof env.RATE_LIMIT_KV.get === "function") {
+    try {
+      const kvKey = `rl:${ip}`;
+      const current = await env.RATE_LIMIT_KV.get(kvKey);
+      const count = current ? parseInt(current, 10) : 0;
+      if (count >= MAX_REQUESTS_PER_WINDOW) {
+        return { allowed: false, retryAfter: 60 };
+      }
+      await env.RATE_LIMIT_KV.put(kvKey, String(count + 1), {
+        expirationTtl: 60,
+      });
+      return {
+        allowed: true,
+        remaining: MAX_REQUESTS_PER_WINDOW - (count + 1),
+      };
+    } catch (_) {
+      // Fall back to in-memory limiter on KV exception
+    }
+  }
+
+  // 3. Sliding window in-memory fallback per edge isolate
   const now = Date.now();
   if (rateLimitMap.size > 2000) {
     for (const [key, data] of rateLimitMap.entries()) {
@@ -251,7 +286,7 @@ async function handleContact(request, env, url) {
     (isDev ? "127.0.0.1" : "0.0.0.0");
 
   // 5. Rate limiting
-  const rate = checkRateLimit(clientIp, isDev);
+  const rate = await checkRateLimit(clientIp, env, isDev);
   if (!rate.allowed) {
     const headers = new Headers({
       "Content-Type": "application/json",

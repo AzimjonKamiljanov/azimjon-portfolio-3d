@@ -148,11 +148,32 @@ export function initScene() {
     ? 1.5
     : Math.min(window.devicePixelRatio || 1, 2);
 
-  const renderer = new THREE.WebGLRenderer({
-    antialias: !isMobile,
-    powerPreference: "high-performance",
-    alpha: false,
-    stencil: false,
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({
+      antialias: !isMobile,
+      powerPreference: "high-performance",
+      alpha: false,
+      stencil: false,
+    });
+  } catch (err) {
+    console.warn(
+      "WebGL not supported, activating accessible fallback view.",
+      err,
+    );
+    const fallback = document.getElementById("accessible-fallback");
+    if (fallback) fallback.classList.add("visible");
+    const preloader = document.getElementById("preloader");
+    if (preloader) preloader.style.display = "none";
+    throw err;
+  }
+
+  renderer.domElement.addEventListener("webglcontextlost", (event) => {
+    event.preventDefault();
+    console.warn("WebGL context lost.");
+  });
+  renderer.domElement.addEventListener("webglcontextrestored", () => {
+    console.log("WebGL context restored.");
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(maxPixelRatio);
