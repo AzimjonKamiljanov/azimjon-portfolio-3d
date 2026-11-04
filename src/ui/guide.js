@@ -105,7 +105,7 @@ export function initGuide() {
 
     if (guideDontShowCheckbox && guideDontShowCheckbox.checked) {
       try {
-        localStorage.setItem("solar_guide_dismissed", "true");
+        localStorage.setItem("solar_guide_v2_dismissed", "true");
       } catch {
         // ignore localStorage restrictions
       }
@@ -139,6 +139,12 @@ export function initGuide() {
   }
 
   document.addEventListener("keydown", (e) => {
+    const isInputActive =
+      document.activeElement &&
+      (document.activeElement.tagName === "INPUT" ||
+        document.activeElement.tagName === "TEXTAREA" ||
+        document.activeElement.isContentEditable);
+
     if (e.key === "Escape") {
       if (
         guideModalContainer &&
@@ -147,20 +153,45 @@ export function initGuide() {
       ) {
         hideGuide();
       }
+    } else if ((e.key === "h" || e.key === "H" || e.key === "?") && !isInputActive && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (
+        guideModalContainer &&
+        !guideModalContainer.classList.contains("hidden") &&
+        guideModalContainer.style.display !== "none"
+      ) {
+        hideGuide();
+      } else {
+        showGuide();
+      }
     }
   });
 
   // Check if dismissed previously
   let isDismissed = false;
   try {
-    isDismissed = localStorage.getItem("solar_guide_dismissed") === "true";
+    isDismissed = localStorage.getItem("solar_guide_v2_dismissed") === "true";
   } catch {
     isDismissed = false;
+  }
+
+  function handleGestureRecognized(gestureName) {
+    if (!gestureName || !guideModalContainer) return;
+    const chip = guideModalContainer.querySelector(
+      `.gesture-practice-chip[data-gesture="${gestureName}"]`,
+    );
+    if (chip) {
+      chip.classList.add("recognized");
+    }
+  }
+
+  if (typeof window !== "undefined") {
+    window.__onGestureRecognized = handleGestureRecognized;
   }
 
   return {
     showGuide,
     hideGuide,
+    handleGestureRecognized,
     isDismissed: () => isDismissed,
   };
 }

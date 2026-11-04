@@ -501,5 +501,50 @@ Xabarlar Cloudflare Worker orqali qattiq tekshiruvdan o'tib, Telegram botiga rea
     }
   }
 
+  // True Astronomical Scale Toggle Mode
+  let isTrueScale = false;
+  if (typeof window !== "undefined") {
+    window.__isTrueScale = false;
+    window.__toggleTrueScale = function (force) {
+      isTrueScale = force !== undefined ? !!force : !isTrueScale;
+      window.__isTrueScale = isTrueScale;
+
+      const trueScales = {
+        Mercury: 0.38,
+        Venus: 0.95,
+        Earth: 1.0,
+        Mars: 0.53,
+        Jupiter: 3.8,
+        Saturn: 3.2,
+        Uranus: 1.8,
+        Neptune: 1.75,
+        Pluto: 0.25,
+      };
+
+      planetMeshes.forEach((p) => {
+        const pid = p.mesh.userData?.id;
+        if (!pid) return;
+        if (isTrueScale) {
+          const factor =
+            (trueScales[pid] || 1.0) / (p.mesh.userData.radius || 1.0);
+          p.mesh.scale.set(factor, factor, factor);
+        } else {
+          p.mesh.scale.set(1.0, 1.0, 1.0);
+        }
+      });
+
+      if (moonMesh) {
+        if (isTrueScale) {
+          const moonFactor = 0.27 / 0.38;
+          moonMesh.scale.set(moonFactor, moonFactor, moonFactor);
+        } else {
+          moonMesh.scale.set(1.0, 1.0, 1.0);
+        }
+      }
+
+      return isTrueScale;
+    };
+  }
+
   return { planetMeshes, earthCloudsMesh, moonMesh, update };
 }

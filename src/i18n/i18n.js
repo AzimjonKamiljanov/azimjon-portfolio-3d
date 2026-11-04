@@ -186,6 +186,26 @@ export function setLanguage(lang) {
     const step4Desc = document.getElementById("guide-step4-desc");
     if (step4Desc) step4Desc.innerText = uiTexts.guide.step4Desc;
 
+    const step5Title = document.getElementById("guide-step5-title");
+    if (step5Title) step5Title.innerText = uiTexts.guide.step5Title;
+    const step5Desc = document.getElementById("guide-step5-desc");
+    if (step5Desc) step5Desc.innerText = uiTexts.guide.step5Desc;
+
+    const step6Title = document.getElementById("guide-step6-title");
+    if (step6Title) step6Title.innerText = uiTexts.guide.step6Title;
+    const step6Desc = document.getElementById("guide-step6-desc");
+    if (step6Desc) step6Desc.innerText = uiTexts.guide.step6Desc;
+
+    const step7Title = document.getElementById("guide-step7-title");
+    if (step7Title) step7Title.innerText = uiTexts.guide.step7Title;
+    const step7Desc = document.getElementById("guide-step7-desc");
+    if (step7Desc) step7Desc.innerText = uiTexts.guide.step7Desc;
+
+    const step8Title = document.getElementById("guide-step8-title");
+    if (step8Title) step8Title.innerText = uiTexts.guide.step8Title;
+    const step8Desc = document.getElementById("guide-step8-desc");
+    if (step8Desc) step8Desc.innerText = uiTexts.guide.step8Desc;
+
     const dontShowText = document.getElementById("guide-dont-show-text");
     if (dontShowText) dontShowText.innerText = uiTexts.guide.dontShow;
 

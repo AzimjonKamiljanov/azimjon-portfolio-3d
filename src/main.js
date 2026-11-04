@@ -55,7 +55,63 @@ const controls = initControls(camera, renderer);
 
 // Global interactable objects array for raycasting and UI
 const interactableObjects = [];
-const textureLoader = new THREE.TextureLoader();
+
+// LoadingManager for real monotonic loading progress
+const loadingManager = new THREE.LoadingManager();
+const textureLoader = new THREE.TextureLoader(loadingManager);
+
+let maxProgress = 15;
+const phaseLabels = [
+  "INITIALIZING DEEP SPACE CORE...",
+  "DOWNLOADING HIGH-RES PLANETARY MAPS...",
+  "COMPILING GLSL SHADERS & CORONA...",
+  "INITIALIZING ASTEROID BELT...",
+  "CALIBRATING STELLAR CATALOG...",
+  "PREPARING SOLAR SYSTEM OVERVIEW...",
+];
+let currentPhaseIdx = 0;
+
+loadingManager.onProgress = (_url, itemsLoaded, itemsTotal) => {
+  const calculated = Math.round((itemsLoaded / itemsTotal) * 95);
+  if (calculated > maxProgress) {
+    maxProgress = calculated;
+    updatePreloaderProgress(maxProgress);
+  }
+  const phaseIdx = Math.min(
+    phaseLabels.length - 1,
+    Math.floor((maxProgress / 100) * phaseLabels.length),
+  );
+  if (phaseIdx > currentPhaseIdx) {
+    currentPhaseIdx = phaseIdx;
+    const subEl = document.getElementById("preloader-sub");
+    if (subEl) subEl.innerText = phaseLabels[currentPhaseIdx];
+  }
+};
+
+let skipTimeout = null;
+
+loadingManager.onLoad = () => {
+  if (skipTimeout) clearTimeout(skipTimeout);
+  updatePreloaderProgress(100);
+  const subEl = document.getElementById("preloader-sub");
+  if (subEl) subEl.innerText = "READY // COMMENCING DIVE";
+  setTimeout(() => {
+    finishLoading();
+    startInitialDive();
+  }, 350);
+};
+
+// Fallback skip button appears after 6 seconds
+skipTimeout = setTimeout(() => {
+  const skipBtn = document.getElementById("preloader-skip-btn");
+  if (skipBtn && !hasFinishedLoading) {
+    skipBtn.classList.remove("hidden");
+    skipBtn.onclick = () => {
+      finishLoading();
+      startInitialDive();
+    };
+  }
+}, 6000);
 
 // 2. Setup Celestial Bodies
 const { sun, update: updateSun } = initSun(
@@ -363,6 +419,17 @@ function startInitialDive() {
     ? { x: 0, y: 225, z: 235 }
     : { x: 0, y: 165, z: 195 };
 
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (prefersReducedMotion) {
+    camera.position.set(finalPos.x, finalPos.y, finalPos.z);
+    controls.update();
+    return;
+  }
+
   gsap.to(camera.position, {
     x: finalPos.x,
     y: finalPos.y,
@@ -463,13 +530,8 @@ function animate() {
 // Start rendering
 animate();
 
-// Simulate smooth preloading progression & finish
-setTimeout(() => updatePreloaderProgress(40), 100);
-setTimeout(() => updatePreloaderProgress(75), 250);
-setTimeout(() => {
-  finishLoading();
-  startInitialDive();
-}, 450);
+// Initial progress
+updatePreloaderProgress(15);
 
 // Global debug handles
 window.__solarEngine = {

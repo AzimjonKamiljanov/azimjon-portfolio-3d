@@ -196,6 +196,9 @@ function processLandmarks(landmarksList, handednesses = [], timestamp = performa
   const raw = classifyHandGesture(lm, handednessName);
   const stableGesture = stabilizer.update(raw.gesture);
   currentGestureState = stableGesture;
+  if (typeof window !== "undefined" && window.__onGestureRecognized) {
+    window.__onGestureRecognized(stableGesture);
+  }
 
   drawGestureCanvas([lm], stableGesture);
 
