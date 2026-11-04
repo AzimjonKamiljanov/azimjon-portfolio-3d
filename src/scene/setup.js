@@ -64,24 +64,21 @@ float fbmNebula(vec3 p) {
 void main() {
     vec3 dir = normalize(vWorldDir);
     float galLat = abs(dir.y);
-    float mwMask = exp(-galLat * 4.2);
-    float mwDust = exp(-galLat * 18.0) * 0.7;
+    float mwMask = exp(-galLat * 5.2);
+    float mwDust = exp(-galLat * 16.0) * 0.75;
 
-    vec3 sampleCoord = dir * 2.8 + vec3(uTime * 0.003, 0.0, uTime * 0.002);
+    vec3 sampleCoord = dir * 2.8 + vec3(uTime * 0.001, 0.0, uTime * 0.0008);
     float nebulaNoise = fbmNebula(sampleCoord);
     float dustNoise = fbmNebula(dir * 5.2 + vec3(5.2, 1.3, 2.7));
 
-    float mwIntensity = clamp((nebulaNoise - dustNoise * mwDust) * mwMask * 1.6, 0.0, 1.0);
+    float mwIntensity = clamp((nebulaNoise - dustNoise * mwDust) * mwMask * 1.1, 0.0, 1.0);
 
-    vec3 coldSpace = vec3(0.001, 0.002, 0.006);
-    vec3 mwCoreColor = vec3(0.95, 0.90, 0.78);
-    vec3 mwBlueHaze = vec3(0.20, 0.45, 0.85);
-    vec3 mwMagentaRibbon = vec3(0.65, 0.22, 0.60);
+    // Deep space is near pitch-black (sRGB < 4/255 away from galactic plane)
+    vec3 deepSpace = vec3(0.0005, 0.0005, 0.0009);
+    // Unresolved starlight along the galactic disc: natural subtle warm starlight
+    vec3 starlightColor = vec3(0.09, 0.085, 0.075);
 
-    vec3 mwColor = mix(mwBlueHaze, mwCoreColor, smoothstep(0.2, 0.8, mwIntensity));
-    mwColor = mix(mwColor, mwMagentaRibbon, dustNoise * 0.4 * mwMask);
-
-    vec3 finalSky = coldSpace + mwColor * mwIntensity * 0.75;
+    vec3 finalSky = deepSpace + starlightColor * mwIntensity * 0.35;
     gl_FragColor = vec4(finalSky, 1.0);
 }
 `;
@@ -131,7 +128,7 @@ export function createAtmosphereGlow(
 export function initScene() {
   const container = document.getElementById("canvas-container");
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x000002);
+  scene.background = new THREE.Color(0x000001);
 
   // Camera
   const camera = new THREE.PerspectiveCamera(
@@ -178,7 +175,9 @@ export function initScene() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(maxPixelRatio);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMappingExposure = 1.0;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   container.appendChild(renderer.domElement);
 
   // Skydome
@@ -196,11 +195,11 @@ export function initScene() {
   const skydomeMesh = new THREE.Mesh(skyGeo, skyMat);
   scene.add(skydomeMesh);
 
-  // Lighting
-  const ambientLight = new THREE.AmbientLight(0x1a2035, 0.35);
+  // Lighting: deep space ambient <= 0.01 (0.008) for photographic contrast, physically calibrated Sun PointLight
+  const ambientLight = new THREE.AmbientLight(0x020306, 0.008);
   scene.add(ambientLight);
 
-  const sunLight = new THREE.PointLight(0xfff5e6, 2.8, 4000, 0.6);
+  const sunLight = new THREE.PointLight(0xfffaed, 2800, 0, 2.0);
   sunLight.position.set(0, 0, 0);
   scene.add(sunLight);
 

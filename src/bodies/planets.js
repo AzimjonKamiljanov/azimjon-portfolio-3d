@@ -261,9 +261,9 @@ export function initPlanets(scene, textureLoader, interactableObjects) {
       orbitPoints.map((p) => new THREE.Vector3(p.x, 0, p.y)),
     );
     const orbitMat = new THREE.LineBasicMaterial({
-      color: 0x38bdf8,
+      color: 0xffffff,
       transparent: true,
-      opacity: 0.12,
+      opacity: 0.08,
       depthWrite: false,
     });
     const orbitLine = new THREE.LineLoop(orbitGeo, orbitMat);
@@ -295,9 +295,51 @@ export function initPlanets(scene, textureLoader, interactableObjects) {
     }
 
     const planetMat = new THREE.MeshStandardMaterial(matOptions);
+
+    // Earth Day/Night lights integration
+    if (cfg.hasNightLights) {
+      const nightTex = textureLoader.load("assets/earth_night_2048.webp");
+      nightTex.colorSpace = THREE.SRGBColorSpace;
+
+      planetMat.onBeforeCompile = (shader) => {
+        shader.uniforms.uNightTexture = { value: nightTex };
+        shader.uniforms.uSunPosition = { value: new THREE.Vector3(0, 0, 0) };
+
+        shader.vertexShader = `
+          varying vec3 vWorldNormal;
+        ` + shader.vertexShader;
+
+        shader.vertexShader = shader.vertexShader.replace(
+          `#include <worldpos_vertex>`,
+          `#include <worldpos_vertex>
+          vWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
+          `
+        );
+
+        shader.fragmentShader = `
+          uniform sampler2D uNightTexture;
+          uniform vec3 uSunPosition;
+          varying vec3 vWorldNormal;
+        ` + shader.fragmentShader;
+
+        shader.fragmentShader = shader.fragmentShader.replace(
+          `#include <dithering_fragment>`,
+          `#include <dithering_fragment>
+          vec3 sunDir = normalize(uSunPosition - vWorldPosition);
+          float sunDot = dot(normalize(vWorldNormal), sunDir);
+          float nightMask = smoothstep(0.08, -0.18, sunDot);
+          vec4 nightCity = texture2D(uNightTexture, vUv);
+          gl_FragColor.rgb += nightCity.rgb * vec3(1.0, 0.88, 0.65) * nightMask * 1.6;
+          `
+        );
+      };
+    }
+
     const planet = new THREE.Mesh(planetGeo, planetMat);
     planet.position.x = cfg.distance;
     planet.rotation.z = (cfg.tilt * Math.PI) / 180;
+    planet.castShadow = true;
+    planet.receiveShadow = true;
     orbitGroup.add(planet);
 
     // 4. Special cases: Atmosphere, Clouds, Rings, Moon
@@ -341,6 +383,8 @@ export function initPlanets(scene, textureLoader, interactableObjects) {
       });
       moonMesh = new THREE.Mesh(moonGeo, moonMat);
       moonMesh.position.x = cfg.moonDistance;
+      moonMesh.castShadow = true;
+      moonMesh.receiveShadow = true;
       moonGroup.add(moonMesh);
 
       moonMesh.userData = {
@@ -385,6 +429,8 @@ Xabarlar Cloudflare Worker orqali qattiq tekshiruvdan o'tib, Telegram botiga rea
       });
       const saturnRing = new THREE.Mesh(saturnRingGeo, saturnRingMat);
       saturnRing.rotation.x = Math.PI / 2;
+      saturnRing.castShadow = true;
+      saturnRing.receiveShadow = true;
       planet.add(saturnRing);
     }
 
@@ -407,6 +453,8 @@ Xabarlar Cloudflare Worker orqali qattiq tekshiruvdan o'tib, Telegram botiga rea
       });
       const uranusRing = new THREE.Mesh(uranusRingGeo, uranusRingMat);
       uranusRing.rotation.x = Math.PI / 2;
+      uranusRing.castShadow = true;
+      uranusRing.receiveShadow = true;
       planet.add(uranusRing);
     }
 
@@ -448,7 +496,8 @@ Xabarlar Cloudflare Worker orqali qattiq tekshiruvdan o'tib, Telegram botiga rea
 
     if (moonGroup && moonMesh) {
       moonGroup.rotation.y += delta * 0.65 * orbitMultiplier;
-      moonMesh.rotation.y += delta * 0.2;
+      // Tidally locked to Earth: synchronous rotation
+      moonMesh.rotation.y = Math.PI;
     }
   }
 
