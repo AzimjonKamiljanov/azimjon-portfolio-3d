@@ -1,62 +1,66 @@
+import {
+  classifyHandGesture,
+  GestureStabilizer,
+  OneEuroFilter,
+} from "./gestureClassifier.js";
+import { getTranslations } from "../i18n/i18n.js";
+import { playUiOpen, playUiClose } from "../audio/soundscape.js";
+
 let isGestureActive = false;
 let gestureStream = null;
-let handsInstance = null;
-let gestureAnimFrameId = null;
+let landmarkerInstance = null;
+let animFrameId = null;
 let isProcessingFrame = false;
 
-let smoothedPalmX = null;
-let smoothedPalmY = null;
+let callbacks = {
+  onOrbit: null,
+  onZoom: null,
+  onSelect: null,
+  onFreezeToggle: null,
+  onTourToggle: null,
+  onSwipe: null,
+  onOverview: null,
+  getReticleTarget: null,
+};
+
+const stabilizer = new GestureStabilizer(5);
+const palmFilterX = new OneEuroFilter(30, 1.0, 0.01);
+const palmFilterY = new OneEuroFilter(30, 1.0, 0.01);
+const reticleFilterX = new OneEuroFilter(30, 1.2, 0.015);
+const reticleFilterY = new OneEuroFilter(30, 1.2, 0.015);
+
 let prevPalmPos = null;
+let prevPinchY = null;
+let prevTwoHandDist = null;
 
-let smoothedReticleX = null;
-let smoothedReticleY = null;
-
-let currentGesture = "none";
-let isPinchingActive = false;
-let pinchDidSelect = false;
-let pinchStartY = null;
-let gestureHoveredObject = null;
+let dwellTarget = null;
+let dwellStartTime = 0;
 let lastPinchTriggerTime = 0;
 
-function detectHandGesture(lm) {
-  if (!lm || lm.length < 21) return { gesture: "none" };
+let fistHoldStart = 0;
+let fistTriggered = false;
 
-  const d = (p1, p2) => Math.hypot(p1.x - p2.x, p1.y - p2.y);
-  const wrist = lm[0];
-  const indexMcp = lm[5];
+let victoryHoldStart = 0;
+let victoryTriggered = false;
 
-  const isIndexExt = d(lm[8], wrist) > d(lm[6], wrist) * 1.15;
-  const isMiddleExt = d(lm[12], wrist) > d(lm[10], wrist) * 1.15;
-  const isRingExt = d(lm[16], wrist) > d(lm[14], wrist) * 1.15;
-  const isPinkyExt = d(lm[20], wrist) > d(lm[18], wrist) * 1.15;
+let palmStillStart = 0;
+let lastSwipeTime = 0;
 
-  const pinchDist = d(lm[4], lm[8]);
-  const isPinch = pinchDist < 0.065;
-  const isIndexReachingOut = d(lm[8], wrist) >= d(indexMcp, wrist) * 0.95;
+let lastFpsTime = performance.now();
+let frameCounter = 0;
+let currentFps = 0;
+let currentGestureState = "none";
+let currentHoveredTarget = null;
 
-  const extCount =
-    (isIndexExt ? 1 : 0) +
-    (isMiddleExt ? 1 : 0) +
-    (isRingExt ? 1 : 0) +
-    (isPinkyExt ? 1 : 0);
+const HAND_CONNECTIONS = [
+  [0, 1], [1, 2], [2, 3], [3, 4],
+  [0, 5], [5, 6], [6, 7], [7, 8],
+  [5, 9], [9, 10], [10, 11], [11, 12],
+  [9, 13], [13, 14], [14, 15], [15, 16],
+  [13, 17], [0, 17], [17, 18], [18, 19], [19, 20],
+];
 
-  if (isPinch && isIndexReachingOut) {
-    return { gesture: "pinch", lm, pinchDist };
-  }
-  if (isIndexExt && !isMiddleExt && !isRingExt && !isPinkyExt) {
-    return { gesture: "pointing", lm };
-  }
-  if (extCount === 0) {
-    return { gesture: "fist", lm };
-  }
-  if (extCount >= 3) {
-    return { gesture: "palm", lm };
-  }
-
-  return { gesture: "none", lm };
-}
-
-function drawGestureCanvas(lm, gestureName) {
+function drawGestureCanvas(landmarks, gestureName) {
   const canvas = document.getElementById("gesture-canvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
@@ -72,72 +76,383 @@ function drawGestureCanvas(lm, gestureName) {
     ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0, w, h);
     ctx.restore();
-    ctx.fillStyle = "rgba(2, 8, 20, 0.52)";
+    ctx.fillStyle = "rgba(4, 8, 18, 0.58)";
     ctx.fillRect(0, 0, w, h);
   } else {
-    ctx.fillStyle = "#090a10";
+    ctx.fillStyle = "#05070e";
     ctx.fillRect(0, 0, w, h);
   }
 
-  if (!lm) return;
+  if (!landmarks || landmarks.length === 0) return;
 
-  // Draw landmark joints
-  ctx.fillStyle = "#38bdf8";
-  for (let i = 0; i < lm.length; i++) {
-    const x = (1.0 - lm[i].x) * w;
-    const y = lm[i].y * h;
-    ctx.beginPath();
-    ctx.arc(x, y, 2.5, 0, Math.PI * 2);
-    ctx.fill();
+  for (const lm of landmarks) {
+    // Draw connections
+    ctx.strokeStyle = gestureName === "pinch" ? "rgba(52, 211, 153, 0.65)" : "rgba(56, 189, 248, 0.5)";
+    ctx.lineWidth = 1.5;
+    for (const [i, j] of HAND_CONNECTIONS) {
+      if (lm[i] && lm[j]) {
+        const x1 = (1.0 - lm[i].x) * w;
+        const y1 = lm[i].y * h;
+        const x2 = (1.0 - lm[j].x) * w;
+        const y2 = lm[j].y * h;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
+    }
+
+    // Draw joints
+    for (let i = 0; i < lm.length; i++) {
+      const x = (1.0 - lm[i].x) * w;
+      const y = lm[i].y * h;
+      const isTip = i === 4 || i === 8 || i === 12 || i === 16 || i === 20;
+
+      ctx.fillStyle = isTip ? (gestureName === "pinch" ? "#34d399" : "#ffffff") : "#38bdf8";
+      ctx.beginPath();
+      ctx.arc(x, y, isTip ? 3.0 : 2.0, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 }
 
-async function loadMediaPipeScripts() {
-  if (window.Hands) return true;
+function updateHudUI(gesture, text, icon, isError = false) {
+  const dot = document.getElementById("gesture-status-dot");
+  const stateIcon = document.getElementById("gesture-indicator-icon");
+  const stateText = document.getElementById("gesture-state-text");
+  const fpsEl = document.getElementById("gesture-fps");
 
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "/mediapipe/hands/hands.js";
-    script.onload = () => {
-      resolve(true);
-    };
-    script.onerror = () => {
-      reject(new Error("MediaPipe script failed to load"));
-    };
-    document.head.appendChild(script);
-  });
-}
-
-export async function toggleGestureControl(camera, controls, raycasterUtil) {
-  if (isGestureActive) {
-    stopGestureControl();
-    return false;
-  } else {
-    // Privacy notice
-    const agreed = window.confirm(
-      "AI Vision Qo'l Boshqaruvi Maxfiylik Kafolati:\n\n" +
-        "Kamera video oqimi 100% qurilmangiz ichida (mahalliy WebAssembly) tahlil qilinadi.\n" +
-        "Hech qanday video yoki surat serverga yuborilmaydi va saqlanmaydi.\n\n" +
-        "Davom ettirishni xohlaysizmi?",
-    );
-    if (!agreed) return false;
-
-    const started = await startGestureControl(camera, controls, raycasterUtil);
-    return started;
+  if (dot) {
+    dot.className = "gesture-live-dot " + (isError ? "status-error" : "status-active");
+  }
+  if (stateIcon && icon) stateIcon.innerText = icon;
+  if (stateText && text) stateText.innerText = text;
+  if (fpsEl && !isError) {
+    fpsEl.innerText = `${currentFps} FPS`;
   }
 }
 
-export async function startGestureControl(camera, controls, raycasterUtil) {
-  const hud = document.getElementById("gesture-hud");
-  const video = document.getElementById("gesture-video");
+function processLandmarks(landmarksList, handednesses = [], timestamp = performance.now()) {
+  const trans = getTranslations().ui.gestures;
+  const reticleEl = document.getElementById("gesture-reticle");
+  const reticleLabel = document.getElementById("reticle-target-label");
+
+  // Track FPS
+  frameCounter++;
+  if (timestamp - lastFpsTime >= 1000) {
+    currentFps = Math.round((frameCounter * 1000) / (timestamp - lastFpsTime));
+    lastFpsTime = timestamp;
+    frameCounter = 0;
+  }
+
+  if (!landmarksList || landmarksList.length === 0) {
+    currentGestureState = "none";
+    currentHoveredTarget = null;
+    drawGestureCanvas(null, "none");
+    updateHudUI("none", trans.calibration, "🖐");
+    if (reticleEl) reticleEl.classList.add("hidden");
+
+    prevPalmPos = null;
+    prevPinchY = null;
+    prevTwoHandDist = null;
+    dwellTarget = null;
+    dwellStartTime = 0;
+    fistHoldStart = 0;
+    fistTriggered = false;
+    victoryHoldStart = 0;
+    victoryTriggered = false;
+    palmStillStart = 0;
+    return;
+  }
+
+  // 1. Two-Hand Zoom interaction
+  if (landmarksList.length >= 2) {
+    const hand1 = landmarksList[0];
+    const hand2 = landmarksList[1];
+    drawGestureCanvas([hand1, hand2], "zoom");
+
+    const p1 = hand1[0];
+    const p2 = hand2[0];
+    const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+
+    if (prevTwoHandDist !== null) {
+      const delta = dist - prevTwoHandDist;
+      if (Math.abs(delta) > 0.008 && callbacks.onZoom) {
+        callbacks.onZoom(delta * 25.0);
+      }
+    }
+    prevTwoHandDist = dist;
+    currentGestureState = "zoom";
+    updateHudUI("zoom", trans.zoom, "👐");
+    if (reticleEl) reticleEl.classList.add("hidden");
+    return;
+  }
+
+  prevTwoHandDist = null;
+
+  // 2. Single hand classification
+  const lm = landmarksList[0];
+  const handednessName = handednesses[0]?.categoryName || "Right";
+  const raw = classifyHandGesture(lm, handednessName);
+  const stableGesture = stabilizer.update(raw.gesture);
+  currentGestureState = stableGesture;
+
+  drawGestureCanvas([lm], stableGesture);
+
+  // Process Gestures
+  if (stableGesture === "palm") {
+    if (reticleEl) reticleEl.classList.add("hidden");
+    dwellTarget = null;
+    dwellStartTime = 0;
+    prevPinchY = null;
+
+    const rawX = raw.palmCenter ? raw.palmCenter.x : lm[9].x;
+    const rawY = raw.palmCenter ? raw.palmCenter.y : lm[9].y;
+    const smoothX = palmFilterX.filter(rawX, timestamp);
+    const smoothY = palmFilterY.filter(rawY, timestamp);
+
+    if (prevPalmPos) {
+      const dx = smoothX - prevPalmPos.x;
+      const dy = smoothY - prevPalmPos.y;
+      const dt = Math.max(0.001, (timestamp - prevPalmPos.t) / 1000);
+      const vx = dx / dt;
+
+      // Fast Swipe detection (Horizontal velocity check)
+      if (Math.abs(vx) > 1.2 && Math.abs(dx) > 0.10 && Date.now() - lastSwipeTime > 750) {
+        lastSwipeTime = Date.now();
+        // Camera is mirrored: moving right in front of webcam produces negative dx
+        if (vx < 0) {
+          if (callbacks.onSwipe) callbacks.onSwipe("right");
+          updateHudUI("swipeRight", trans.swipeRight, "👉");
+        } else {
+          if (callbacks.onSwipe) callbacks.onSwipe("left");
+          updateHudUI("swipeLeft", trans.swipeLeft, "👈");
+        }
+      } else {
+        // Still palm detection for Solar Overview reset
+        const moveDist = Math.hypot(dx, dy);
+        if (moveDist < 0.005) {
+          if (!palmStillStart) {
+            palmStillStart = timestamp;
+          } else if (timestamp - palmStillStart >= 1500) {
+            if (callbacks.onOverview) callbacks.onOverview();
+            updateHudUI("overview", trans.overview, "🌌");
+            palmStillStart = 0;
+          } else {
+            updateHudUI("palm", trans.palm, "🖐");
+          }
+        } else {
+          palmStillStart = 0;
+          // Regular Orbit with deadzone
+          if (moveDist > 0.003 && callbacks.onOrbit) {
+            callbacks.onOrbit(dx * 4.5, dy * 4.5);
+          }
+          updateHudUI("palm", trans.palm, "🖐");
+        }
+      }
+    } else {
+      updateHudUI("palm", trans.palm, "🖐");
+    }
+
+    prevPalmPos = { x: smoothX, y: smoothY, t: timestamp };
+  } else if (stableGesture === "pointing") {
+    prevPalmPos = null;
+    prevPinchY = null;
+    palmStillStart = 0;
+
+    const tip = raw.indexTip || lm[8];
+    const rawX = tip.x;
+    const rawY = tip.y;
+    const smoothX = reticleFilterX.filter(rawX, timestamp);
+    const smoothY = reticleFilterY.filter(rawY, timestamp);
+
+    // Mirrored display for reticle
+    const screenX = (1.0 - smoothX) * window.innerWidth;
+    const screenY = smoothY * window.innerHeight;
+
+    if (reticleEl) {
+      reticleEl.classList.remove("hidden");
+      reticleEl.style.transform = `translate3d(${screenX}px, ${screenY}px, 0)`;
+    }
+
+    let target = null;
+    if (callbacks.getReticleTarget) {
+      target = callbacks.getReticleTarget(smoothX, smoothY);
+    }
+    currentHoveredTarget = target;
+
+    if (target && target.userData && target.userData.title) {
+      if (reticleLabel) reticleLabel.innerText = target.userData.title;
+      if (reticleEl) reticleEl.classList.add("reticle-locked");
+
+      // Dwell selection (0.9s hover)
+      if (dwellTarget === target) {
+        if (timestamp - dwellStartTime >= 900) {
+          if (callbacks.onSelect) callbacks.onSelect(target);
+          updateHudUI("selected", `${trans.selected}: ${target.userData.title}`, "🎯");
+          dwellTarget = null;
+          dwellStartTime = 0;
+        } else {
+          updateHudUI("pointing", `${target.userData.title}...`, "👆");
+        }
+      } else {
+        dwellTarget = target;
+        dwellStartTime = timestamp;
+        updateHudUI("pointing", target.userData.title, "👆");
+      }
+    } else {
+      dwellTarget = null;
+      dwellStartTime = 0;
+      if (reticleLabel) reticleLabel.innerText = "";
+      if (reticleEl) reticleEl.classList.remove("reticle-locked");
+      updateHudUI("pointing", trans.pointing, "👆");
+    }
+  } else if (stableGesture === "pinch") {
+    prevPalmPos = null;
+    palmStillStart = 0;
+    dwellTarget = null;
+    dwellStartTime = 0;
+
+    const pinchY = raw.reticle ? raw.reticle.y : lm[8].y;
+    const pinchX = raw.reticle ? raw.reticle.x : lm[8].x;
+
+    if (prevPinchY === null) {
+      prevPinchY = pinchY;
+      // Quick pinch selection
+      if (Date.now() - lastPinchTriggerTime > 550) {
+        lastPinchTriggerTime = Date.now();
+        let target = currentHoveredTarget;
+        if (!target && callbacks.getReticleTarget) {
+          target = callbacks.getReticleTarget(pinchX, pinchY);
+        }
+        if (target && callbacks.onSelect) {
+          callbacks.onSelect(target);
+          updateHudUI("selected", `${trans.selected}: ${target.userData?.title || ""}`, "🤏");
+        }
+      }
+    } else {
+      // Pinch & hold + move Y for Zoom
+      const dy = pinchY - prevPinchY;
+      if (Math.abs(dy) > 0.004 && callbacks.onZoom) {
+        callbacks.onZoom(dy * 18.0);
+        prevPinchY = pinchY;
+        updateHudUI("pinch", trans.pinch, "🤏");
+      }
+    }
+
+    if (reticleEl) reticleEl.classList.add("hidden");
+  } else if (stableGesture === "fist") {
+    if (reticleEl) reticleEl.classList.add("hidden");
+    prevPalmPos = null;
+    prevPinchY = null;
+    palmStillStart = 0;
+    dwellTarget = null;
+    dwellStartTime = 0;
+
+    if (!fistHoldStart) {
+      fistHoldStart = timestamp;
+    } else if (timestamp - fistHoldStart >= 500 && !fistTriggered) {
+      if (callbacks.onFreezeToggle) callbacks.onFreezeToggle();
+      fistTriggered = true;
+      updateHudUI("fist", trans.fist, "✊");
+    } else {
+      updateHudUI("fist", trans.fist, "✊");
+    }
+  } else if (stableGesture === "victory") {
+    if (reticleEl) reticleEl.classList.add("hidden");
+    prevPalmPos = null;
+    prevPinchY = null;
+    palmStillStart = 0;
+    dwellTarget = null;
+    dwellStartTime = 0;
+
+    if (!victoryHoldStart) {
+      victoryHoldStart = timestamp;
+    } else if (timestamp - victoryHoldStart >= 700 && !victoryTriggered) {
+      if (callbacks.onTourToggle) callbacks.onTourToggle();
+      victoryTriggered = true;
+      updateHudUI("victory", trans.victory, "✌️");
+    } else {
+      updateHudUI("victory", trans.victory, "✌️");
+    }
+  }
+
+  // Release flags when gesture changes
+  if (stableGesture !== "fist") {
+    fistHoldStart = 0;
+    fistTriggered = false;
+  }
+  if (stableGesture !== "victory") {
+    victoryHoldStart = 0;
+    victoryTriggered = false;
+  }
+}
+
+async function loadVisionTasks() {
+  if (landmarkerInstance) return landmarkerInstance;
+
+  const vision = await import("@mediapipe/tasks-vision");
+  const filesetResolver = await vision.FilesetResolver.forVisionTasks("/mediapipe/wasm");
 
   try {
-    await loadMediaPipeScripts();
+    landmarkerInstance = await vision.HandLandmarker.createFromOptions(filesetResolver, {
+      baseOptions: {
+        modelAssetPath: "/mediapipe/hand_landmarker.task",
+        delegate: "GPU",
+      },
+      runningMode: "VIDEO",
+      numHands: 2,
+      minHandDetectionConfidence: 0.5,
+      minHandPresenceConfidence: 0.5,
+      minTrackingConfidence: 0.5,
+    });
+  } catch (gpuErr) {
+    console.warn("GPU delegate failed, falling back to CPU:", gpuErr);
+    landmarkerInstance = await vision.HandLandmarker.createFromOptions(filesetResolver, {
+      baseOptions: {
+        modelAssetPath: "/mediapipe/hand_landmarker.task",
+        delegate: "CPU",
+      },
+      runningMode: "VIDEO",
+      numHands: 2,
+      minHandDetectionConfidence: 0.5,
+      minHandPresenceConfidence: 0.5,
+      minTrackingConfidence: 0.5,
+    });
+  }
+
+  return landmarkerInstance;
+}
+
+export async function startGestureControl() {
+  const hud = document.getElementById("gesture-hud");
+  const video = document.getElementById("gesture-video");
+  const toggleBtn = document.getElementById("gesture-toggle-btn");
+  const trans = getTranslations().ui.gestures;
+
+  try {
+    if (window.isSecureContext === false && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+      updateHudUI("error", trans.errorInsecure, "⚠️", true);
+      return false;
+    }
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      alert(
-        "Kameraga ruxsat berilmadi yoki brauzeringiz qo'llab-quvvatlamaydi.",
-      );
+      updateHudUI("error", trans.errorNoCamera, "⚠️", true);
+      return false;
+    }
+
+    if (hud) {
+      hud.classList.remove("hidden");
+      hud.style.display = "block";
+    }
+
+    updateHudUI("searching", trans.searching, "🔍");
+
+    try {
+      await loadVisionTasks();
+    } catch (modelErr) {
+      console.error("Failed to load vision model:", modelErr);
+      updateHudUI("error", trans.errorWasm, "⚠️", true);
       return false;
     }
 
@@ -155,132 +470,154 @@ export async function startGestureControl(camera, controls, raycasterUtil) {
       await video.play();
     }
 
-    if (window.Hands) {
-      handsInstance = new window.Hands({
-        locateFile: (file) => `/mediapipe/hands/${file}`,
-      });
-
-      handsInstance.setOptions({
-        maxNumHands: 1,
-        modelComplexity: 0, // Lite model for speed
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
-
-      handsInstance.onResults((results) => {
-        isProcessingFrame = false;
-        if (!isGestureActive) return;
-
-        if (
-          results.multiHandLandmarks &&
-          results.multiHandLandmarks.length > 0
-        ) {
-          const lm = results.multiHandLandmarks[0];
-          const detected = detectHandGesture(lm);
-          currentGesture = detected.gesture;
-          drawGestureCanvas(lm, currentGesture);
-
-          const stateText = document.getElementById("gesture-state-text");
-          const stateIcon = document.getElementById("gesture-indicator-icon");
-
-          if (currentGesture === "palm") {
-            if (stateIcon) stateIcon.innerText = "🖐";
-            if (stateText) stateText.innerText = "Kaft: Orbit Aylanmoqda";
-            // Orbit interaction
-            const palmX = 1.0 - lm[9].x;
-            const palmY = lm[9].y;
-            if (prevPalmPos) {
-              const dx = (palmX - prevPalmPos.x) * 4.0;
-              const dy = (palmY - prevPalmPos.y) * 4.0;
-              if (controls) {
-                controls.rotateLeft(dx);
-                controls.rotateUp(dy);
-                controls.update();
-              }
-            }
-            prevPalmPos = { x: palmX, y: palmY };
-          } else {
-            prevPalmPos = null;
-            if (currentGesture === "fist") {
-              if (stateIcon) stateIcon.innerText = "✊";
-              if (stateText) stateText.innerText = "Musht: To'xtatildi";
-            } else if (currentGesture === "pinch") {
-              if (stateIcon) stateIcon.innerText = "🤏";
-              if (stateText) stateText.innerText = "Chimchilash: Tanlash";
-              if (
-                !isPinchingActive &&
-                Date.now() - lastPinchTriggerTime > 600
-              ) {
-                isPinchingActive = true;
-                lastPinchTriggerTime = Date.now();
-                // Trigger raycast select
-                if (gestureHoveredObject && raycasterUtil) {
-                  raycasterUtil.focusOnObject(gestureHoveredObject);
-                }
-              }
-            } else {
-              isPinchingActive = false;
-              if (stateIcon) stateIcon.innerText = "👆";
-              if (stateText) stateText.innerText = "Ko'rsatkich: Nishon";
-            }
-          }
-        } else {
-          drawGestureCanvas(null, "none");
-          prevPalmPos = null;
-        }
-      });
-    }
-
     isGestureActive = true;
-    if (hud) {
-      hud.classList.remove("hidden");
-      hud.style.display = "block";
+    if (toggleBtn) toggleBtn.classList.add("active");
+    playUiOpen();
+
+    let lastVideoTime = -1;
+
+    function frameLoop(now, metadata) {
+      if (!isGestureActive) return;
+
+      const currentTime = metadata ? metadata.mediaTime : video.currentTime;
+      if (video && video.readyState >= 2 && currentTime !== lastVideoTime && !isProcessingFrame) {
+        lastVideoTime = currentTime;
+        isProcessingFrame = true;
+        try {
+          const results = landmarkerInstance.detectForVideo(video, now);
+          processLandmarks(results.landmarks, results.handednesses, now);
+        } catch (inferenceErr) {
+          console.warn("Landmarker inference error:", inferenceErr);
+        } finally {
+          isProcessingFrame = false;
+        }
+      }
+
+      if ("requestVideoFrameCallback" in video) {
+        video.requestVideoFrameCallback((n, m) => frameLoop(n, m));
+      } else {
+        animFrameId = requestAnimationFrame((n) => frameLoop(n, null));
+      }
     }
 
-    async function processFrame() {
-      if (!isGestureActive) return;
-      if (
-        video &&
-        video.readyState >= 2 &&
-        handsInstance &&
-        !isProcessingFrame
-      ) {
-        isProcessingFrame = true;
-        await handsInstance.send({ image: video });
-      }
-      gestureAnimFrameId = requestAnimationFrame(processFrame);
+    if ("requestVideoFrameCallback" in video) {
+      video.requestVideoFrameCallback((n, m) => frameLoop(n, m));
+    } else {
+      animFrameId = requestAnimationFrame((n) => frameLoop(n, null));
     }
-    gestureAnimFrameId = requestAnimationFrame(processFrame);
 
     return true;
   } catch (err) {
-    console.error("Gesture control initialization error:", err);
-    stopGestureControl();
+    console.error("Camera access error:", err);
+    const isDenied = err.name === "NotAllowedError" || err.name === "PermissionDeniedError";
+    const isNotFound = err.name === "NotFoundError" || err.name === "DevicesNotFoundError";
+
+    if (isDenied) {
+      updateHudUI("error", trans.errorPermission, "🚫", true);
+    } else if (isNotFound) {
+      updateHudUI("error", trans.errorNoCamera, "⚠️", true);
+    } else {
+      updateHudUI("error", trans.camError, "⚠️", true);
+    }
+
+    if (toggleBtn) toggleBtn.classList.remove("active");
     return false;
   }
 }
 
 export function stopGestureControl() {
   isGestureActive = false;
-  if (gestureAnimFrameId) {
-    cancelAnimationFrame(gestureAnimFrameId);
-    gestureAnimFrameId = null;
+  if (animFrameId) {
+    cancelAnimationFrame(animFrameId);
+    animFrameId = null;
   }
+
   if (gestureStream) {
     gestureStream.getTracks().forEach((t) => t.stop());
     gestureStream = null;
   }
+
   const hud = document.getElementById("gesture-hud");
   if (hud) {
     hud.classList.add("hidden");
     hud.style.display = "none";
   }
+
+  const reticleEl = document.getElementById("gesture-reticle");
+  if (reticleEl) {
+    reticleEl.classList.add("hidden");
+  }
+
+  const toggleBtn = document.getElementById("gesture-toggle-btn");
+  if (toggleBtn) toggleBtn.classList.remove("active");
+
   prevPalmPos = null;
+  prevPinchY = null;
+  prevTwoHandDist = null;
+  dwellTarget = null;
+  dwellStartTime = 0;
+  currentHoveredTarget = null;
+  currentGestureState = "none";
+
+  stabilizer.reset();
+  palmFilterX.reset();
+  palmFilterY.reset();
+  reticleFilterX.reset();
+  reticleFilterY.reset();
+
+  playUiClose();
+}
+
+export function toggleGestureControl() {
+  if (isGestureActive) {
+    stopGestureControl();
+    return false;
+  }
+
+  // Check consent modal
+  const consentModal = document.getElementById("gesture-consent-modal");
+  let hasConsented = false;
+  try {
+    hasConsented = window.sessionStorage.getItem("gesture_consent_granted") === "true";
+  } catch {
+    hasConsented = false;
+  }
+
+  if (!hasConsented && consentModal) {
+    consentModal.classList.remove("hidden");
+    return false;
+  }
+
+  return startGestureControl();
 }
 
 export function initGestureControl(handlers = {}) {
+  callbacks = { ...callbacks, ...handlers };
+
   const gestureToggleBtn = document.getElementById("gesture-toggle-btn");
   const gestureCloseBtn = document.getElementById("gesture-close-btn");
+  const consentModal = document.getElementById("gesture-consent-modal");
+  const consentAllowBtn = document.getElementById("gesture-consent-allow");
+  const consentDenyBtn = document.getElementById("gesture-consent-deny");
+
+  if (consentAllowBtn && consentModal) {
+    consentAllowBtn.addEventListener("click", () => {
+      try {
+        window.sessionStorage.setItem("gesture_consent_granted", "true");
+      } catch {
+        // ignore
+      }
+      consentModal.classList.add("hidden");
+      startGestureControl();
+    });
+  }
+
+  if (consentDenyBtn && consentModal) {
+    consentDenyBtn.addEventListener("click", () => {
+      consentModal.classList.add("hidden");
+      if (gestureToggleBtn) gestureToggleBtn.classList.remove("active");
+    });
+  }
 
   if (gestureToggleBtn) {
     gestureToggleBtn.addEventListener("click", (e) => {
@@ -295,6 +632,22 @@ export function initGestureControl(handlers = {}) {
       stopGestureControl();
     });
   }
+
+  // Test injection hook for E2E and visual tests
+  window.__gestureTest = {
+    inject: (landmarks, handedness = "Right") => {
+      processLandmarks([landmarks], [{ categoryName: handedness }], performance.now());
+    },
+    injectTwoHands: (hand1, hand2) => {
+      processLandmarks([hand1, hand2], [{ categoryName: "Right" }, { categoryName: "Left" }], performance.now());
+    },
+    getState: () => ({
+      isActive: isGestureActive,
+      currentGesture: currentGestureState,
+      hoveredTarget: currentHoveredTarget,
+      fps: currentFps,
+    }),
+  };
 
   return {
     start: startGestureControl,

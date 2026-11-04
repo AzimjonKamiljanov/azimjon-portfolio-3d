@@ -9,6 +9,7 @@ export default defineConfig({
     emptyOutDir: true,
     target: 'esnext',
     minify: 'esbuild',
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html')

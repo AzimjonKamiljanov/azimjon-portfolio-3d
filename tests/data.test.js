@@ -88,6 +88,9 @@ describe('Data Integrity & Fact Verification Tests', () => {
             }
         }
         checkDir('src');
+        const indexHtml = fs.readFileSync('index.html', 'utf8');
+        expect(indexHtml).not.toMatch(/Lead AI/i);
+        expect(indexHtml).not.toMatch(/Senior Full-Stack/i);
     });
 });
 

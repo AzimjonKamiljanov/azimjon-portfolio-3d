@@ -147,8 +147,25 @@ export function initRaycaster(
   window.addEventListener("pointermove", onPointerMove, { passive: true });
   window.addEventListener("pointerup", onPointerUp, { passive: true });
 
+  function raycastAt(normX, normY) {
+    const coords = new THREE.Vector2(normX, normY);
+    raycaster.setFromCamera(coords, camera);
+    const intersects = raycaster.intersectObjects(interactableObjects, true);
+    if (intersects.length > 0) {
+      let hit = intersects[0].object;
+      while (hit && (!hit.userData || !hit.userData.title) && hit.parent) {
+        hit = hit.parent;
+      }
+      if (hit && hit.userData && hit.userData.title) {
+        return hit;
+      }
+    }
+    return null;
+  }
+
   return {
     focusOnObject,
+    raycastAt,
     getCurrentTarget: () => currentTarget,
     clearTarget: () => {
       currentTarget = null;

@@ -149,7 +149,7 @@ const raycasterController = initRaycaster(
     modals.openInfoModal(selectedObject.userData);
     updateNavActiveStateForObject(selectedObject);
   },
-  (hoveredObject) => {
+  (_hoveredObject) => {
     // Hover state handled inside raycaster
   },
 );
@@ -193,6 +193,9 @@ initHud(
 );
 
 // 7. Hand Gesture AI Vision Control
+let isTimeFrozen = false;
+let savedOrbitSpeed = 1;
+
 initGestureControl({
   onOrbit: (deltaX, deltaY) => {
     const rotSpeed = 0.005;
@@ -200,6 +203,9 @@ initGestureControl({
       new THREE.Vector3(0, 1, 0),
       -deltaX * rotSpeed,
     );
+    if (Math.abs(deltaY) > 0.001) {
+      controls.object.position.y += deltaY * 0.15;
+    }
     controls.update();
   },
   onZoom: (delta) => {
@@ -210,11 +216,59 @@ initGestureControl({
     );
     controls.update();
   },
-  onSelect: () => {
-    // Selection
+  onSelect: (target) => {
+    if (target && target.userData && target.userData.title) {
+      raycasterController.focusOnObject(target);
+      modals.openInfoModal(target.userData);
+      updateNavActiveStateForObject(target);
+    }
   },
   getReticleTarget: (normX, normY) => {
-    return null;
+    return raycasterController.raycastAt(normX, normY);
+  },
+  onOverview: () => {
+    if (tour.isActive()) tour.exitTour();
+    modals.closeInfoModal();
+    catalog.closeCatalog();
+    resetToOverview(camera, controls, () => {
+      raycasterController.clearTarget();
+      updateNavActiveState(null);
+    });
+  },
+  onFreezeToggle: () => {
+    isTimeFrozen = !isTimeFrozen;
+    if (isTimeFrozen) {
+      savedOrbitSpeed = currentOrbitSpeed;
+      currentOrbitSpeed = 0;
+    } else {
+      currentOrbitSpeed = savedOrbitSpeed || 1;
+    }
+  },
+  onTourToggle: () => {
+    if (tour.isActive()) tour.exitTour();
+    else tour.startTour();
+  },
+  onSwipe: (dir) => {
+    const planetIds = [
+      "Mercury",
+      "Venus",
+      "Earth",
+      "Mars",
+      "Jupiter",
+      "Saturn",
+      "Uranus",
+      "Neptune",
+      "Pluto",
+    ];
+    const currentId = raycasterController.getCurrentTarget()?.userData?.id;
+    let idx = planetIds.indexOf(currentId);
+    if (idx === -1) idx = 0;
+    if (dir === "right") {
+      idx = (idx + 1) % planetIds.length;
+    } else {
+      idx = (idx - 1 + planetIds.length) % planetIds.length;
+    }
+    focusTargetById(planetIds[idx]);
   },
 });
 

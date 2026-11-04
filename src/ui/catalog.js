@@ -130,7 +130,7 @@ export function initCatalog({ onSelectTarget }) {
     // Group filtered projects
     const myProjects = filtered.filter((p) => p.group === "my_projects");
     const toolsAndOpenSource = filtered.filter(
-      (p) => p.group === "tools_and_opensource",
+      (p) => p.group === "open_source_tools" || p.group === "tools_and_opensource",
     );
 
     if (filtered.length === 0) {

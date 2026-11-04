@@ -533,6 +533,19 @@ RTX 5070 CUDA bilan tezlashtirilgan Hashcat, Nmap, Radare2, Lynis, Volatility3, 
         </div>
     </div>
 
+    <!-- Hand Gesture Consent Modal -->
+    <div id="gesture-consent-modal" class="gesture-consent-modal hidden" role="dialog" aria-modal="true" aria-labelledby="gesture-consent-title">
+        <div class="gesture-consent-card">
+            <div class="badge-tag" id="gesture-consent-badge">AI VISION SECURITY</div>
+            <h3 id="gesture-consent-title">AI Vision Qo'l Boshqaruvi</h3>
+            <p id="gesture-consent-desc">Video faqat qurilmangizning o'zida qayta ishlanadi va hech qachon serverga yuklanmaydi. Qo'l harakatlari orqali koinotni boshqarish uchun kameraga ruxsat berasizmi?</p>
+            <div class="gesture-consent-actions">
+                <button id="gesture-consent-deny" class="btn-secondary">Bekor qilish</button>
+                <button id="gesture-consent-allow" class="btn-primary">Ruxsat berish</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Hand Gesture Control Telemetry HUD -->
     <div id="gesture-hud" class="gesture-hud hidden">
         <div class="gesture-hud-card">
@@ -541,7 +554,8 @@ RTX 5070 CUDA bilan tezlashtirilgan Hashcat, Nmap, Radare2, Lynis, Volatility3, 
                     <span class="gesture-live-dot" id="gesture-status-dot"></span>
                     <span class="gesture-badge" id="gesture-badge-text">AI VISION TELEMETRIYA</span>
                 </div>
-                <button class="gesture-close-btn" id="gesture-close-btn" aria-label="Yopish" title="Qo\x27l boshqaruvini yopish">✕</button>
+                <span id="gesture-fps" class="gesture-fps">-- FPS</span>
+                <button class="gesture-close-btn" id="gesture-close-btn" aria-label="Yopish" title="Qo'l boshqaruvini yopish">✕</button>
             </div>
             <div class="gesture-canvas-wrapper">
                 <video id="gesture-video" playsinline muted></video>
@@ -551,7 +565,7 @@ RTX 5070 CUDA bilan tezlashtirilgan Hashcat, Nmap, Radare2, Lynis, Volatility3, 
             <div class="gesture-hud-body">
                 <div class="gesture-state-row">
                     <span class="gesture-indicator-icon" id="gesture-indicator-icon">🖐</span>
-                    <span class="gesture-state-text" id="gesture-state-text">Qo\x27l qidirilmoqda...</span>
+                    <span class="gesture-state-text" id="gesture-state-text">Qo'l qidirilmoqda...</span>
                 </div>
                 <div class="gesture-quick-guide" id="gesture-quick-guide">🖐 Orbit • 👆 Reticle • 🤏 Zoom/Tanlash • ✊ Stop</div>
             </div>
