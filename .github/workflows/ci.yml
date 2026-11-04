@@ -2,9 +2,9 @@ name: CI Hardening & Optimization Suite
 
 on:
   push:
-    branches: [main, hardening-and-optimization]
+    branches: [main, hardening-and-optimization, 'feat/**']
   pull_request:
-    branches: [main]
+    branches: [main, hardening-and-optimization, 'feat/**']
 
 jobs:
   validate:

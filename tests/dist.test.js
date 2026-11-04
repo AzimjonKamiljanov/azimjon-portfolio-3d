@@ -80,4 +80,10 @@ describe('Production Distribution (dist/) Integrity Tests', () => {
         }
         checkZeroBytes(distPath);
     });
+
+    it('contains zero inline style attributes in dist/index.html (A5 strict CSP compatibility)', () => {
+        const html = fs.readFileSync(indexPath, 'utf8');
+        const styleAttrMatches = html.match(/\sstyle\s*=\s*["'][^"']*["']/gi) || [];
+        expect(styleAttrMatches.length, `Expected 0 inline style attributes, found: ${JSON.stringify(styleAttrMatches)}`).toBe(0);
+    });
 });
