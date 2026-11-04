@@ -312,7 +312,11 @@ function processLandmarks(
 
     let target = null;
     if (callbacks.getReticleTarget) {
-      target = callbacks.getReticleTarget(smoothX, smoothY);
+      // Three.js NDC coordinates corresponding exactly to visual reticle position:
+      // X in [-1, +1] (left to right), Y in [-1, +1] (bottom to top)
+      const ndcX = (screenX / window.innerWidth) * 2 - 1;
+      const ndcY = -(screenY / window.innerHeight) * 2 + 1;
+      target = callbacks.getReticleTarget(ndcX, ndcY);
     }
     currentHoveredTarget = target;
 
@@ -362,7 +366,11 @@ function processLandmarks(
         lastPinchTriggerTime = Date.now();
         let target = currentHoveredTarget;
         if (!target && callbacks.getReticleTarget) {
-          target = callbacks.getReticleTarget(pinchX, pinchY);
+          const pinchScreenX = (1.0 - pinchX) * window.innerWidth;
+          const pinchScreenY = pinchY * window.innerHeight;
+          const ndcX = (pinchScreenX / window.innerWidth) * 2 - 1;
+          const ndcY = -(pinchScreenY / window.innerHeight) * 2 + 1;
+          target = callbacks.getReticleTarget(ndcX, ndcY);
         }
         if (target && callbacks.onSelect) {
           callbacks.onSelect(target);

@@ -60,13 +60,28 @@ function generateHand({
   addFinger(17, pinky, fingerXSpreads[4], false);
 
   if (pinch) {
-    lm[4] = { x: reticleX, y: reticleY, z: 0.01 };
-    lm[8] = { x: reticleX + 0.005, y: reticleY, z: 0.01 };
+    const wristY = reticleY + 0.35;
+    lm[0] = { x: reticleX, y: wristY, z: 0 };
+    lm[5] = { x: reticleX, y: reticleY + 0.20, z: 0 };
+    lm[6] = { x: reticleX, y: reticleY + 0.13, z: 0 };
+    lm[7] = { x: reticleX, y: reticleY + 0.065, z: 0 };
+    lm[8] = { x: reticleX, y: reticleY, z: 0 };
+
+    lm[1] = { x: reticleX - 0.06, y: reticleY + 0.25, z: 0 };
+    lm[2] = { x: reticleX - 0.05, y: reticleY + 0.17, z: 0 };
+    lm[3] = { x: reticleX - 0.02, y: reticleY + 0.08, z: 0 };
+    lm[4] = { x: reticleX + 0.005, y: reticleY, z: 0.01 };
   } else if (index === 'extended' && middle === 'extended' && ring === 'curled' && pinky === 'curled') {
     // True Victory V-spread
     lm[8] = { x: 0.42, y: 0.35, z: 0 };
     lm[12] = { x: 0.55, y: 0.35, z: 0 };
-  } else if (index === 'extended') {
+  } else if (index === 'extended' && middle === 'curled' && ring === 'curled' && pinky === 'curled') {
+    // Collinear index finger pointing at (reticleX, reticleY)
+    const wristY = reticleY + 0.35;
+    lm[0] = { x: reticleX, y: wristY, z: 0 };
+    lm[5] = { x: reticleX, y: reticleY + 0.20, z: 0 };
+    lm[6] = { x: reticleX, y: reticleY + 0.13, z: 0 };
+    lm[7] = { x: reticleX, y: reticleY + 0.065, z: 0 };
     lm[8] = { x: reticleX, y: reticleY, z: 0 };
   }
 
@@ -199,4 +214,67 @@ test.describe('AI Vision Hand Gesture Control Acceptance Tests', () => {
     const state = await page.evaluate(() => window.__gestureTest.getState());
     expect(state.currentGesture).toBe('victory');
   });
+
+  test('5. Point at the Sun -> Pinch -> Sun modal opens smoothly (C5 E2E)', async ({ page }) => {
+    await page.goto('http://127.0.0.1:8080/');
+    await page.waitForSelector('#canvas-container canvas', { timeout: 10000 });
+    await page.waitForTimeout(1000);
+
+    // Grant consent and open HUD via test harness
+    await page.evaluate(() => {
+      window.sessionStorage.setItem('gesture_consent_granted', 'true');
+      const hud = document.getElementById('gesture-hud');
+      if (hud) {
+        hud.classList.remove('hidden');
+        hud.style.display = 'block';
+      }
+    });
+
+    // 1. Point at the center of the viewport (Sun at origin)
+    const pointingHand = generateHand({
+      thumb: 'curled',
+      index: 'extended',
+      middle: 'curled',
+      ring: 'curled',
+      pinky: 'curled',
+      reticleX: 0.5,
+      reticleY: 0.5
+    });
+
+    for (let i = 0; i < 6; i++) {
+      await page.evaluate((lm) => {
+        window.__gestureTest.inject(lm, 'Right');
+      }, pointingHand);
+      await page.waitForTimeout(30);
+    }
+
+    const reticle = page.locator('#gesture-reticle');
+    await expect(reticle).toBeVisible();
+    await expect(reticle).toHaveClass(/reticle-locked/);
+
+    // 2. Pinch to select the hovered Sun
+    const pinchHand = generateHand({
+      thumb: 'extended',
+      index: 'extended',
+      middle: 'curled',
+      ring: 'curled',
+      pinky: 'curled',
+      pinch: true,
+      reticleX: 0.5,
+      reticleY: 0.5
+    });
+
+    for (let i = 0; i < 6; i++) {
+      await page.evaluate((lm) => {
+        window.__gestureTest.inject(lm, 'Right');
+      }, pinchHand);
+      await page.waitForTimeout(40);
+    }
+
+    // Modal should now be opened
+    const modal = page.locator('#info-panel');
+    await expect(modal).not.toHaveClass(/hidden/);
+    await expect(page.locator('#info-title')).toContainText('Azimjon Kamiljanov');
+  });
 });
+
