@@ -538,6 +538,7 @@ window.__solarEngine = {
   camera,
   scene,
   renderer,
+  composer,
   controls,
   focusTargetById,
   resetToOverview: () => resetToOverview(camera, controls),

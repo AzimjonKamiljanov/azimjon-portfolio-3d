@@ -53,11 +53,27 @@ let currentGestureState = "none";
 let currentHoveredTarget = null;
 
 const HAND_CONNECTIONS = [
-  [0, 1], [1, 2], [2, 3], [3, 4],
-  [0, 5], [5, 6], [6, 7], [7, 8],
-  [5, 9], [9, 10], [10, 11], [11, 12],
-  [9, 13], [13, 14], [14, 15], [15, 16],
-  [13, 17], [0, 17], [17, 18], [18, 19], [19, 20],
+  [0, 1],
+  [1, 2],
+  [2, 3],
+  [3, 4],
+  [0, 5],
+  [5, 6],
+  [6, 7],
+  [7, 8],
+  [5, 9],
+  [9, 10],
+  [10, 11],
+  [11, 12],
+  [9, 13],
+  [13, 14],
+  [14, 15],
+  [15, 16],
+  [13, 17],
+  [0, 17],
+  [17, 18],
+  [18, 19],
+  [19, 20],
 ];
 
 function drawGestureCanvas(landmarks, gestureName) {
@@ -87,7 +103,10 @@ function drawGestureCanvas(landmarks, gestureName) {
 
   for (const lm of landmarks) {
     // Draw connections
-    ctx.strokeStyle = gestureName === "pinch" ? "rgba(52, 211, 153, 0.65)" : "rgba(56, 189, 248, 0.5)";
+    ctx.strokeStyle =
+      gestureName === "pinch"
+        ? "rgba(52, 211, 153, 0.65)"
+        : "rgba(56, 189, 248, 0.5)";
     ctx.lineWidth = 1.5;
     for (const [i, j] of HAND_CONNECTIONS) {
       if (lm[i] && lm[j]) {
@@ -108,7 +127,11 @@ function drawGestureCanvas(landmarks, gestureName) {
       const y = lm[i].y * h;
       const isTip = i === 4 || i === 8 || i === 12 || i === 16 || i === 20;
 
-      ctx.fillStyle = isTip ? (gestureName === "pinch" ? "#34d399" : "#ffffff") : "#38bdf8";
+      ctx.fillStyle = isTip
+        ? gestureName === "pinch"
+          ? "#34d399"
+          : "#ffffff"
+        : "#38bdf8";
       ctx.beginPath();
       ctx.arc(x, y, isTip ? 3.0 : 2.0, 0, Math.PI * 2);
       ctx.fill();
@@ -123,7 +146,8 @@ function updateHudUI(gesture, text, icon, isError = false) {
   const fpsEl = document.getElementById("gesture-fps");
 
   if (dot) {
-    dot.className = "gesture-live-dot " + (isError ? "status-error" : "status-active");
+    dot.className =
+      "gesture-live-dot " + (isError ? "status-error" : "status-active");
   }
   if (stateIcon && icon) stateIcon.innerText = icon;
   if (stateText && text) stateText.innerText = text;
@@ -132,7 +156,11 @@ function updateHudUI(gesture, text, icon, isError = false) {
   }
 }
 
-function processLandmarks(landmarksList, handednesses = [], timestamp = performance.now()) {
+function processLandmarks(
+  landmarksList,
+  handednesses = [],
+  timestamp = performance.now(),
+) {
   const trans = getTranslations().ui.gestures;
   const reticleEl = document.getElementById("gesture-reticle");
   const reticleLabel = document.getElementById("reticle-target-label");
@@ -221,7 +249,11 @@ function processLandmarks(landmarksList, handednesses = [], timestamp = performa
       const vx = dx / dt;
 
       // Fast Swipe detection (Horizontal velocity check)
-      if (Math.abs(vx) > 1.2 && Math.abs(dx) > 0.10 && Date.now() - lastSwipeTime > 750) {
+      if (
+        Math.abs(vx) > 1.2 &&
+        Math.abs(dx) > 0.1 &&
+        Date.now() - lastSwipeTime > 750
+      ) {
         lastSwipeTime = Date.now();
         // Camera is mirrored: moving right in front of webcam produces negative dx
         if (vx < 0) {
@@ -292,7 +324,11 @@ function processLandmarks(landmarksList, handednesses = [], timestamp = performa
       if (dwellTarget === target) {
         if (timestamp - dwellStartTime >= 900) {
           if (callbacks.onSelect) callbacks.onSelect(target);
-          updateHudUI("selected", `${trans.selected}: ${target.userData.title}`, "🎯");
+          updateHudUI(
+            "selected",
+            `${trans.selected}: ${target.userData.title}`,
+            "🎯",
+          );
           dwellTarget = null;
           dwellStartTime = 0;
         } else {
@@ -330,7 +366,11 @@ function processLandmarks(landmarksList, handednesses = [], timestamp = performa
         }
         if (target && callbacks.onSelect) {
           callbacks.onSelect(target);
-          updateHudUI("selected", `${trans.selected}: ${target.userData?.title || ""}`, "🤏");
+          updateHudUI(
+            "selected",
+            `${trans.selected}: ${target.userData?.title || ""}`,
+            "🤏",
+          );
         }
       }
     } else {
@@ -395,33 +435,40 @@ async function loadVisionTasks() {
   if (landmarkerInstance) return landmarkerInstance;
 
   const vision = await import("@mediapipe/tasks-vision");
-  const filesetResolver = await vision.FilesetResolver.forVisionTasks("/mediapipe/wasm");
+  const filesetResolver =
+    await vision.FilesetResolver.forVisionTasks("/mediapipe/wasm");
 
   try {
-    landmarkerInstance = await vision.HandLandmarker.createFromOptions(filesetResolver, {
-      baseOptions: {
-        modelAssetPath: "/mediapipe/hand_landmarker.task",
-        delegate: "GPU",
+    landmarkerInstance = await vision.HandLandmarker.createFromOptions(
+      filesetResolver,
+      {
+        baseOptions: {
+          modelAssetPath: "/mediapipe/hand_landmarker.task",
+          delegate: "GPU",
+        },
+        runningMode: "VIDEO",
+        numHands: 2,
+        minHandDetectionConfidence: 0.5,
+        minHandPresenceConfidence: 0.5,
+        minTrackingConfidence: 0.5,
       },
-      runningMode: "VIDEO",
-      numHands: 2,
-      minHandDetectionConfidence: 0.5,
-      minHandPresenceConfidence: 0.5,
-      minTrackingConfidence: 0.5,
-    });
+    );
   } catch (gpuErr) {
     console.warn("GPU delegate failed, falling back to CPU:", gpuErr);
-    landmarkerInstance = await vision.HandLandmarker.createFromOptions(filesetResolver, {
-      baseOptions: {
-        modelAssetPath: "/mediapipe/hand_landmarker.task",
-        delegate: "CPU",
+    landmarkerInstance = await vision.HandLandmarker.createFromOptions(
+      filesetResolver,
+      {
+        baseOptions: {
+          modelAssetPath: "/mediapipe/hand_landmarker.task",
+          delegate: "CPU",
+        },
+        runningMode: "VIDEO",
+        numHands: 2,
+        minHandDetectionConfidence: 0.5,
+        minHandPresenceConfidence: 0.5,
+        minTrackingConfidence: 0.5,
       },
-      runningMode: "VIDEO",
-      numHands: 2,
-      minHandDetectionConfidence: 0.5,
-      minHandPresenceConfidence: 0.5,
-      minTrackingConfidence: 0.5,
-    });
+    );
   }
 
   return landmarkerInstance;
@@ -434,7 +481,11 @@ export async function startGestureControl() {
   const trans = getTranslations().ui.gestures;
 
   try {
-    if (window.isSecureContext === false && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+    if (
+      window.isSecureContext === false &&
+      window.location.hostname !== "localhost" &&
+      window.location.hostname !== "127.0.0.1"
+    ) {
       updateHudUI("error", trans.errorInsecure, "⚠️", true);
       return false;
     }
@@ -483,7 +534,12 @@ export async function startGestureControl() {
       if (!isGestureActive) return;
 
       const currentTime = metadata ? metadata.mediaTime : video.currentTime;
-      if (video && video.readyState >= 2 && currentTime !== lastVideoTime && !isProcessingFrame) {
+      if (
+        video &&
+        video.readyState >= 2 &&
+        currentTime !== lastVideoTime &&
+        !isProcessingFrame
+      ) {
         lastVideoTime = currentTime;
         isProcessingFrame = true;
         try {
@@ -512,8 +568,10 @@ export async function startGestureControl() {
     return true;
   } catch (err) {
     console.error("Camera access error:", err);
-    const isDenied = err.name === "NotAllowedError" || err.name === "PermissionDeniedError";
-    const isNotFound = err.name === "NotFoundError" || err.name === "DevicesNotFoundError";
+    const isDenied =
+      err.name === "NotAllowedError" || err.name === "PermissionDeniedError";
+    const isNotFound =
+      err.name === "NotFoundError" || err.name === "DevicesNotFoundError";
 
     if (isDenied) {
       updateHudUI("error", trans.errorPermission, "🚫", true);
@@ -581,7 +639,8 @@ export function toggleGestureControl() {
   const consentModal = document.getElementById("gesture-consent-modal");
   let hasConsented = false;
   try {
-    hasConsented = window.sessionStorage.getItem("gesture_consent_granted") === "true";
+    hasConsented =
+      window.sessionStorage.getItem("gesture_consent_granted") === "true";
   } catch {
     hasConsented = false;
   }
@@ -639,10 +698,18 @@ export function initGestureControl(handlers = {}) {
   // Test injection hook for E2E and visual tests
   window.__gestureTest = {
     inject: (landmarks, handedness = "Right") => {
-      processLandmarks([landmarks], [{ categoryName: handedness }], performance.now());
+      processLandmarks(
+        [landmarks],
+        [{ categoryName: handedness }],
+        performance.now(),
+      );
     },
     injectTwoHands: (hand1, hand2) => {
-      processLandmarks([hand1, hand2], [{ categoryName: "Right" }, { categoryName: "Left" }], performance.now());
+      processLandmarks(
+        [hand1, hand2],
+        [{ categoryName: "Right" }, { categoryName: "Left" }],
+        performance.now(),
+      );
     },
     getState: () => ({
       isActive: isGestureActive,

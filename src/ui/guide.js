@@ -153,7 +153,13 @@ export function initGuide() {
       ) {
         hideGuide();
       }
-    } else if ((e.key === "h" || e.key === "H" || e.key === "?") && !isInputActive && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    } else if (
+      (e.key === "h" || e.key === "H" || e.key === "?") &&
+      !isInputActive &&
+      !e.ctrlKey &&
+      !e.metaKey &&
+      !e.altKey
+    ) {
       if (
         guideModalContainer &&
         !guideModalContainer.classList.contains("hidden") &&

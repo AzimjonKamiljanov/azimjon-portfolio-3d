@@ -152,6 +152,7 @@ export function initScene() {
       powerPreference: "high-performance",
       alpha: false,
       stencil: false,
+      preserveDrawingBuffer: true,
     });
   } catch (err) {
     console.warn(

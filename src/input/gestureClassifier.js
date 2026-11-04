@@ -64,20 +64,36 @@ export function isFingerExtended(mcp, pip, dip, tip, wrist) {
   const anglePip = calculateJointAngle(mcp, pip, dip);
   const angleDip = calculateJointAngle(pip, dip, tip);
 
-  const distTip = Math.hypot(tip.x - wrist.x, tip.y - wrist.y, (tip.z || 0) - (wrist.z || 0));
-  const distPip = Math.hypot(pip.x - wrist.x, pip.y - wrist.y, (pip.z || 0) - (wrist.z || 0));
+  const distTip = Math.hypot(
+    tip.x - wrist.x,
+    tip.y - wrist.y,
+    (tip.z || 0) - (wrist.z || 0),
+  );
+  const distPip = Math.hypot(
+    pip.x - wrist.x,
+    pip.y - wrist.y,
+    (pip.z || 0) - (wrist.z || 0),
+  );
 
   // Finger is extended if joints are fairly straight (> 140 deg = 2.44 rad) and tip extends past pip
-  return anglePip > 2.44 && angleDip > 2.30 && distTip > distPip * 1.15;
+  return anglePip > 2.44 && angleDip > 2.3 && distTip > distPip * 1.15;
 }
 
 // Determines if thumb is extended
 export function isThumbExtended(wrist, cmc, mcp, ip, tip) {
   const angleMcp = calculateJointAngle(cmc, mcp, ip);
   const angleIp = calculateJointAngle(mcp, ip, tip);
-  const distTip = Math.hypot(tip.x - wrist.x, tip.y - wrist.y, (tip.z || 0) - (wrist.z || 0));
-  const distMcp = Math.hypot(mcp.x - wrist.x, mcp.y - wrist.y, (mcp.z || 0) - (wrist.z || 0));
-  return angleMcp > 2.30 && angleIp > 2.20 && distTip > distMcp * 1.25;
+  const distTip = Math.hypot(
+    tip.x - wrist.x,
+    tip.y - wrist.y,
+    (tip.z || 0) - (wrist.z || 0),
+  );
+  const distMcp = Math.hypot(
+    mcp.x - wrist.x,
+    mcp.y - wrist.y,
+    (mcp.z || 0) - (wrist.z || 0),
+  );
+  return angleMcp > 2.3 && angleIp > 2.2 && distTip > distMcp * 1.25;
 }
 
 // Classifies hand gesture from raw MediaPipe 21 landmarks
@@ -113,18 +129,43 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
   const pinkyTip = landmarks[20];
 
   // Hand scale (wrist to middle MCP)
-  const handScale = Math.hypot(
-    middleMcp.x - wrist.x,
-    middleMcp.y - wrist.y,
-    (middleMcp.z || 0) - (wrist.z || 0),
-  ) || 0.1;
+  const handScale =
+    Math.hypot(
+      middleMcp.x - wrist.x,
+      middleMcp.y - wrist.y,
+      (middleMcp.z || 0) - (wrist.z || 0),
+    ) || 0.1;
 
   // Finger extension states
-  const thumbExt = isThumbExtended(wrist, thumbCmc, thumbMcp, thumbIp, thumbTip);
-  const indexExt = isFingerExtended(indexMcp, indexPip, indexDip, indexTip, wrist);
-  const middleExt = isFingerExtended(middleMcp, middlePip, middleDip, middleTip, wrist);
+  const thumbExt = isThumbExtended(
+    wrist,
+    thumbCmc,
+    thumbMcp,
+    thumbIp,
+    thumbTip,
+  );
+  const indexExt = isFingerExtended(
+    indexMcp,
+    indexPip,
+    indexDip,
+    indexTip,
+    wrist,
+  );
+  const middleExt = isFingerExtended(
+    middleMcp,
+    middlePip,
+    middleDip,
+    middleTip,
+    wrist,
+  );
   const ringExt = isFingerExtended(ringMcp, ringPip, ringDip, ringTip, wrist);
-  const pinkyExt = isFingerExtended(pinkyMcp, pinkyPip, pinkyDip, pinkyTip, wrist);
+  const pinkyExt = isFingerExtended(
+    pinkyMcp,
+    pinkyPip,
+    pinkyDip,
+    pinkyTip,
+    wrist,
+  );
 
   // Pinch distance (thumb tip to index tip) normalized
   const pinchDist = Math.hypot(
@@ -151,7 +192,7 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
     indexMcp.y - wrist.y,
     (indexMcp.z || 0) - (wrist.z || 0),
   );
-  const isIndexReaching = indexDistFromWrist > indexMcpDistFromWrist * 1.20;
+  const isIndexReaching = indexDistFromWrist > indexMcpDistFromWrist * 1.2;
 
   // 1. PINCH (Thumb tip + Index tip meeting while reaching out)
   if (isPinch && isIndexReaching) {
@@ -160,7 +201,10 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
       confidence: 0.95,
       pinchDist,
       normPinch,
-      reticle: { x: (thumbTip.x + indexTip.x) / 2, y: (thumbTip.y + indexTip.y) / 2 },
+      reticle: {
+        x: (thumbTip.x + indexTip.x) / 2,
+        y: (thumbTip.y + indexTip.y) / 2,
+      },
       handedness,
     };
   }
@@ -187,7 +231,9 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
 
   // 3. VICTORY / PEACE (Index & Middle extended, Ring & Pinky curled)
   if (indexExt && middleExt && !ringExt && !pinkyExt) {
-    const tipSpread = Math.hypot(indexTip.x - middleTip.x, indexTip.y - middleTip.y) / handScale;
+    const tipSpread =
+      Math.hypot(indexTip.x - middleTip.x, indexTip.y - middleTip.y) /
+      handScale;
     if (tipSpread > 0.22) {
       return {
         gesture: "victory",

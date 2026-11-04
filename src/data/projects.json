@@ -4,10 +4,7 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "ai",
-      "systems"
-    ],
+    "categories": ["ai", "systems"],
     "link": "https://github.com/AzimjonKamiljanov/CyberAgent",
     "linkText": "CyberAgent Repo →",
     "uz": {
@@ -64,10 +61,7 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "systems",
-      "web"
-    ],
+    "categories": ["systems", "web"],
     "link": null,
     "linkText": "private / in progress",
     "uz": {
@@ -121,9 +115,7 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "ai"
-    ],
+    "categories": ["ai"],
     "link": "https://github.com/AzimjonKamiljanov/Jarvis-x",
     "linkText": "Jarvis-X Repo →",
     "uz": {
@@ -180,9 +172,7 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "web"
-    ],
+    "categories": ["web"],
     "link": "https://github.com/AzimjonKamiljanov/caretrack-clinic",
     "linkText": "CareTrack Clinic Repo →",
     "uz": {
@@ -239,10 +229,7 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "security",
-      "systems"
-    ],
+    "categories": ["security", "systems"],
     "link": null,
     "linkText": "private / in progress",
     "uz": {
@@ -296,9 +283,7 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "ai"
-    ],
+    "categories": ["ai"],
     "link": "https://github.com/AzimjonKamiljanov/elite-ai-agent",
     "linkText": "Elite AI Agent Repo →",
     "uz": {
@@ -352,9 +337,7 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "web"
-    ],
+    "categories": ["web"],
     "link": "https://github.com/AzimjonKamiljanov/full-stack-",
     "linkText": "Full-Stack Framework Repo →",
     "uz": {
@@ -411,9 +394,7 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "ai"
-    ],
+    "categories": ["ai"],
     "link": null,
     "linkText": "private / in progress",
     "uz": {
@@ -470,10 +451,7 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "systems",
-      "web"
-    ],
+    "categories": ["systems", "web"],
     "link": "https://github.com/AzimjonKamiljanov/Poco",
     "linkText": "Poco Repo →",
     "uz": {
@@ -527,10 +505,7 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "web",
-      "systems"
-    ],
+    "categories": ["web", "systems"],
     "link": "https://github.com/AzimjonKamiljanov",
     "linkText": "GitHub Profile →",
     "uz": {
@@ -590,9 +565,7 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": null,
     "linkText": "private / in progress",
     "uz": {
@@ -646,9 +619,7 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": null,
     "linkText": "private / in progress",
     "uz": {
@@ -705,9 +676,7 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community / Graphify",
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": "https://github.com/Graphify-Labs/graphify",
     "linkText": "Graphify Upstream →",
     "uz": {
@@ -761,9 +730,7 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Calcium-Ion & Open Source Community (New API)",
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": "https://github.com/Calcium-Ion/new-api",
     "linkText": "New API Upstream →",
     "uz": {
@@ -817,9 +784,7 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Frantisek Urban & Contributors (Agent Zero)",
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": "https://github.com/frdel/agent-zero",
     "linkText": "Agent Zero Upstream →",
     "uz": {
@@ -873,9 +838,7 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Paul Gauthier & Contributors (Aider)",
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": "https://github.com/Aider-AI/aider",
     "linkText": "Aider Upstream →",
     "uz": {
@@ -929,9 +892,7 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community (OpenShell)",
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": "https://github.com/NVIDIA/OpenShell",
     "linkText": "OpenShell Upstream →",
     "uz": {
@@ -985,9 +946,7 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": null,
     "linkText": "private / in progress",
     "uz": {
@@ -1041,9 +1000,7 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community (GSD Workflow)",
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": "https://github.com/open-gsd/gsd-core",
     "linkText": "GSD Core Upstream →",
     "uz": {
@@ -1097,9 +1054,7 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community (Claude-Mem)",
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": "https://github.com/thedotmack/claude-mem",
     "linkText": "Claude-Mem Upstream →",
     "uz": {
@@ -1153,9 +1108,7 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community (Headroom Context Engine)",
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": "https://github.com/headroomlabs-ai/headroom",
     "linkText": "Headroom Upstream →",
     "uz": {
@@ -1209,9 +1162,7 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community (Ralph Agent Runner)",
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": "https://github.com/ghuntley/how-to-ralph-wiggum",
     "linkText": "Ralph Wiggum Upstream →",
     "uz": {
@@ -1265,9 +1216,7 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "DeepSeek & Open Source Community",
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": "https://github.com/deepseek-ai/deepseek-harness",
     "linkText": "DeepSeek Harness Upstream →",
     "uz": {
@@ -1321,9 +1270,7 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": null,
     "linkText": "private / in progress",
     "uz": {
@@ -1377,9 +1324,7 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": null,
     "linkText": "private / in progress",
     "uz": {
@@ -1433,9 +1378,7 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": "https://github.com/AzimjonKamiljanov/Cosmic_portifolio",
     "linkText": "Cosmic Portfolio Repo →",
     "uz": {
@@ -1492,9 +1435,7 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": null,
     "linkText": "private / in progress",
     "uz": {
@@ -1548,9 +1489,7 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": [
-      "systems"
-    ],
+    "categories": ["systems"],
     "link": null,
     "linkText": "private / in progress",
     "uz": {

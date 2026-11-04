@@ -5,6 +5,8 @@ test.describe('3D Solar Developer Portfolio E2E Acceptance Tests', () => {
     test.beforeEach(async ({ page }) => {
         await page.addInitScript(() => {
             localStorage.setItem('solar_guide_dismissed', 'true');
+            localStorage.setItem('solar_guide_v2_dismissed', 'true');
+            window.sessionStorage.setItem('gesture_consent_granted', 'true');
         });
         // Collect console errors
         page.on('console', (msg) => {
@@ -104,6 +106,7 @@ test.describe('3D Solar Developer Portfolio E2E Acceptance Tests', () => {
 
     test('5. Moon contact terminal validates inputs, honeypot, and submits safely', async ({ page }) => {
         await page.goto('http://127.0.0.1:8080/');
+        await page.waitForSelector('#canvas-container canvas', { timeout: 10000 });
 
         // Intercept /api/contact
         await page.route('**/api/contact', async (route) => {

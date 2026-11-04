@@ -130,7 +130,8 @@ export function initCatalog({ onSelectTarget }) {
     // Group filtered projects
     const myProjects = filtered.filter((p) => p.group === "my_projects");
     const toolsAndOpenSource = filtered.filter(
-      (p) => p.group === "open_source_tools" || p.group === "tools_and_opensource",
+      (p) =>
+        p.group === "open_source_tools" || p.group === "tools_and_opensource",
     );
 
     if (filtered.length === 0) {
@@ -165,7 +166,8 @@ export function initCatalog({ onSelectTarget }) {
       const tr = proj[lang] || proj.uz;
       const targetAttr = proj.id ? `data-target="${proj.id}"` : "";
       const cats = (proj.categories || []).join(" ");
-      const authorLabel = lang === "uz" ? "Muallif" : lang === "ru" ? "Автор" : "Author";
+      const authorLabel =
+        lang === "uz" ? "Muallif" : lang === "ru" ? "Автор" : "Author";
       const authorNotice = proj.originalAuthor
         ? `<div class="card-attribution"><span class="author-badge">${authorLabel}: ${proj.originalAuthor}</span></div>`
         : "";

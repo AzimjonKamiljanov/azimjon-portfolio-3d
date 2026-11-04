@@ -344,8 +344,7 @@ body, html {
     font-size: 10.5px;
     font-weight: 500;
     cursor: pointer;
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
+    flex-shrink: 0;
     line-height: 1;
     transition: background 0.18s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1),
@@ -353,10 +352,6 @@ body, html {
                 transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform;
     transform: translateZ(0);
-}
-
-.header-link * {
-    white-space: nowrap !important;
 }
 
 .header-link:hover {
@@ -2371,7 +2366,9 @@ body, html {
     pointer-events: none;
     opacity: 1;
     transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    white-space: nowrap;
+    max-width: min(92vw, 420px);
+    text-align: center;
+    overflow-wrap: break-word;
 }
 
 .control-hints.hint-hidden {
@@ -3255,7 +3252,7 @@ body, html {
     .brand-title {
         font-size: 11px;
         letter-spacing: 0.5px;
-        white-space: nowrap !important;
+        line-height: 1.2;
         overflow: visible;
     }
     .brand-subtitle {
@@ -3365,8 +3362,7 @@ body, html {
         display: inline-flex !important;
         align-items: center;
         justify-content: center;
-        flex-shrink: 0 !important;
-        white-space: nowrap !important;
+        flex-shrink: 0;
     }
     /* Hide all text inside telemetry island on mobile for clean uniform icon pills */
     #gesture-toggle-text,

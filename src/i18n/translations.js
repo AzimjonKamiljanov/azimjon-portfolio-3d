@@ -96,7 +96,8 @@ export const translations = {
         guide: "🖐 Orbit • 👆 Reticle • 🤏 Tanlash/Zoom • ✊ Vaqt • ✌️ Tour",
         selected: "Tanlandi",
         consentTitle: "AI Vision Qo'l Boshqaruvi",
-        consentDesc: "Video faqat qurilmangizning o'zida qayta ishlanadi va hech qachon serverga yuklanmaydi. Qo'l harakatlari orqali koinotni boshqarish uchun kameraga ruxsat berasizmi?",
+        consentDesc:
+          "Video faqat qurilmangizning o'zida qayta ishlanadi va hech qachon serverga yuklanmaydi. Qo'l harakatlari orqali koinotni boshqarish uchun kameraga ruxsat berasizmi?",
         consentAllow: "Ruxsat berish",
         consentDeny: "Bekor qilish",
       },
@@ -167,13 +168,17 @@ export const translations = {
         step4Desc:
           "Loyihalar katalogi orqali 28 ta tizimni tezkor qidirish va saralash.",
         step5Title: "Ko'p Tillilik (I18n)",
-        step5Desc: "O'zbek, Ingliz va Rus tillari o'rtasida bir zumda almashing.",
+        step5Desc:
+          "O'zbek, Ingliz va Rus tillari o'rtasida bir zumda almashing.",
         step6Title: "Kosmik Ovoz Muhiti",
-        step6Desc: "Chuqur fazo muhitini his qilish uchun yuqori paneldagi ovozni yoqing.",
+        step6Desc:
+          "Chuqur fazo muhitini his qilish uchun yuqori paneldagi ovozni yoqing.",
         step7Title: "AI Vision Qo'l Boshqaruvi",
-        step7Desc: "Veb-kamera orqali qo'l harakatlari yordamida koinotni teging va boshqaring.",
+        step7Desc:
+          "Veb-kamera orqali qo'l harakatlari yordamida koinotni teging va boshqaring.",
         step8Title: "Kinematik Sayoxat & Tugmalar",
-        step8Desc: "Avto-sayoxat rejimi, 'H' ko'rsatma, 'Space' to'xtatish va 'Esc' chiqish.",
+        step8Desc:
+          "Avto-sayoxat rejimi, 'H' ko'rsatma, 'Space' to'xtatish va 'Esc' chiqish.",
         dontShow: "Keyingi safar avtomatik ko'rsatmaslik",
         startBtn: "Koinotni Ko'rish",
       },
@@ -332,7 +337,8 @@ export const translations = {
         guide: "🖐 Orbit • 👆 Reticle • 🤏 Select/Zoom • ✊ Time • ✌️ Tour",
         selected: "Selected",
         consentTitle: "AI Vision Hand Tracking",
-        consentDesc: "Video is processed entirely on your local device and is never sent to any server. Grant camera access to control space with hand gestures?",
+        consentDesc:
+          "Video is processed entirely on your local device and is never sent to any server. Grant camera access to control space with hand gestures?",
         consentAllow: "Allow Camera",
         consentDeny: "Cancel",
       },
@@ -401,13 +407,16 @@ export const translations = {
         step4Title: "Stars & Interactive Catalog",
         step4Desc: "Filter and search all 28 systems via the Projects catalog.",
         step5Title: "Multilingual System (I18n)",
-        step5Desc: "Switch instantly between Uzbek, English, and Russian interfaces.",
+        step5Desc:
+          "Switch instantly between Uzbek, English, and Russian interfaces.",
         step6Title: "Cosmic Soundscape",
         step6Desc: "Activate spatial ambient audio via the top telemetry bar.",
         step7Title: "AI Vision Hand Gestures",
-        step7Desc: "Control the universe with webcam gesture tracking processed locally.",
+        step7Desc:
+          "Control the universe with webcam gesture tracking processed locally.",
         step8Title: "Autopilot Tour & Hotkeys",
-        step8Desc: "Cinematic tour mode, 'H' for guide, 'Space' for time freeze, 'Esc' to exit.",
+        step8Desc:
+          "Cinematic tour mode, 'H' for guide, 'Space' for time freeze, 'Esc' to exit.",
         dontShow: "Don't show automatically next time",
         startBtn: "Enter System",
       },
@@ -562,7 +571,8 @@ export const translations = {
         guide: "🖐 Орбита • 👆 Прицел • 🤏 Выбор/Зум • ✊ Время • ✌️ Тур",
         selected: "Выбрано",
         consentTitle: "AI Vision Управление Жестами",
-        consentDesc: "Видео обрабатывается исключительно на вашем устройстве и никогда не отправляется на сервер. Разрешить доступ к камере для управления жестами?",
+        consentDesc:
+          "Видео обрабатывается исключительно на вашем устройстве и никогда не отправляется на сервер. Разрешить доступ к камере для управления жестами?",
         consentAllow: "Разрешить",
         consentDeny: "Отмена",
       },
@@ -629,13 +639,17 @@ export const translations = {
         step4Desc:
           "Быстрый поиск и фильтрация всех 28 систем в каталоге проектов.",
         step5Title: "Мультиязычность (I18n)",
-        step5Desc: "Мгновенное переключение между узбекским, английским и русским языками.",
+        step5Desc:
+          "Мгновенное переключение между узбекским, английским и русским языками.",
         step6Title: "Космический Звук",
-        step6Desc: "Включите пространственный фоновый звук на верхней панели управления.",
+        step6Desc:
+          "Включите пространственный фоновый звук на верхней панели управления.",
         step7Title: "AI Vision Управление Жестами",
-        step7Desc: "Управляйте космосом движениями рук через камеру без отправки данных на сервер.",
+        step7Desc:
+          "Управляйте космосом движениями рук через камеру без отправки данных на сервер.",
         step8Title: "Авто-Тур и Горячие Клавиши",
-        step8Desc: "Кинематический тур, 'H' для справки, 'Пробел' для паузы, 'Esc' для выхода.",
+        step8Desc:
+          "Кинематический тур, 'H' для справки, 'Пробел' для паузы, 'Esc' для выхода.",
         dontShow: "Не показывать автоматически в следующий раз",
         startBtn: "Открыть Космос",
       },

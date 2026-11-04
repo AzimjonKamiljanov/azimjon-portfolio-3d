@@ -305,32 +305,40 @@ export function initPlanets(scene, textureLoader, interactableObjects) {
         shader.uniforms.uNightTexture = { value: nightTex };
         shader.uniforms.uSunPosition = { value: new THREE.Vector3(0, 0, 0) };
 
-        shader.vertexShader = `
-          varying vec3 vWorldNormal;
+        shader.vertexShader =
+          `
+          varying vec3 vEarthWorldPos;
+          varying vec3 vEarthWorldNormal;
+          varying vec2 vEarthUv;
         ` + shader.vertexShader;
 
         shader.vertexShader = shader.vertexShader.replace(
-          `#include <worldpos_vertex>`,
-          `#include <worldpos_vertex>
-          vWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
-          `
+          `void main() {`,
+          `void main() {
+          vEarthUv = uv;
+          vEarthWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
+          vEarthWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
+          `,
         );
 
-        shader.fragmentShader = `
+        shader.fragmentShader =
+          `
           uniform sampler2D uNightTexture;
           uniform vec3 uSunPosition;
-          varying vec3 vWorldNormal;
+          varying vec3 vEarthWorldPos;
+          varying vec3 vEarthWorldNormal;
+          varying vec2 vEarthUv;
         ` + shader.fragmentShader;
 
         shader.fragmentShader = shader.fragmentShader.replace(
           `#include <dithering_fragment>`,
           `#include <dithering_fragment>
-          vec3 sunDir = normalize(uSunPosition - vWorldPosition);
-          float sunDot = dot(normalize(vWorldNormal), sunDir);
+          vec3 sunDir = normalize(uSunPosition - vEarthWorldPos);
+          float sunDot = dot(normalize(vEarthWorldNormal), sunDir);
           float nightMask = smoothstep(0.08, -0.18, sunDot);
-          vec4 nightCity = texture2D(uNightTexture, vUv);
+          vec4 nightCity = texture2D(uNightTexture, vEarthUv);
           gl_FragColor.rgb += nightCity.rgb * vec3(1.0, 0.88, 0.65) * nightMask * 1.6;
-          `
+          `,
         );
       };
     }

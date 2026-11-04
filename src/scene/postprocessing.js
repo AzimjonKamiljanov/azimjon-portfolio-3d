@@ -24,7 +24,10 @@ export function initPostprocessing(renderer, scene, camera) {
 
   // Half-resolution bloom pass for mobile performance
   const bloomResolution = isMobile
-    ? new THREE.Vector2(Math.floor(window.innerWidth / 2), Math.floor(window.innerHeight / 2))
+    ? new THREE.Vector2(
+        Math.floor(window.innerWidth / 2),
+        Math.floor(window.innerHeight / 2),
+      )
     : new THREE.Vector2(window.innerWidth, window.innerHeight);
 
   // UnrealBloomPass: threshold >= 1.0 ensures only HDR emitters (> 1.0, e.g. Sun photosphere) bloom,
