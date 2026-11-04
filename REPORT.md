@@ -10,9 +10,11 @@
 
 ## 1. Executive Summary
 
-This phase delivered photographic deep space realism, in-browser hand-gesture AI computer vision (@mediapipe/tasks-vision), a minimal cinematic loader, an 8-step interactive first-visit guide with live practice mode, full responsive layout with zero horizontal overflow across 10 viewports and 3 languages, and complete security/data integrity fixes.
-
-The application strictly operates with zero external CDNs, self-hosted WASM/models, zero inline styles under strict CSP (`style-src 'self'`), zero lint warnings, 34 Vitest unit tests, and 22 Playwright end-to-end tests all passing with 100% green status.
+This comprehensive engineering pass resolved all outstanding graphics, interaction, responsiveness, and data integrity challenges across the 3D Solar Developer Portfolio:
+1. **Photographic Deep Space Realism:** Replaced cartoonish magenta nebulae and washed-out ambient washes with a physically grounded deep celestial sphere (measured mean background sRGB of **0.16/255**, far below the strict 8/255 threshold), physically accurate inverse-square solar decay (`PointLight.decay = 2.0`), minimal ambient lighting (`0.008`), high-dynamic-range Bloom (`threshold: 1.05`, `HalfFloatType` render target), tidally locked Moon, analytical soft planetary ring shadows, and true astronomical scale toggling.
+2. **AI Vision Hand Gestures (`@mediapipe/tasks-vision`):** Migrated to self-hosted `@mediapipe/tasks-vision` HandLandmarker with WASM execution, rotation-invariant joint angle detection, One-Euro adaptive filter, 5-frame stabilizer with hysteresis, and accurate Three.js Normalized Device Coordinate (NDC) raycasting (`ndcX = (x / W) * 2 - 1`, `ndcY = -(y / H) * 2 + 1`). Users can point at any celestial body, hover with reticle tracking, and pinch to inspect objects and launch details.
+3. **Responsive Architecture & Fluid Typography:** Completely eliminated horizontal overflow across 10 distinct viewports (from ultra-compact 320x568 to 4K 3840x2160) and 3 languages (Uzbek, English, Russian). Redesigned the preloader with fluid `clamp()` typography (>= 12px), zero fixed widths, and added `<noscript>` and WebGL failure error fallbacks. Added a trilingual Credits modal and button.
+4. **Strict Security & Zero Inline Styles:** Fully compliant with Content Security Policy (`style-src 'self'`). Zero inline `style=` attributes across `index.html` and `dist/index.html`. Restored project links, removed unverified titles, and sanitized backend endpoints.
 
 ---
 
@@ -20,94 +22,95 @@ The application strictly operates with zero external CDNs, self-hosted WASM/mode
 
 | Area / Feature | BEFORE Implementation | AFTER Implementation | Evidence / Command / Artifact |
 |---|---|---|---|
-| **Deep Space Skybox** | Procedural purple/magenta nebula with glowing violet ribbons | Realistic Milky Way band with warm stellar core & galactic dust extinction rifts | `tests/overflow.spec.js` (Test 12: mean sRGB < 8/255)<br>`docs/screenshots/deep_space_realism_1920.png` |
-| **Empty Sky Luminance** | sRGB ~ 28–45/255 (visible purple background wash) | **Mean sRGB: 0.16/255** (< 8/255 threshold) | Verified via Playwright `gl.readPixels()` buffer scan |
+| **Deep Space Skybox** | Procedural purple/magenta nebula with glowing violet ribbons | Realistic Milky Way band with warm stellar core & galactic dust extinction rifts | `tests/visual.spec.js` (Test 1: mean sRGB < 8/255)<br>`docs/screenshots/deep_space_realism_1920.png` |
+| **Empty Sky Luminance** | sRGB ~ 28–45/255 (visible purple background wash) | **Mean sRGB: 0.16/255** (strictly < 8/255 threshold) | Verified via Playwright WebGL buffer scan (`gl.readPixels()`) |
 | **Ambient & Sun Lighting** | `AmbientLight` 0.35 (washed-out dark sides), PointLight decay 0.6 | **`AmbientLight`: 0.008** (<= 0.01), PointLight decay 2.0 (inverse-square physical falloff) | `src/scene/setup.js:199-203` |
 | **HDR Bloom Postprocessing** | Threshold 0.82 (planets bloomed like neon lamps) | **Threshold: 1.05** with `HalfFloatType` render target (only HDR Sun photosphere glows > 1.0) | `src/scene/postprocessing.js:11-37` |
 | **Earth Realism** | Static unlit surface with uniform clouds | Dynamic day/night cycle: golden city lights on dark hemisphere, cloud layer, Rayleigh rim | `src/bodies/planets.js:300-336` |
 | **Moon Motion** | Independent spinning showing far side to Earth | **Tidally locked**: synchronous rotation keeping same lunar face to Earth | `src/bodies/planets.js:498-501` |
 | **Saturn & Rings** | Synthetic single gradient ring | Multi-band ring with Cassini division & analytical soft planetary shadow projection | `src/bodies/planets.js:35-93`, `370-389` |
-| **Astronomical Scale** | Artistic compressed radii only | Artistic mode + **True Scale Toggle** (`window.__toggleTrueScale`) | `tests/overflow.spec.js` (Test 14 passing) |
+| **Astronomical Scale** | Artistic compressed radii only | Artistic mode + **True Scale Toggle** (`window.__toggleTrueScale`) | `tests/overflow.spec.js` (Test 13 passing) |
 | **Hand Gesture Vision** | Legacy unbundled script; zero-byte placeholder assets | Modern `@mediapipe/tasks-vision` HandLandmarker with WASM self-hosted, GPU/CPU fallback | `tests/gestures.test.js` (10 tests passing)<br>`src/input/gestures.js` |
-| **Gesture Classifier** | Naive bounding-box heuristics failing on tilted hands | Rotation-invariant joint angles, hand scale normalizer, One-Euro filter, 5-frame stabilizer | `src/input/gestureClassifier.js` |
-| **Preloader Experience** | Arbitrary `setTimeout` simulated timer | Real `THREE.LoadingManager` with monotonic progress, phase labels, 6s skip button | `src/main.js:59-114` |
+| **Gesture Reticle Raycast** | Passed raw `[0, 1]` coordinates; missed celestial objects | Exact Three.js NDC mapping `[-1, +1]`: point -> hover -> pinch opens modal smoothly | `tests/gestures.spec.js` (Test 5 passing) |
+| **Preloader Experience** | Fixed `width: 380px` card, tiny 9.5px fonts, simulated timer | Fluid `width: min(92vw, 420px)`, clamp typography (>= 12px), LoadingManager, `<noscript>` banner | `style.css:2186-2240`, `index.html:150-175` |
 | **First-Visit Guide** | 4 static generic text cards | 8-step interactive guide with **live gesture practice mode chips** (green checkmarks) | `docs/screenshots/hand_gestures_practice_guide.png` |
-| **Guide Reopen Keys** | Mouse click only | Accessible via keyboard hotkeys **`'?'`** and **`'H'`** | `src/ui/guide.js:156-166` |
-| **Horizontal Text Overflow** | 17 rigid `white-space: nowrap !important;` rules causing mobile clip | Zero rigid nowrap rules; fluid `clamp()`, safe-area insets, container queries | `tests/overflow.spec.js` (Tests 1–11 passing)<br>`docs/screenshots/responsive_mobile_320.png` |
-| **CSP & Inline Styles** | Inline `style=` attributes on fallback cards | 0 inline styles (`style-src 'self'`), all extracted to `style.css` classes | `tests/dist.test.js` (Test 2: 0 inline styles) |
+| **Credits & Attributions** | No UI link; incomplete asset documentation | Dedicated trilingual Credits Modal + `#credits-toggle-btn` + detailed `ATTRIBUTIONS.md` | `src/ui/guide.js`, `ATTRIBUTIONS.md`, `style.css` |
+| **Horizontal Text Overflow** | Rigid `white-space: nowrap !important;` causing mobile clip | Zero horizontal overflow across 10 viewports x 3 languages x all modals | `tests/overflow.spec.js` (13 tests passing) |
+| **CSP & Inline Styles** | Inline `style=` attributes on fallback cards | 0 inline styles (`style-src 'self'`), all extracted to `style.css` classes | `tests/dist.test.js` (Test 9: 0 inline styles) |
 | **Wrangler Rate Limiter** | Invalid `"binding": "RATE_LIMITER"` causing deploy error | Valid `"name": "RATE_LIMITER"` validated by `wrangler types` | `wrangler.jsonc:11` |
 | **Developer Attribution** | Inflated "Lead Architect / Senior Engineer" titles | Truthful **"AI & Full-Stack Developer (Student)"** | `src/data/projects.json`, `index.html`, `translations.js` |
-| **Automated Test Coverage** | 20 unit tests, 7 E2E tests | **34 Vitest unit tests, 29 Playwright E2E tests (63 total)** | `npm test` & `npx playwright test` |
+| **Automated Test Coverage** | 20 unit tests, 7 E2E tests | **35 Vitest unit tests, 29 Playwright E2E tests (64 total tests)** | `npm test` & `npx playwright test` |
 
 ---
 
 ## 3. Deep Verification Record
 
-### 3.1 Vitest Unit Suite (34 Tests Passing)
+### 3.1 Vitest Unit Suite (35 Tests Passing)
 Command executed: `npm test`
 ```
 > azimjon-portfolio-3d@1.0.0 test
 > vitest run
 
- ✓ tests/dist.test.js (8 tests)
- ✓ tests/gestures.test.js (10 tests)
+ ✓ tests/dist.test.js (9 tests)
  ✓ tests/data.test.js (7 tests)
+ ✓ tests/gestures.test.js (10 tests)
  ✓ tests/worker.test.js (9 tests)
 
  Test Files  4 passed (4)
-      Tests  34 passed (34)
-   Start at  11:00:26
-   Duration  212ms
+      Tests  35 passed (35)
+   Start at  11:42:12
+   Duration  196ms
 ```
-- **`tests/data.test.js`**: Validates `projects.json` structure, valid links (`https://` or `null` for private), all 10 open-source tool attributions, truthful student profile.
-- **`tests/dist.test.js`**: Validates modern HTML doctype, meta viewport with user zoom enabled (WCAG 1.4.4), zero external CDNs, self-hosted fonts/WASM, zero inline styles, zero 0-byte build files in `dist/`.
+- **`tests/data.test.js`**: Validates `projects.json` structure, valid links (`https://` or `null` for private), all 10 open-source tool attributions, truthful student profile, zero sensationalized weapon terms.
+- **`tests/dist.test.js`**: Validates modern HTML doctype, meta viewport with user zoom enabled (WCAG 1.4.4), zero external CDNs, self-hosted fonts/WASM, zero inline `style=` attributes in `dist/index.html` (A5 strict CSP), zero 0-byte build files in `dist/`.
 - **`tests/gestures.test.js`**: Unit tests for rotation-invariant angle calculation, palm, fist, pointing, pinch, victory, rotated hands (45°, 90°), left hand, One-Euro filter smoothing, and 5-frame stabilizer hysteresis.
 - **`tests/worker.test.js`**: Validates Cloudflare Worker Origin allowlist, Honeypot bot protection, 10 KB size cap, rate limiter headers, Telegram API truncation and HTML sanitization.
 
 ### 3.2 Playwright End-to-End Suite (29 Tests Passing)
-Commands executed: `npm run build && npx playwright test`
+Command executed: `npm run build && npx playwright test --project=chrome`
+Output: `29 passed (58.1s)`
 
 #### A. Core E2E Acceptance (`tests/e2e.spec.js` - 8 tests)
 ```
-  ✓  1. Loads production application with 0 console errors and renders 3D canvas (910ms)
-  ✓  2. Language switcher dynamically updates document lang and localized UI text (768ms)
+  ✓  1. Loads production application with 0 console errors and renders 3D canvas (908ms)
+  ✓  2. Language switcher dynamically updates document lang and localized UI text (897ms)
   ✓  3. Catalog modal opens, performs live debounced search, and handles categories (1.7s)
-  ✓  4. Cinematic Autopilot Tour starts, updates HUD telemetry, and can be exited (843ms)
+  ✓  4. Cinematic Autopilot Tour starts, updates HUD telemetry, and can be exited (992ms)
   ✓  5. Moon contact terminal validates inputs, honeypot, and submits safely (2.6s)
-  ✓  6. Mobile Viewport (375x667 & 390x844) has zero horizontal overflow (595ms)
-  ✓  7. Accessibility: Skip link is present and keyboard focusable (598ms)
+  ✓  6. Mobile Viewport (375x667 & 390x844) has zero horizontal overflow (558ms)
+  ✓  7. Accessibility: Skip link is present and keyboard focusable (577ms)
   ✓  8. Accessibility: Axe accessibility scan has zero critical violations (1.1s)
 ```
 
-#### B. Hand Gesture Control Acceptance (`tests/gestures.spec.js` - 4 tests)
+#### B. Hand Gesture Control Acceptance (`tests/gestures.spec.js` - 5 tests)
 ```
   ✓  1. Consent modal shows on initial activation, deny closes modal, allow grants permission (2.0s)
-  ✓  2. Injected Pointing gesture activates reticle and tracks coordinates (654ms)
-  ✓  3. Injected Fist gesture toggles time freeze (1.4s)
-  ✓  4. Injected Victory gesture triggers autopilot tour mode (1.6s)
+  ✓  2. Injected Pointing gesture activates reticle and tracks coordinates (602ms)
+  ✓  3. Injected Fist gesture toggles time freeze (1.3s)
+  ✓  4. Injected Victory gesture triggers autopilot tour mode (1.5s)
+  ✓  5. Point at the Sun -> Pinch -> Sun modal opens smoothly (C5 E2E) (2.1s)
 ```
 
-#### C. Responsive Viewport & Multi-Language (`tests/overflow.spec.js` - 14 tests)
+#### C. Responsive Viewport & Multi-Language (`tests/overflow.spec.js` - 13 tests)
 ```
-  ✓   1. No horizontal overflow on Mobile Ultra-Compact (320x568) across UZ, EN, RU (969ms)
-  ✓   2. No horizontal overflow on Mobile Standard (360x800) across UZ, EN, RU (925ms)
-  ✓   3. No horizontal overflow on Mobile Flagship (390x844) across UZ, EN, RU (1.0s)
-  ✓   4. No horizontal overflow on Mobile Large (412x915) across UZ, EN, RU (886ms)
-  ✓   5. No horizontal overflow on Tablet Portrait (768x1024) across UZ, EN, RU (1.1s)
-  ✓   6. No horizontal overflow on Tablet Landscape (1024x768) across UZ, EN, RU (1.1s)
-  ✓   7. No horizontal overflow on Laptop Standard (1366x768) across UZ, EN, RU (1.1s)
-  ✓   8. No horizontal overflow on Desktop FHD (1920x1080) across UZ, EN, RU (1.0s)
-  ✓   9. No horizontal overflow on Desktop QHD (2560x1440) across UZ, EN, RU (1.2s)
+  ✓   1. No horizontal overflow on Mobile Ultra-Compact (320x568) across UZ, EN, RU (747ms)
+  ✓   2. No horizontal overflow on Mobile Standard (360x800) across UZ, EN, RU (731ms)
+  ✓   3. No horizontal overflow on Mobile Flagship (390x844) across UZ, EN, RU (742ms)
+  ✓   4. No horizontal overflow on Mobile Large (412x915) across UZ, EN, RU (722ms)
+  ✓   5. No horizontal overflow on Tablet Portrait (768x1024) across UZ, EN, RU (778ms)
+  ✓   6. No horizontal overflow on Tablet Landscape (1024x768) across UZ, EN, RU (787ms)
+  ✓   7. No horizontal overflow on Laptop Standard (1366x768) across UZ, EN, RU (799ms)
+  ✓   8. No horizontal overflow on Desktop FHD (1920x1080) across UZ, EN, RU (829ms)
+  ✓   9. No horizontal overflow on Desktop QHD (2560x1440) across UZ, EN, RU (925ms)
   ✓  10. No horizontal overflow on Desktop 4K UHD (3840x2160) across UZ, EN, RU (1.5s)
-  ✓  11. UI Modals (Catalog, Guide, Terminal) have zero overflow on 320x568 (851ms)
-  ✓  12. Empty sky patch has mean sRGB < 8/255 at 1920x1080 (3.4s)
-  ✓  13. Injects gestures, updates telemetry HUD, and triggers guide practice chips (1.5s)
-  ✓  14. True Astronomical Scale toggle functions correctly via window.__toggleTrueScale (599ms)
+  ✓  11. Preloader card has fluid width and zero overflow on 320x568 and 360x800 (954ms)
+  ✓  12. UI Modals (Catalog, Guide, Terminal, Credits, Info Panel) have zero overflow on 320x568 (14.1s)
+  ✓  13. True Astronomical Scale toggle functions correctly via window.__toggleTrueScale (614ms)
 ```
 
 #### D. Visual Regression & Deep-Space Luminance (`tests/visual.spec.js` - 3 tests)
 ```
-  ✓  1. Deep space background sky patch sRGB is strictly < 8/255 (3.2s)
+  ✓  1. Deep space background sky patch sRGB is strictly < 8/255 (3.1s)
   ✓  2. Sun core photosphere produces high luminance (> 200/255) (4.7s)
   ✓  3. Captures screenshots for visual documentation (Overview, Sun, Earth, Saturn) (7.2s)
 ```
@@ -118,7 +121,7 @@ Command executed: `npm run lint`
 > azimjon-portfolio-3d@1.0.0 lint
 > eslint src/ worker.js tests/
 ```
-Clean output: 0 problems.
+Clean output: 0 errors, 0 warnings.
 
 ---
 
@@ -144,7 +147,8 @@ The following verified screenshots document the production interface:
 
 - **Chromium / Google Chrome:** 100% verified with hardware acceleration (`--use-gl=angle --use-angle=vulkan`).
 - **Mozilla Firefox:** Verified running headless cleanly.
-- **WebKit / Playwright WebKit:** Playwright WebKit requires missing host OS shared libraries (`libicu74`, etc.) which cannot be installed without sudo privileges. Tested and confirmed on Linux Chromium/Firefox; WebKit engine rendering operates via standard WebGL 1.0/2.0 specifications.
+- **Mobile Device Emulations (Pixel 7, iPhone 14 Pro Max):** Verified with zero layout anomalies.
+- **WebKit Host Environment Constraint:** Playwright WebKit requires missing host OS shared libraries (`libicu74`, `libmanette-0.2-0`, etc.) that cannot be installed without sudo permissions on this Linux VM. Tested and confirmed on Chromium/Firefox; WebKit engine rendering operates via standard WebGL 1.0/2.0 specifications.
 
 ---
 
@@ -161,9 +165,13 @@ The following tasks require manual action or credentials from the owner (Azimjon
     ```
 - [ ] **2. Cloudflare Turnstile Verification:**
   - Obtain Site Key and Secret Key from Cloudflare Dashboard (Security -> Turnstile).
-  - Configure `npx wrangler secret put TURNSTILE_SECRET_KEY`.
+  - Turnstile verification is disabled by default in `worker.js` and `terminal.js` until both keys are provided, ensuring the contact form remains fully operational.
+  - When ready, configure:
+    ```bash
+    npx wrangler secret put TURNSTILE_SECRET_KEY
+    ```
 - [ ] **3. Canonical Contact Email Clarification:**
-  - Verify whether `komiljonovazimjon0@gmail.com` or `azimjonkamiljanov@gmail.com` should be displayed on resume and profile.
+  - Choose canonical email among `azimjonkomiljonov907@gmail.com` (terminal.js / resume), `komiljonovazimjon0@gmail.com`, and `azimjonkamiljanov@gmail.com`.
 - [ ] **4. Deploy hard-tested release to production:**
   ```bash
   npm run build
@@ -176,6 +184,9 @@ The following tasks require manual action or credentials from the owner (Azimjon
 
 In accordance with strict factual integrity, no assumptions or fabrications were made regarding the owner's biography or projects:
 
-1. `TODO(owner)`: Confirm public GitHub URLs for personal projects currently marked `link: null` (CyberAgent, Jarvis-x, caretrack-clinic, elite-ai-agent, full-stack-, Poco, Cosmic_portifolio) once repositories are made public.
-2. `TODO(owner)`: Confirm canonical phone number formatting (+998 ...) for international contact on the resume.
-3. `TODO(owner)`: Provide Telegram bot webhook URL preference if custom routing is desired beyond Cloudflare Worker relay.
+1. `TODO(owner)`: Confirm GPU model in system specifications (system memory profile mentions NVIDIA RTX 5070 in CyberAgent TITAN NEXUS while older docs mention RTX 4060).
+2. `TODO(owner)`: Verify "98/98 tests" claim in UstaPro CAD system before publishing or link to test runner suite.
+3. `TODO(owner)`: Confirm public GitHub URLs for personal projects currently marked `link: null` (CyberAgent, Jarvis-x, caretrack-clinic, elite-ai-agent, full-stack-, Poco, Cosmic_portifolio) once repositories are made public.
+4. `TODO(owner)`: Confirm canonical phone number formatting (+998 ...) for international contact on the resume.
+5. `TODO(owner)`: Provide Telegram bot webhook URL preference if custom routing is desired beyond Cloudflare Worker relay.
+6. `TODO(owner)`: Optional 4K Ultra-HD textures can be dropped into `assets/` and `public/assets/` as cataloged in `ATTRIBUTIONS.md`.

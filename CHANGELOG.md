@@ -24,23 +24,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Migrated to self-hosted `@mediapipe/tasks-vision` HandLandmarker with GPU acceleration and CPU fallback.
   - Rotation-invariant joint angle classification, hand-scale normalization, One-Euro spatial filter, and 5-frame stabilizer with hysteresis.
   - Full gesture interaction set: 🖐 Palm (360° orbit / still overview), 👆 Point (holographic reticle raycast), 🤏 Pinch (select & zoom), ✊ Fist (freeze time), ✌️ Victory (autopilot tour), and 👐 Two-hand zoom.
+  - Accurate Three.js Normalized Device Coordinate (NDC) mapping (`ndcX = (x / W) * 2 - 1`, `ndcY = -(y / H) * 2 + 1`) enabling precision pointing, hovering, and pinch-to-open on celestial bodies.
   - In-app privacy consent modal and real-time telemetry HUD displaying FPS, gesture badge, live video PIP, and skeletal wireframe overlay.
   - Test injection hooks `window.__gestureTest.inject` and `window.__feedGestureLandmarks`.
 - **Minimal Cinematic Preloader & Onboarding Guide**:
   - Real `THREE.LoadingManager` with monotonic byte-weighted progress, phase progression labels, and 6-second fallback skip button.
+  - Redesigned `.preloader-card` with fluid `width: min(92vw, 420px)`, typography >= 12px with `clamp()`, `<noscript>` warning banner, and WebGL failure error message.
   - Respect for `prefers-reduced-motion: reduce` skipping camera dive animation.
   - 8-step interactive onboarding guide with live gesture practice mode chips lighting up on recognition, hotkey support ('?', 'H', Space, Esc, 1-9), and trilingual support across UZ, EN, and RU.
+  - Dedicated trilingual Credits Modal and `#credits-toggle-btn` linked with `ATTRIBUTIONS.md`.
 - **Automated Zero-Overflow & Responsive Design**:
   - Removed all 17 rigid `white-space: nowrap !important;` rules from `style.css`.
+  - Added ultra-compact mobile (320px) header wrapping and terminal header flex adaptations preventing horizontal overflow.
   - Added safe-area insets (`env(safe-area-inset-*)`), fluid typography with `clamp()`, and 44px touch targets.
   - Automated Playwright test suite (`tests/overflow.spec.js`) verifying zero horizontal scroll across 10 viewports (320px to 3840px) x 3 languages x all modal states.
 
 ### Changed
-- **Cloudflare Rate Limiting**:
+- **Cloudflare Rate Limiting & CI Workflow**:
   - Corrected `wrangler.jsonc` rate limiting syntax from `"binding"` to `"name": "RATE_LIMITER"` for full compatibility with Cloudflare Workers runtime.
+  - Updated `.github/workflows/ci.yml` with triggers for `feat/**` branches and pull requests.
 - **CSP & Markup Hardening**:
   - Extracted all inline styles from `index.html` fallback cards and SVGs into clean utility classes in `style.css`.
-  - Verified strict CSP compliance with zero `'unsafe-inline'` / `'unsafe-eval'`.
+  - Added explicit Vitest check verifying zero inline `style=` attributes in `dist/index.html` under strict CSP (`style-src 'self'`).
+  - Removed placeholder `contactEmail` from `src/data/profile.json` and documented owner choices in `REPORT.md`.
 
 ## [2.0.0] - 2026-11-04
 
