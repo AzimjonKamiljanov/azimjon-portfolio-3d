@@ -542,4 +542,6 @@ window.__solarEngine = {
   controls,
   focusTargetById,
   resetToOverview: () => resetToOverview(camera, controls),
+  catalog,
+  modals,
 };

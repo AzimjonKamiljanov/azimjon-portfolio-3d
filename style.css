@@ -2190,15 +2190,17 @@ body, html {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 34px 38px;
+    padding: clamp(20px, 4vw, 34px) clamp(16px, 5vw, 38px);
     background: rgba(18, 20, 26, 0.88);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 28px;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
-    max-width: 90vw;
-    width: 380px;
+    width: min(92vw, 420px);
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
 }
 
 .preloader-orbital {
@@ -2259,31 +2261,46 @@ body, html {
     50% { transform: scale(1.12); opacity: 1; filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.4)); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+    .orbital-ring.ring-1,
+    .orbital-ring.ring-2,
+    .orbital-ring.ring-3 {
+        animation: none !important;
+    }
+    .orbital-core {
+        animation: none !important;
+        transform: scale(1) !important;
+    }
+}
+
 .preloader-badge {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9.5px;
+    font-size: clamp(12px, 2.5vw, 13px);
     letter-spacing: 2px;
     text-transform: uppercase;
     color: #94a3b8;
     margin-bottom: 6px;
     opacity: 0.9;
+    overflow-wrap: anywhere;
 }
 
 .preloader-title {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 15px;
+    font-size: clamp(16px, 3.8vw, 22px);
     font-weight: 800;
     letter-spacing: 1.8px;
     color: #ffffff;
     margin: 0 0 6px 0;
     text-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
+    overflow-wrap: anywhere;
 }
 
 .preloader-subtitle {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 12px;
+    font-size: clamp(12px, 2.8vw, 14px);
     color: #aaaaaa;
     margin: 0 0 16px 0;
+    overflow-wrap: anywhere;
 }
 
 .preloader-bar-wrap {
@@ -2310,8 +2327,10 @@ body, html {
     justify-content: space-between;
     width: 100%;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: clamp(12px, 2.5vw, 13px);
     color: #888888;
+    overflow-wrap: anywhere;
+    gap: 8px;
 }
 
 #preloader-pct {
@@ -2321,15 +2340,20 @@ body, html {
 
 .preloader-skip-btn {
     margin-top: 14px;
-    padding: 7px 16px;
+    padding: 10px 18px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: clamp(12px, 2.5vw, 13px);
+    min-height: 44px;
     color: #cbd5e1;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
+    overflow-wrap: anywhere;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .preloader-skip-btn:hover {
@@ -3128,6 +3152,89 @@ body, html {
     color: #22c55e;
 }
 
+.credits-modal {
+    max-width: min(92vw, 680px) !important;
+}
+
+.credits-content-scroll {
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-right: 8px;
+    margin: 16px 0;
+    text-align: left;
+    -webkit-overflow-scrolling: touch;
+}
+
+.credits-section {
+    margin-bottom: 20px;
+}
+
+.credits-section h3 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #f4f4f5;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.credits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.credits-list li {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #cbd5e1;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-wrap: anywhere;
+}
+
+.credits-list li strong {
+    color: #ffffff;
+}
+
+.noscript-banner {
+    position: relative;
+    z-index: 99999;
+    background: #18181b;
+    color: #fafafa;
+    padding: 16px 24px;
+    text-align: center;
+    border-bottom: 2px solid #e11d48;
+    font-size: 14px;
+}
+
+.noscript-banner a {
+    color: #38bdf8;
+    text-decoration: underline;
+}
+
+.webgl-error-banner {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99999;
+    background: rgba(24, 24, 27, 0.95);
+    color: #fca5a5;
+    padding: 14px 22px;
+    border: 1px solid #ef4444;
+    border-radius: 12px;
+    font-size: 13px;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
 .guide-footer {
     display: flex;
     align-items: center;
@@ -3331,6 +3438,48 @@ body, html {
     .telemetry-toggle-label {
         display: none !important;
     }
+
+    @media (max-width: 360px) {
+        .brand-header-top {
+            padding: 3px 4px;
+        }
+        .brand-nav-group {
+            gap: 1.5px;
+        }
+        .brand-nav-group #catalog-btn,
+        .brand-nav-group #resume-download-btn,
+        .brand-nav-group #tour-toggle-btn {
+            padding: 3px 4px;
+            font-size: 9px;
+        }
+        .lang-switch-container {
+            padding: 1.5px 1.5px;
+            gap: 0.5px;
+        }
+        .lang-btn {
+            padding: 2px 3px;
+            font-size: 7.5px;
+        }
+        .brand-group-toggles {
+            padding: 1.5px 1.5px;
+            gap: 0.5px;
+        }
+        .icon-pod-btn {
+            width: 22px;
+            height: 22px;
+        }
+        .icon-pod-btn .btn-svg,
+        .icon-pod-btn svg {
+            width: 11px;
+            height: 11px;
+        }
+        .telemetry-island-toggle {
+            padding: 2.5px 4px;
+        }
+        .telemetry-island-toggle .chevron-svg {
+            display: none !important;
+        }
+    }
     /* Mobile Cosmic Telemetry Island Ribbon */
     .cosmic-telemetry-island {
         align-self: stretch;
@@ -3520,6 +3669,24 @@ body, html {
         margin: 12px 0 8px 0;
         max-width: 100%;
         box-sizing: border-box;
+    }
+    .terminal-header {
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+    }
+    .terminal-title {
+        font-size: 10px;
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .terminal-status-pill {
+        flex-shrink: 0;
+        font-size: 8.5px;
+        padding: 1.5px 5px;
     }
     .topic-chip {
         padding: 5px 9px;

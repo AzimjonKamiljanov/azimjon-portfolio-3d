@@ -213,6 +213,24 @@ export function setLanguage(lang) {
     if (startText) startText.innerText = uiTexts.guide.startBtn;
   }
 
+  // Credits Modal
+  const creditsToggleText = document.getElementById("credits-toggle-text");
+  if (creditsToggleText)
+    creditsToggleText.innerText = uiTexts.creditsBtn || "Kreditlar";
+
+  if (uiTexts.credits) {
+    const creditsBadgeEl = document.getElementById("credits-badge");
+    if (creditsBadgeEl) creditsBadgeEl.innerText = uiTexts.credits.badge;
+    const creditsHeadingEl = document.getElementById("credits-heading");
+    if (creditsHeadingEl) creditsHeadingEl.innerText = uiTexts.credits.heading;
+    const creditsDescEl = document.getElementById("credits-desc");
+    if (creditsDescEl) creditsDescEl.innerText = uiTexts.credits.desc;
+    const creditsSec1 = document.getElementById("credits-sec1-title");
+    if (creditsSec1) creditsSec1.innerText = uiTexts.credits.sec1Title;
+    const creditsSec2 = document.getElementById("credits-sec2-title");
+    if (creditsSec2) creditsSec2.innerText = uiTexts.credits.sec2Title;
+  }
+
   listeners.forEach((fn) => {
     try {
       fn(lang);

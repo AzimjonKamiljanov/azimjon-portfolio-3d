@@ -182,6 +182,14 @@ export const translations = {
         dontShow: "Keyingi safar avtomatik ko'rsatmaslik",
         startBtn: "Koinotni Ko'rish",
       },
+      creditsBtn: "Kreditlar",
+      credits: {
+        badge: "LITSENZIYALAR VA MANBALAR",
+        heading: "Credits & Attributions",
+        desc: "Astronomik ma'lumotlar, 3D teksturalar va ochiq kodli kutubxonalar:",
+        sec1Title: "Astronomik Teksturalar & Xaritalar",
+        sec2Title: "Ochiq Kodli Texnologiyalar & Kutubxonalar",
+      },
       terminal: {
         headerTitle: "CYBER_UPLINK:// @CyberAgent0bot",
         statusOnline: "ONLINE",
@@ -420,6 +428,14 @@ export const translations = {
         dontShow: "Don't show automatically next time",
         startBtn: "Enter System",
       },
+      creditsBtn: "Credits",
+      credits: {
+        badge: "LICENSES & ATTRIBUTIONS",
+        heading: "Credits & Attributions",
+        desc: "Astronomical imagery, 3D textures, and open-source libraries:",
+        sec1Title: "Astronomical Imagery & Planetary Maps",
+        sec2Title: "Open-Source Frameworks & Upstream Repositories",
+      },
       terminal: {
         headerTitle: "CYBER_UPLINK:// @CyberAgent0bot",
         statusOnline: "ONLINE",
@@ -652,6 +668,14 @@ export const translations = {
           "Кинематический тур, 'H' для справки, 'Пробел' для паузы, 'Esc' для выхода.",
         dontShow: "Не показывать автоматически в следующий раз",
         startBtn: "Открыть Космос",
+      },
+      creditsBtn: "Источники",
+      credits: {
+        badge: "ЛИЦЕНЗИИ И ИСТОЧНИКИ",
+        heading: "Источники и Лицензии",
+        desc: "Астрономические карты, 3D текстуры и open-source библиотеки:",
+        sec1Title: "Астрономические Карты и Текстуры",
+        sec2Title: "Open-Source Технологии и Библиотеки",
       },
       terminal: {
         headerTitle: "CYBER_UPLINK:// @CyberAgent0bot",

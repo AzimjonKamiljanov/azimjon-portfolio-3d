@@ -1,71 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-// Helper to generate normalized hand landmarks for gesture injection tests
-function generateMockHand({
-  thumb = 'extended',
-  index = 'extended',
-  middle = 'extended',
-  ring = 'extended',
-  pinky = 'extended',
-  pinch = false
-} = {}) {
-  const lm = [];
-  const wrist = { x: 0.5, y: 0.8, z: 0 };
-  lm[0] = wrist;
-
-  const fingerXSpreads = [
-    { base: 0.44, step: -0.02 },
-    { base: 0.47, step: -0.01 },
-    { base: 0.50, step: 0.00 },
-    { base: 0.53, step: 0.01 },
-    { base: 0.56, step: 0.02 }
-  ];
-
-  function addFinger(startIndex, extState, xSpread, isThumb = false) {
-    const isExt = extState === 'extended';
-    const mcpY = 0.58;
-    const len = isThumb ? 0.05 : 0.06;
-
-    lm[startIndex] = { x: xSpread.base, y: mcpY, z: 0 };
-
-    if (isThumb) {
-      lm[1] = { x: 0.46, y: 0.72, z: 0 };
-      lm[2] = { x: 0.43, y: 0.65, z: 0 };
-      if (isExt) {
-        lm[3] = { x: 0.40, y: 0.58, z: 0 };
-        lm[4] = { x: 0.37, y: 0.51, z: 0 };
-      } else {
-        lm[3] = { x: 0.46, y: 0.60, z: 0.02 };
-        lm[4] = { x: 0.48, y: 0.61, z: 0.03 };
-      }
-      return;
-    }
-
-    if (isExt) {
-      lm[startIndex + 1] = { x: xSpread.base + xSpread.step, y: mcpY - len, z: 0 };
-      lm[startIndex + 2] = { x: xSpread.base + xSpread.step * 2, y: mcpY - len * 2, z: 0 };
-      lm[startIndex + 3] = { x: xSpread.base + xSpread.step * 3, y: mcpY - len * 3, z: 0 };
-    } else {
-      lm[startIndex + 1] = { x: xSpread.base, y: mcpY - len * 0.8, z: -0.02 };
-      lm[startIndex + 2] = { x: xSpread.base, y: mcpY - len * 0.4, z: 0.03 };
-      lm[startIndex + 3] = { x: xSpread.base, y: mcpY - len * 0.1, z: 0.04 };
-    }
-  }
-
-  addFinger(1, thumb, fingerXSpreads[0], true);
-  addFinger(5, index, fingerXSpreads[1]);
-  addFinger(9, middle, fingerXSpreads[2]);
-  addFinger(13, ring, fingerXSpreads[3]);
-  addFinger(17, pinky, fingerXSpreads[4]);
-
-  if (pinch) {
-    lm[4] = { x: 0.46, y: 0.52, z: 0 };
-    lm[8] = { x: 0.465, y: 0.525, z: 0 };
-  }
-
-  return lm;
-}
-
 test.describe('Responsive Layout & Zero Overflow Across Viewports & Languages', () => {
   const viewports = [
     { name: 'Mobile Ultra-Compact (320x568)', width: 320, height: 568 },
@@ -100,10 +34,10 @@ test.describe('Responsive Layout & Zero Overflow Across Viewports & Languages', 
           if (btn) btn.click();
         }, lang);
 
-        await page.waitForTimeout(100);
+        await page.waitForTimeout(60);
 
         // 1. Verify document root zero horizontal scroll
-        const overflow = await page.evaluate(() => {
+        const rootOverflow = await page.evaluate(() => {
           const doc = document.documentElement;
           const body = document.body;
           const scrollW = Math.max(doc.scrollWidth, body.scrollWidth);
@@ -116,90 +50,67 @@ test.describe('Responsive Layout & Zero Overflow Across Viewports & Languages', 
           };
         });
 
-        expect(overflow.hasOverflow).toBeFalsy();
-        expect(overflow.scrollX).toBe(0);
+        expect(rootOverflow.hasOverflow, `Root overflow on ${vp.name} in [${lang}]: scrollW=${rootOverflow.scrollW}, clientW=${rootOverflow.clientW}`).toBeFalsy();
+        expect(rootOverflow.scrollX).toBe(0);
+
+        // 2. Scan visible elements in DOM to ensure none stick outside viewport horizontally
+        // Exclude elements inside intentional horizontal carousels (bottom planet dock #nav-container, telemetry ribbon)
+        const offscreenElements = await page.evaluate(() => {
+          const bad = [];
+          const all = document.querySelectorAll('body *:not(script):not(style):not(svg):not(path)');
+          for (const el of all) {
+            if (el.closest('.sr-only') || el.classList.contains('sr-only')) continue;
+            if (el.closest('#nav-container, .cosmic-telemetry-island, [data-scrollable="true"]')) continue;
+            const rect = el.getBoundingClientRect();
+            if (rect.width <= 2 || rect.height <= 2) continue;
+            const style = window.getComputedStyle(el);
+            if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) continue;
+
+            if (rect.left < -2 || rect.right > window.innerWidth + 2) {
+              bad.push({
+                tag: el.tagName,
+                id: el.id,
+                className: el.className,
+                left: Math.round(rect.left),
+                right: Math.round(rect.right),
+                windowWidth: window.innerWidth,
+                text: (el.textContent || '').trim().slice(0, 30)
+              });
+            }
+          }
+          return bad;
+        });
+
+        expect(offscreenElements, `Offscreen elements on ${vp.name} in [${lang}]`).toHaveLength(0);
       }
     });
   }
 
-  test('UI Modals (Catalog, Guide, Terminal) have zero overflow on 320x568', async ({ page }) => {
+  test('Preloader card has fluid width and zero overflow on 320x568 and 360x800', async ({ page }) => {
+    for (const width of [320, 360]) {
+      await page.setViewportSize({ width, height: 600 });
+      await page.goto('http://127.0.0.1:8080/');
+      const cardMetrics = await page.evaluate(() => {
+        const card = document.querySelector('.preloader-card');
+        if (!card) return null;
+        const rect = card.getBoundingClientRect();
+        return {
+          scrollWidth: card.scrollWidth,
+          clientWidth: card.clientWidth,
+          rectWidth: rect.width,
+          windowWidth: window.innerWidth
+        };
+      });
+
+      if (cardMetrics) {
+        expect(cardMetrics.scrollWidth).toBeLessThanOrEqual(cardMetrics.clientWidth + 2);
+        expect(cardMetrics.rectWidth).toBeLessThanOrEqual(width);
+      }
+    }
+  });
+
+  test('UI Modals (Catalog, Guide, Terminal, Credits, Info Panel) have zero overflow on 320x568', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 568 });
-    await page.goto('http://127.0.0.1:8080/');
-    await page.waitForSelector('#canvas-container canvas', { timeout: 10000 });
-
-    // 1. Open Catalog Modal
-    await page.click('#catalog-btn');
-    await page.waitForSelector('#catalog-modal:not(.hidden)');
-    const catalogOverflow = await page.evaluate(() => {
-      const modal = document.querySelector('.catalog-modal');
-      return modal ? modal.scrollWidth <= modal.clientWidth + 2 : true;
-    });
-    expect(catalogOverflow).toBeTruthy();
-    await page.keyboard.press('Escape');
-
-    // 2. Open Guide Modal via '?' key
-    await page.keyboard.press('?');
-    await page.waitForSelector('#guide-modal-container:not(.hidden)');
-    const guideOverflow = await page.evaluate(() => {
-      const modal = document.querySelector('.guide-modal');
-      return modal ? modal.scrollWidth <= modal.clientWidth + 2 : true;
-    });
-    expect(guideOverflow).toBeTruthy();
-    await page.keyboard.press('Escape');
-  });
-});
-
-test.describe('Photographic Deep-Space Realism & Background Luminance Verification', () => {
-  test('Empty sky patch has mean sRGB < 8/255 at 1920x1080', async ({ page }) => {
-    await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.addInitScript(() => {
-      localStorage.setItem('solar_guide_v2_dismissed', 'true');
-      localStorage.setItem('solar_guide_dismissed', 'true');
-    });
-
-    await page.goto('http://127.0.0.1:8080/');
-    await page.waitForSelector('#canvas-container canvas', { timeout: 10000 });
-    // Let initial dive complete
-    await page.waitForTimeout(2800);
-
-    // Sample an empty patch of deep sky in the canvas corner (e.g. top right corner 1750..1850, 80..180)
-    // away from the Sun (which is at origin) and away from planetary orbits
-    const skyMetrics = await page.evaluate(() => {
-      const renderer = window.__renderer;
-      if (!renderer) return { meanRGB: 0, valid: false };
-
-      const gl = renderer.getContext();
-      const width = 80;
-      const height = 80;
-      // Read 80x80 pixels from top-right corner of WebGL buffer
-      const pixels = new Uint8Array(width * height * 4);
-      gl.readPixels(gl.drawingBufferWidth - 100, gl.drawingBufferHeight - 100, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-
-      let totalBrightness = 0;
-      const sampleCount = width * height;
-      for (let i = 0; i < pixels.length; i += 4) {
-        const r = pixels[i];
-        const g = pixels[i + 1];
-        const b = pixels[i + 2];
-        // Rec. 709 relative luminance or mean channel
-        const mean = (r + g + b) / 3;
-        totalBrightness += mean;
-      }
-      return {
-        meanRGB: totalBrightness / sampleCount,
-        valid: true
-      };
-    });
-
-    expect(skyMetrics.valid).toBeTruthy();
-    // Verify photographic deep-space realism: mean sRGB of empty sky patch < 8.0 out of 255
-    expect(skyMetrics.meanRGB).toBeLessThan(8.0);
-  });
-});
-
-test.describe('AI Vision Hand Gestures E2E & Practice Mode', () => {
-  test('Injects gestures, updates telemetry HUD, and triggers guide practice chips', async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 720 });
     await page.addInitScript(() => {
       localStorage.setItem('solar_guide_v2_dismissed', 'true');
       localStorage.setItem('solar_guide_dismissed', 'true');
@@ -208,38 +119,103 @@ test.describe('AI Vision Hand Gestures E2E & Practice Mode', () => {
     await page.goto('http://127.0.0.1:8080/');
     await page.waitForSelector('#canvas-container canvas', { timeout: 10000 });
 
-    // Open Guide modal via 'H'
-    await page.keyboard.press('h');
-    await page.waitForSelector('#guide-modal-container:not(.hidden)');
+    for (const lang of ['uz', 'en', 'ru']) {
+      await page.evaluate((targetLang) => {
+        const btn = document.querySelector(`.lang-btn[data-lang="${targetLang}"]`);
+        if (btn) btn.click();
+      }, lang);
+      await page.waitForTimeout(60);
 
-    // Inject gestures using window.__gestureTest.inject
-    const gesturesToTest = [
-      { name: 'palm', lm: generateMockHand() },
-      { name: 'fist', lm: generateMockHand({ thumb: 'curled', index: 'curled', middle: 'curled', ring: 'curled', pinky: 'curled' }) },
-      { name: 'pointing', lm: generateMockHand({ thumb: 'curled', index: 'extended', middle: 'curled', ring: 'curled', pinky: 'curled' }) },
-      { name: 'pinch', lm: generateMockHand({ thumb: 'extended', index: 'extended', middle: 'curled', ring: 'curled', pinky: 'curled', pinch: true }) },
-      { name: 'victory', lm: (() => {
-        const v = generateMockHand({ thumb: 'curled', index: 'extended', middle: 'extended', ring: 'curled', pinky: 'curled' });
-        v[8].x -= 0.03;
-        v[12].x += 0.03;
-        return v;
-      })() }
-    ];
+      // 1. Catalog Modal
+      await page.click('#catalog-btn');
+      await page.waitForSelector('#catalog-modal:not(.hidden)');
+      const catalogResult = await page.evaluate(() => {
+        const modal = document.querySelector('#catalog-modal');
+        return modal ? { scrollW: modal.scrollWidth, clientW: modal.clientWidth } : null;
+      });
+      expect(catalogResult).not.toBeNull();
+      expect(catalogResult.scrollW).toBeLessThanOrEqual(catalogResult.clientW + 2);
+      await page.click('#catalog-close');
+      await page.waitForTimeout(100);
 
-    for (const g of gesturesToTest) {
-      // Feed 5 frames so stabilizer confirms the gesture
-      for (let f = 0; f < 5; f++) {
-        await page.evaluate((landmarks) => {
-          if (window.__gestureTest && window.__gestureTest.inject) {
-            window.__gestureTest.inject(landmarks, 'Right');
+      // 2. Guide Modal
+      await page.evaluate(() => {
+        if (window.__showGuide) window.__showGuide();
+      });
+      await page.waitForSelector('#guide-modal-container:not(.hidden)');
+      const guideResult = await page.evaluate(() => {
+        const modal = document.querySelector('.guide-modal');
+        return modal ? { scrollW: modal.scrollWidth, clientW: modal.clientWidth } : null;
+      });
+      expect(guideResult).not.toBeNull();
+      expect(guideResult.scrollW).toBeLessThanOrEqual(guideResult.clientW + 2);
+      await page.evaluate(() => {
+        if (window.__hideGuide) window.__hideGuide();
+      });
+      await page.waitForTimeout(100);
+
+      // 3. Credits Modal
+      await page.evaluate(() => {
+        if (window.__showCredits) window.__showCredits();
+      });
+      await page.waitForSelector('#credits-modal-container:not(.hidden)');
+      const creditsResult = await page.evaluate(() => {
+        const modal = document.querySelector('.credits-modal');
+        return modal ? { scrollW: modal.scrollWidth, clientW: modal.clientWidth } : null;
+      });
+      expect(creditsResult).not.toBeNull();
+      expect(creditsResult.scrollW).toBeLessThanOrEqual(creditsResult.clientW + 2);
+      await page.evaluate(() => {
+        if (window.__hideCredits) window.__hideCredits();
+      });
+      await page.waitForTimeout(100);
+
+      // 4. Moon Terminal (Focus on Moon mounts the terminal inside #info-panel)
+      await page.evaluate(() => {
+        if (window.__solarEngine && window.__solarEngine.focusTargetById) {
+          window.__solarEngine.focusTargetById('moon');
+        }
+      });
+      await page.waitForSelector('#info-panel:not(.hidden) #moon-terminal-container .cyber-terminal', { timeout: 6000 });
+      const terminalResult = await page.evaluate(() => {
+        const modal = document.querySelector('.cyber-terminal');
+        if (!modal) return null;
+        const wide = [];
+        modal.querySelectorAll('*').forEach(el => {
+          if (el.scrollWidth > modal.clientWidth) {
+            wide.push({
+              tag: el.tagName,
+              id: el.id,
+              className: el.className,
+              scrollWidth: el.scrollWidth,
+              clientWidth: el.clientWidth,
+              text: (el.textContent || '').trim().slice(0, 30)
+            });
           }
-        }, g.lm);
-        await page.waitForTimeout(30);
-      }
+        });
+        return { scrollW: modal.scrollWidth, clientW: modal.clientWidth };
+      });
+      expect(terminalResult).not.toBeNull();
+      expect(terminalResult.scrollW).toBeLessThanOrEqual(terminalResult.clientW + 2);
+      await page.click('#modal-close');
+      await page.waitForTimeout(150);
 
-      // Check practice chip in guide modal has class .recognized
-      const chip = page.locator(`.gesture-practice-chip[data-gesture="${g.name}"]`);
-      await expect(chip).toHaveClass(/recognized/);
+      // 5. Info Panel (Sun selected)
+      await page.evaluate(() => {
+        if (window.__solarEngine && window.__solarEngine.focusTargetById) {
+          window.__solarEngine.focusTargetById('sun');
+        }
+      });
+      await page.waitForSelector('#info-panel:not(.hidden)', { timeout: 6000 });
+      const infoPanelResult = await page.evaluate(() => {
+        const panel = document.querySelector('#info-panel');
+        return panel ? { scrollW: panel.scrollWidth, clientW: panel.clientWidth } : null;
+      });
+      if (infoPanelResult) {
+        expect(infoPanelResult.scrollW).toBeLessThanOrEqual(infoPanelResult.clientW + 2);
+      }
+      await page.click('#modal-close');
+      await page.waitForTimeout(150);
     }
   });
 

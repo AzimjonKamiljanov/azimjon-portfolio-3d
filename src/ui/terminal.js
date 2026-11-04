@@ -311,7 +311,11 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
 }
 
 export function initTerminal() {
-  return {
+  const terminalInstance = {
     render: (lang, texts) => renderMoonTerminal(lang, texts),
   };
+  if (typeof window !== "undefined") {
+    window.__terminal = terminalInstance;
+  }
+  return terminalInstance;
 }

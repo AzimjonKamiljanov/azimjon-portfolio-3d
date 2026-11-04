@@ -117,9 +117,56 @@ export function initGuide() {
     }
   }
 
+  const creditsModalContainer = document.getElementById("credits-modal-container");
+  const creditsToggleBtn = document.getElementById("credits-toggle-btn");
+  const creditsCloseBtn = document.getElementById("credits-close-btn");
+
+  function showCredits() {
+    if (!creditsModalContainer) return;
+    if (guideModalContainer) hideGuide();
+    playUiOpen();
+    creditsModalContainer.classList.remove("hidden");
+    creditsModalContainer.style.display = "flex";
+    trapFocus(creditsModalContainer);
+  }
+
+  function hideCredits() {
+    if (!creditsModalContainer) return;
+    playUiClose();
+    creditsModalContainer.classList.add("hidden");
+    creditsModalContainer.style.display = "none";
+    if (activeTrapCleanup) {
+      activeTrapCleanup();
+      activeTrapCleanup = null;
+    }
+  }
+
+  if (creditsToggleBtn) {
+    creditsToggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showCredits();
+    });
+  }
+
+  if (creditsCloseBtn) {
+    creditsCloseBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      hideCredits();
+    });
+  }
+
+  if (creditsModalContainer) {
+    creditsModalContainer.addEventListener("click", (e) => {
+      if (e.target === creditsModalContainer) {
+        hideCredits();
+      }
+    });
+  }
+
   if (guideToggleBtn) {
     guideToggleBtn.addEventListener("click", (e) => {
       e.stopPropagation();
+      if (creditsModalContainer) hideCredits();
       showGuide();
     });
   }
@@ -138,6 +185,14 @@ export function initGuide() {
     });
   }
 
+  if (guideModalContainer) {
+    guideModalContainer.addEventListener("click", (e) => {
+      if (e.target === guideModalContainer) {
+        hideGuide();
+      }
+    });
+  }
+
   document.addEventListener("keydown", (e) => {
     const isInputActive =
       document.activeElement &&
@@ -147,6 +202,12 @@ export function initGuide() {
 
     if (e.key === "Escape") {
       if (
+        creditsModalContainer &&
+        !creditsModalContainer.classList.contains("hidden") &&
+        creditsModalContainer.style.display !== "none"
+      ) {
+        hideCredits();
+      } else if (
         guideModalContainer &&
         !guideModalContainer.classList.contains("hidden") &&
         guideModalContainer.style.display !== "none"
@@ -192,11 +253,17 @@ export function initGuide() {
 
   if (typeof window !== "undefined") {
     window.__onGestureRecognized = handleGestureRecognized;
+    window.__showCredits = showCredits;
+    window.__hideCredits = hideCredits;
+    window.__showGuide = showGuide;
+    window.__hideGuide = hideGuide;
   }
 
   return {
     showGuide,
     hideGuide,
+    showCredits,
+    hideCredits,
     handleGestureRecognized,
     isDismissed: () => isDismissed,
   };

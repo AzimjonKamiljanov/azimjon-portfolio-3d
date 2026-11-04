@@ -76,7 +76,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Asosiy kontentga o\x27tish / Skip to content</a>
+    <noscript>
+        <div class="noscript-banner" role="alert">
+            <p><strong>JavaScript Talab Qilinadi / JavaScript Required:</strong> Ushbu 3D Quyosh Tizimi portfoliosi interaktiv WebGL tajribasini taqdim etadi. Matnli rejim uchun <a href="#accessible-fallback">ushbu sahifaga o'ting</a>.</p>
+        </div>
+    </noscript>
+
+    <div id="webgl-error-banner" class="webgl-error-banner hidden" role="alert">
+        <p><strong>WebGL Ishga Tushmadi / WebGL Failed:</strong> Sizning qurilmangizda 3D WebGL faol emas. Iltimos, brauzer sozlamalarida WebGL yoki apparat tezlatishni yoqing.</p>
+    </div>
+
+    <a href="#main-content" class="skip-link">Asosiy kontentga o'tish / Skip to content</a>
 
     <!-- Futuristic Sci-Fi Preloader Screen -->
     <div id="preloader" aria-live="polite">
@@ -387,8 +397,11 @@ RTX 5070 CUDA bilan tezlashtirilgan Hashcat, Nmap, Radare2, Lynis, Volatility3, 
                     <button id="cinematic-toggle-btn" class="header-link icon-pod-btn" title="Toza Koinot Rejimi (H) / Pure Space Cinematic Mode" data-tooltip="Toza Fazo (H)">
                         <span id="cinematic-toggle-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></span> <span id="cinematic-toggle-text" class="pod-btn-text">Toza Fazo</span>
                     </button>
-                    <button id="guide-toggle-btn" class="header-link icon-pod-btn" title="Foydalanish Bo\x27yicha Ko\x27rsatma / Guide" data-tooltip="Ko\x27rsatma">
-                        <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> <span id="guide-toggle-text" class="pod-btn-text">Ko\x27rsatma</span>
+                    <button id="guide-toggle-btn" class="header-link icon-pod-btn" title="Foydalanish Bo'yicha Ko'rsatma / Guide" data-tooltip="Ko'rsatma">
+                        <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> <span id="guide-toggle-text" class="pod-btn-text">Ko'rsatma</span>
+                    </button>
+                    <button id="credits-toggle-btn" class="header-link icon-pod-btn" title="Kreditlar va Manbalar / Credits & Attributions" data-tooltip="Kreditlar">
+                        <span class="icon"><svg class="btn-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M14.5 9a3.5 3.5 0 1 0 0 6H15"/></svg></span> <span id="credits-toggle-text" class="pod-btn-text">Kreditlar</span>
                     </button>
                 </div>
 
@@ -569,6 +582,41 @@ RTX 5070 CUDA bilan tezlashtirilgan Hashcat, Nmap, Radare2, Lynis, Volatility3, 
                 <button id="guide-start-btn" class="guide-start-btn">
                     <span id="guide-start-text">Koinotni Ko\x27rish</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credits & Attributions Modal -->
+    <div id="credits-modal-container" class="guide-modal-container hidden" role="dialog" aria-modal="true" aria-labelledby="credits-heading">
+        <div class="guide-modal credits-modal">
+            <button class="close-btn" id="credits-close-btn" aria-label="Yopish">✕</button>
+            <div class="badge-tag" id="credits-badge">LITSENZIYALAR VA MANBALAR</div>
+            <h2 class="guide-heading" id="credits-heading">Credits & Attributions</h2>
+            <p class="guide-desc" id="credits-desc">Astronomik ma'lumotlar, 3D teksturalar va ochiq kodli kutubxonalar:</p>
+            <div class="credits-content-scroll">
+                <div class="credits-section">
+                    <h3 id="credits-sec1-title">Astronomik Teksturalar & Xaritalar</h3>
+                    <ul class="credits-list">
+                        <li><strong>SDO / HMI & AIA:</strong> NASA Solar Dynamics Observatory — Quyosh fotosferasi va doimiy spektr ma'lumotlari (Public Domain).</li>
+                        <li><strong>Visible Earth / Blue Marble:</strong> NASA Earth Observatory — Yer sayyorasi kunduzgi, tungi va bulutlar xaritasi (Public Domain).</li>
+                        <li><strong>LRO / LOLA:</strong> NASA Goddard Space Flight Center — Oy yuzasi topografik xaritasi (Public Domain).</li>
+                        <li><strong>Planetary Maps:</strong> NASA / JPL-Caltech / Solar System Scope (CC BY 4.0).</li>
+                    </ul>
+                </div>
+                <div class="credits-section">
+                    <h3 id="credits-sec2-title">Ochiq Kodli Texnologiyalar & Kutubxonalar</h3>
+                    <ul class="credits-list">
+                        <li><strong>Three.js (r186):</strong> Ricardo Cabello (Mr.doob) & Contributors (MIT License).</li>
+                        <li><strong>@mediapipe/tasks-vision:</strong> Google LLC (Apache 2.0).</li>
+                        <li><strong>GSAP:</strong> GreenSock Inc.</li>
+                        <li><strong>Fonts:</strong> Inter, Plus Jakarta Sans, JetBrains Mono (SIL Open Font License 1.1).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="guide-footer">
+                <a href="https://github.com/AzimjonKamiljanov/Cosmic_portifolio/blob/main/ATTRIBUTIONS.md" target="_blank" rel="noopener noreferrer" class="guide-start-btn" id="credits-external-link">
+                    <span>ATTRIBUTIONS.md (To'liq Ro'yxat) →</span>
+                </a>
             </div>
         </div>
     </div>
