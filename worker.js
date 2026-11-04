@@ -16,7 +16,7 @@ const SECURITY_HEADERS = {
   "Content-Security-Policy": [
     "default-src 'self'",
     "script-src 'self' 'wasm-unsafe-eval'",
-    "style-src 'self' 'unsafe-inline'", // Allowed for dynamic styles/theme injection while migrating; scoped to self
+    "style-src 'self'",
     "font-src 'self' data:",
     "img-src 'self' data: blob: https:",
     "media-src 'self' data: blob:",
@@ -556,7 +556,7 @@ async function handleContact(request, env, url) {
         },
       );
     }
-  } catch (err) {
+  } catch (_err) {
     console.error("Telegram dispatch error");
     const headers = new Headers({
       "Content-Type": "application/json",
@@ -574,7 +574,7 @@ async function handleContact(request, env, url) {
 }
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env, _ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
     const isDev = env.ENVIRONMENT === "dev";

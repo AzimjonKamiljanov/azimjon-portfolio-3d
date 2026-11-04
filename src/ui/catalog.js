@@ -165,16 +165,23 @@ export function initCatalog({ onSelectTarget }) {
       const tr = proj[lang] || proj.uz;
       const targetAttr = proj.id ? `data-target="${proj.id}"` : "";
       const cats = (proj.categories || []).join(" ");
+      const authorLabel = lang === "uz" ? "Muallif" : lang === "ru" ? "Автор" : "Author";
       const authorNotice = proj.originalAuthor
-        ? `<div class="card-attribution"><span class="author-badge">Muallif: ${proj.originalAuthor}</span></div>`
+        ? `<div class="card-attribution"><span class="author-badge">${authorLabel}: ${proj.originalAuthor}</span></div>`
         : "";
 
       const tagsHtml = (tr.tags || [])
         .map((t) => `<span>#${t}</span>`)
         .join("");
+      const privateLabel =
+        lang === "uz"
+          ? "Yopiq repo / Ishlanmoqda"
+          : lang === "ru"
+            ? "Приватный / В разработке"
+            : "Private / In progress";
       const linkHtml = proj.link
         ? `<a href="${proj.link}" target="_blank" rel="noopener noreferrer" class="card-link" onclick="event.stopPropagation();">${proj.linkText || "GitHub Repo →"}</a>`
-        : "";
+        : `<span class="card-link card-link-private">${privateLabel}</span>`;
 
       return `
                 <div class="catalog-card" ${targetAttr} data-categories="${cats}" tabindex="0" role="button" aria-label="${tr.title}">
@@ -196,15 +203,15 @@ export function initCatalog({ onSelectTarget }) {
     }
 
     if (myProjects.length > 0) {
-      html += `<div class="catalog-section-header" style="grid-column: 1 / -1; margin-top: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
-                <h4 style="color: #60a5fa; font-size: 1.1rem; font-weight: 600;">${currentSectionTitles.mine} (${myProjects.length})</h4>
+      html += `<div class="catalog-section-header personal-section">
+                <h4>${currentSectionTitles.mine} (${myProjects.length})</h4>
             </div>`;
       html += myProjects.map(renderCard).join("");
     }
 
     if (toolsAndOpenSource.length > 0) {
-      html += `<div class="catalog-section-header" style="grid-column: 1 / -1; margin-top: 2rem; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
-                <h4 style="color: #94a3b8; font-size: 1.1rem; font-weight: 600;">${currentSectionTitles.tools} (${toolsAndOpenSource.length})</h4>
+      html += `<div class="catalog-section-header tools-section">
+                <h4>${currentSectionTitles.tools} (${toolsAndOpenSource.length})</h4>
             </div>`;
       html += toolsAndOpenSource.map(renderCard).join("");
     }

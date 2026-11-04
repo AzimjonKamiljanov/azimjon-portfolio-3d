@@ -41,8 +41,14 @@ jobs:
       - name: Audit Production Dependencies
         run: npm audit --omit=dev
 
-      - name: Secret Scan (Gitleaks)
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+      - name: Secret Scan (Gitleaks Full History)
+        run: |
+          if command -v gitleaks &> /dev/null; then
+            gitleaks detect --redact --report-format json --report-path gitleaks-report.json || true
+            node scripts/report-gitleaks.cjs
+          else
+            echo "Gitleaks not installed on runner image; running Docker fallback"
+            docker run --rm -v "$PWD:/path" zricethezav/gitleaks:latest detect --source="/path" --redact --report-format json --report-path /path/gitleaks-report.json || true
+            node scripts/report-gitleaks.cjs
+          fi
+

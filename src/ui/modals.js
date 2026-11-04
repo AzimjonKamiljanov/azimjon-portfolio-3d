@@ -136,7 +136,7 @@ export function initModals({ onReturnToOrbit }) {
         .split("\n\n")
         .map(
           (para) =>
-            `<p style="margin-bottom: 0.75rem; line-height: 1.6;">${para.replace(/\n/g, "<br>")}</p>`,
+            `<p class="info-content-para">${para.replace(/\n/g, "<br>")}</p>`,
         )
         .join("");
     }

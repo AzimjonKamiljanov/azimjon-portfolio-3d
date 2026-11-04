@@ -1072,8 +1072,14 @@ body, html {
     line-height: 1.65;
     color: #d1d5db;
     margin-bottom: 22px;
-    white-space: pre-line;
+    white-space: normal;
+    overflow-wrap: anywhere;
     font-weight: 300;
+}
+
+.info-content-para {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
 }
 
 .tags-container {
@@ -1918,6 +1924,37 @@ body, html {
 .card-link:hover {
     color: #ffffff;
     text-decoration: underline;
+}
+
+.card-link-private {
+    color: #94a3b8;
+    cursor: default;
+    opacity: 0.8;
+}
+
+.card-link-private:hover {
+    color: #94a3b8;
+    text-decoration: none;
+}
+
+.catalog-section-header {
+    grid-column: 1 / -1;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+.catalog-section-header.personal-section h4 {
+    color: #60a5fa;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.catalog-section-header.tools-section h4 {
+    color: #94a3b8;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .catalog-star-card {
@@ -3618,5 +3655,44 @@ body.cinematic-active .surface-view-bar {
     border-color: rgba(255, 255, 255, 0.28);
     color: #ffffff;
 }
+
+/* Inline styles extracted for strict CSP compliance */
+.fallback-project-card {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 1px solid #334155;
+    border-radius: 8px;
+}
+
+#gesture-video {
+    display: none;
+}
+
+.btn-svg-sm {
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+}
+
+.empty-icon svg {
+    opacity: 0.4;
+}
+
+.notice-icon svg {
+    opacity: 0.8;
+}
+
+.terminal-hp-input {
+    display: none !important;
+}
+
+.input-prefix svg {
+    opacity: 0.6;
+}
+
+.send-icon svg {
+    margin-right: 4px;
+}
+
 
 

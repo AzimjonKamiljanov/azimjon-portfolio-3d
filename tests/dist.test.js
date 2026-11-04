@@ -58,11 +58,26 @@ describe('Production Distribution (dist/) Integrity Tests', () => {
         expect(fs.existsSync(path.join(distPath, 'assets/space_ambient.mp3'))).toBe(true);
     });
 
-    it('verifies self-hosted MediaPipe hands assets exist in dist/mediapipe/hands/', () => {
-        const mpDir = path.join(distPath, 'mediapipe/hands');
+    it('verifies self-hosted MediaPipe tasks-vision assets exist in dist/mediapipe/', () => {
+        const mpDir = path.join(distPath, 'mediapipe');
         expect(fs.existsSync(mpDir)).toBe(true);
-        expect(fs.existsSync(path.join(mpDir, 'hands_solution_simd_wasm_bin.wasm'))).toBe(true);
-        expect(fs.existsSync(path.join(mpDir, 'hands_solution_wasm_bin.wasm'))).toBe(true);
-        expect(fs.existsSync(path.join(mpDir, 'hand_landmark_full.tflite'))).toBe(true);
+        expect(fs.existsSync(path.join(mpDir, 'hand_landmarker.task'))).toBe(true);
+        expect(fs.existsSync(path.join(mpDir, 'wasm/vision_wasm_internal.wasm'))).toBe(true);
+    });
+
+    it('fails if any file in dist/ has a size of 0 bytes (C1 zero-byte guard)', () => {
+        function checkZeroBytes(dir) {
+            const entries = fs.readdirSync(dir, { withFileTypes: true });
+            for (const entry of entries) {
+                const fullPath = path.join(dir, entry.name);
+                if (entry.isDirectory()) {
+                    checkZeroBytes(fullPath);
+                } else {
+                    const stats = fs.statSync(fullPath);
+                    expect(stats.size, `Found 0-byte file: ${fullPath}`).toBeGreaterThan(0);
+                }
+            }
+        }
+        checkZeroBytes(distPath);
     });
 });

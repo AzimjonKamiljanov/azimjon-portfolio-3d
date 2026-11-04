@@ -84,7 +84,7 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
             <p class="terminal-intro">${termTexts.intro || "Moon Direct AI & Telegram Uplink Terminal"}</p>
 
             <div class="terminal-notice-box">
-                <span class="notice-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.8;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+                <span class="notice-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
                 <p class="notice-text">${termTexts.notice || "Mendan (Azimjondan) tezkor javob olish uchun ma'lumotlarni to'liq kiriting."}</p>
             </div>
 
@@ -94,12 +94,12 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
 
             <form id="terminal-form" class="terminal-form" novalidate>
                 <!-- Honeypot anti-spam trap (invisible to real visitors) -->
-                <input type="text" name="_hp" id="terminal-hp" style="display:none !important;" tabindex="-1" autocomplete="off">
+                <input type="text" name="_hp" id="terminal-hp" class="terminal-hp-input" tabindex="-1" autocomplete="off">
 
                 <div class="terminal-field">
                     <label for="terminal-name">${termTexts.nameLabel || "F.I.SH / ISMINGIZ"}</label>
                     <div class="input-glow-wrap">
-                        <span class="input-prefix"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.6;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                        <span class="input-prefix"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
                         <input type="text" id="terminal-name" placeholder="${termTexts.namePlaceholder || "Ismingiz..."}" maxlength="60" required autocomplete="name" value="${prevName}">
                     </div>
                 </div>
@@ -126,7 +126,7 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
                 </div>
 
                 <button type="submit" id="terminal-submit-btn" class="terminal-send-btn">
-                    <span class="send-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
+                    <span class="send-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
                     <span id="terminal-send-text">${termTexts.sendBtn || "Xabarni Yuborish"}</span>
                 </button>
 
@@ -292,7 +292,7 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
             feedback.classList.remove("hidden");
           }
         }
-      } catch (err) {
+      } catch (_err) {
         playUiError();
         if (feedback) {
           feedback.className = "terminal-feedback feedback-error";

@@ -76,6 +76,10 @@ export function animateCamera(
   return activeCameraTween;
 }
 
+export function isCameraAnimating() {
+  return isAnimating;
+}
+
 export function resetToOverview(camera, controls, onComplete) {
   const defaultPos = { x: 0, y: 165, z: 195 };
   const defaultTarget = { x: 0, y: 0, z: 0 };

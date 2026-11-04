@@ -4,9 +4,12 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["ai", "systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "ai",
+      "systems"
+    ],
+    "link": "https://github.com/AzimjonKamiljanov/CyberAgent",
+    "linkText": "CyberAgent Repo →",
     "uz": {
       "badge": "3-Sayyora • Bosh Flagman AI Loyiha",
       "title": "CyberAgent TITAN NEXUS",
@@ -61,9 +64,12 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["systems", "web"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems",
+      "web"
+    ],
+    "link": null,
+    "linkText": "private / in progress",
     "uz": {
       "badge": "4-Sayyora • 3D CAD Muhandislik Tizimi",
       "title": "UstaPro Master CAD 3D",
@@ -115,9 +121,11 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["ai"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "ai"
+    ],
+    "link": "https://github.com/AzimjonKamiljanov/Jarvis-x",
+    "linkText": "Jarvis-X Repo →",
     "uz": {
       "badge": "2-Sayyora • Voice AI & Robotics",
       "title": "Jarvis-X • Autonomous Desktop Voice Assistant",
@@ -172,9 +180,11 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["web"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "web"
+    ],
+    "link": "https://github.com/AzimjonKamiljanov/caretrack-clinic",
+    "linkText": "CareTrack Clinic Repo →",
     "uz": {
       "badge": "1-Sayyora • Enterprise ERP Tizimi",
       "title": "CareTrack Clinic • Medical ERP & Clinic CRM",
@@ -229,9 +239,12 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["security", "systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "security",
+      "systems"
+    ],
+    "link": null,
+    "linkText": "private / in progress",
     "uz": {
       "badge": "5-Sayyora • DevSecOps & Kiberxavfsizlik",
       "title": "Sentinel ECC Matrix & Docker Sandboxing",
@@ -283,9 +296,11 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["ai"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "ai"
+    ],
+    "link": "https://github.com/AzimjonKamiljanov/elite-ai-agent",
+    "linkText": "Elite AI Agent Repo →",
     "uz": {
       "badge": "6-Sayyora • Multi-Agent Framework",
       "title": "Elite AI Agent • Multi-Agent Swarm",
@@ -337,9 +352,11 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["web"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "web"
+    ],
+    "link": "https://github.com/AzimjonKamiljanov/full-stack-",
+    "linkText": "Full-Stack Framework Repo →",
     "uz": {
       "badge": "7-Sayyora • Full-Stack Cloud Ekotizim",
       "title": "Modern Full-Stack Cloud Ecosystem",
@@ -394,9 +411,11 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["ai"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "ai"
+    ],
+    "link": null,
+    "linkText": "private / in progress",
     "uz": {
       "badge": "8-Sayyora • Deep Learning Laboratoriyasi",
       "title": "AI & Deep Learning Research Lab",
@@ -451,9 +470,12 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["systems", "web"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems",
+      "web"
+    ],
+    "link": "https://github.com/AzimjonKamiljanov/Poco",
+    "linkText": "Poco Repo →",
     "uz": {
       "badge": "9-Sayyora • Cloud Fleet & Multi-Repo",
       "title": "Google Jules Cloud Fleet & Poco Orchestrator",
@@ -505,13 +527,16 @@
     "kind": "celestial",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["web", "systems"],
+    "categories": [
+      "web",
+      "systems"
+    ],
     "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "linkText": "GitHub Profile →",
     "uz": {
       "badge": "Markaziy Yulduz • Developer Profili",
-      "title": "Azimjon Kamiljanov (Lead AI Architect)",
-      "subtitle": "Lead AI Systems Architect • Senior Full-Stack Engineer",
+      "title": "Azimjon Kamiljanov",
+      "subtitle": "AI & Full-Stack Dasturchi (Talaba)",
       "content": "Assalomu alaykum! Men Azimjon Kamiljanov — sun'iy intellekt agentlari, yuqori yuklamali mikroxizmatlar, 3D WebGL interfeyslar va xavfsiz taqsimlangan tizimlar me'moriman.\n\nApparat & Laboratoriya:\n• Model: Lenovo Legion Pro 5\n• CPU: AMD Ryzen 9 9955HX (32 vCPU threads)\n• GPU: NVIDIA GeForce RTX 5070 Laptop GPU (8GB VRAM)\n• RAM: 32 GB DDR5 | SSD: 1 TB NVMe SSD\n• Tizim: EndeavourOS Linux (Linux 7.2.3-zen kernel)\n\nAsosiy Texnologik Stack:\n• AI & ML: Python 3.12, PyTorch 2.14 + CUDA 13, Transformers, Whisper Large-v3-Turbo, Kokoro TTS, Gemini 3.8 Flash, DeepSeek R1, Groq LPU.\n• Frontend & 3D: Three.js / WebGL, GLSL Shaders, React, Next.js, TypeScript, TailwindCSS.\n• Backend & DevOps: Node.js, Express, Docker Engine 29.7.2, Portainer, PostgreSQL, Redis, Cloudflare Tunnels, DevSecOps (OWASP GenAI).\n\nDizaynda minimalist estetika, qat'iy mantiq va 100% ishonchlilik tarafdoriman.",
       "tags": [
         "Azimjon Kamiljanov",
@@ -527,8 +552,8 @@
     },
     "en": {
       "badge": "Central Star • Architect Profile",
-      "title": "Azimjon Kamiljanov (Lead AI Architect)",
-      "subtitle": "Lead AI Systems Architect • Senior Full-Stack Engineer",
+      "title": "Azimjon Kamiljanov",
+      "subtitle": "AI & Full-Stack Developer (Student)",
       "content": "Welcome! I am Azimjon Kamiljanov — autonomous AI agent systems architect, high-throughput microservices engineer, 3D WebGL developer, and distributed security specialist.\n\nHardware & Laboratory:\n• Rig: Lenovo Legion Pro 5\n• CPU: AMD Ryzen 9 9955HX (32 vCPU threads)\n• GPU: NVIDIA GeForce RTX 5070 Laptop GPU (8GB VRAM)\n• RAM: 32 GB DDR5 | SSD: 1 TB NVMe SSD\n• OS: EndeavourOS Linux (Linux 7.2.3-zen kernel)\n\nCore Technology Stack:\n• AI & ML: Python 3.12, PyTorch 2.14 + CUDA 13, Transformers, Whisper Large-v3-Turbo, Kokoro TTS, Gemini 3.8 Flash, DeepSeek R1, Groq LPU.\n• Frontend & 3D: Three.js / WebGL, Custom GLSL Shaders, React, Next.js, TypeScript, TailwindCSS.\n• Backend & DevOps: Node.js, Express, Docker Engine 29.7.2, Portainer, PostgreSQL, Redis, Cloudflare Tunnels, DevSecOps (OWASP GenAI).\n\nDriven by radical minimalist aesthetics, rock-solid logic, and 100% architectural reliability.",
       "tags": [
         "Azimjon Kamiljanov",
@@ -544,8 +569,8 @@
     },
     "ru": {
       "badge": "Центральная Звезда • Профиль Архитектора",
-      "title": "Азимжон Камильджанов (Lead AI Architect)",
-      "subtitle": "Ведущий Архитектор AI Систем • Senior Full-Stack Инженер",
+      "title": "Азимжон Камильджанов",
+      "subtitle": "AI & Full-Stack Разработчик (Студент)",
       "content": "Приветствую! Я Азимжон Камильджанов — архитектор автономных AI-агентов, высоконагруженных микросервисов, 3D WebGL интерфейсов и защищенных распределенных систем.\n\nАппаратный Профиль & Лаборатория:\n• Модель: Lenovo Legion Pro 5\n• ЦП: AMD Ryzen 9 9955HX (32 потока vCPU)\n• ГП: NVIDIA GeForce RTX 5070 Laptop GPU (8GB VRAM)\n• ОЗУ: 32 GB DDR5 | Накопитель: 1 TB NVMe SSD\n• ОС: EndeavourOS Linux (ядро Linux 7.2.3-zen)\n\nОсновной Технологический Стек:\n• AI & ML: Python 3.12, PyTorch 2.14 + CUDA 13, Transformers, Whisper Large-v3-Turbo, Kokoro TTS, Gemini 3.8 Flash, DeepSeek R1, Groq LPU.\n• Frontend & 3D: Three.js / WebGL, Процедурные GLSL шейдеры, React, Next.js, TypeScript, TailwindCSS.\n• Backend & DevOps: Node.js, Express, Docker Engine 29.7.2, Portainer, PostgreSQL, Redis, Туннели Cloudflare, DevSecOps (OWASP GenAI).\n\nПриверженец минималистичной эстетики, бескомпромиссной логики и 100% отказоустойчивости.",
       "tags": [
         "Азимжон Камильджанов",
@@ -565,9 +590,11 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": null,
+    "linkText": "private / in progress",
     "uz": {
       "badge": "Tizim Loyihasi • Legion Power",
       "title": "Legion Power Optimizer • Hardware & Battery Automation",
@@ -619,9 +646,11 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": null,
+    "linkText": "private / in progress",
     "uz": {
       "badge": "Xavfsizlik Tizimi • Cyber Arsenal",
       "title": "Titan Centurion • Hybrid Cyber & OSINT Arsenal",
@@ -676,9 +705,11 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community / Graphify",
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": "https://github.com/Graphify-Labs/graphify",
+    "linkText": "Graphify Upstream →",
     "uz": {
       "badge": "Arxitektura Dvigateli • Graphify",
       "title": "Graphify Visual Architecture • Codebase Knowledge Graph",
@@ -730,9 +761,11 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Calcium-Ion & Open Source Community (New API)",
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": "https://github.com/Calcium-Ion/new-api",
+    "linkText": "New API Upstream →",
     "uz": {
       "badge": "AI Infratuzilma • New API",
       "title": "New API Multi-LLM Universal Gateway",
@@ -784,9 +817,11 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Frantisek Urban & Contributors (Agent Zero)",
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": "https://github.com/frdel/agent-zero",
+    "linkText": "Agent Zero Upstream →",
     "uz": {
       "badge": "Avtonom Agent • Agent Zero",
       "title": "Agent Zero Dual-Brain Docker Environment",
@@ -838,9 +873,11 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Paul Gauthier & Contributors (Aider)",
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": "https://github.com/Aider-AI/aider",
+    "linkText": "Aider Upstream →",
     "uz": {
       "badge": "AI Dasturchi • Aider NIM",
       "title": "Aider & NVIDIA NIM Architect",
@@ -892,9 +929,11 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community (OpenShell)",
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": "https://github.com/NVIDIA/OpenShell",
+    "linkText": "OpenShell Upstream →",
     "uz": {
       "badge": "Xavfsizlik • OpenShell",
       "title": "NVIDIA OpenShell Safety Sandbox",
@@ -946,9 +985,11 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": null,
+    "linkText": "private / in progress",
     "uz": {
       "badge": "Ta'lim • B.Tech Cloud",
       "title": "B.Tech Cloud Fundamentals Lab",
@@ -1000,9 +1041,11 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community (GSD Workflow)",
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": "https://github.com/open-gsd/gsd-core",
+    "linkText": "GSD Core Upstream →",
     "uz": {
       "badge": "Ish Oqimi • GSD Core",
       "title": "GSD Core Spec-Driven Autonomous Framework",
@@ -1054,9 +1097,11 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community (Claude-Mem)",
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": "https://github.com/thedotmack/claude-mem",
+    "linkText": "Claude-Mem Upstream →",
     "uz": {
       "badge": "AI Xotirasi • Claude-Mem",
       "title": "Claude-Mem Cognitive Vector DB",
@@ -1108,9 +1153,11 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community (Headroom Context Engine)",
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": "https://github.com/headroomlabs-ai/headroom",
+    "linkText": "Headroom Upstream →",
     "uz": {
       "badge": "Kontekst • Headroom",
       "title": "Headroom Context Optimization Engine",
@@ -1162,9 +1209,11 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "Open Source Community (Ralph Agent Runner)",
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": "https://github.com/ghuntley/how-to-ralph-wiggum",
+    "linkText": "Ralph Wiggum Upstream →",
     "uz": {
       "badge": "Avtonom TDD • Ralph Loop",
       "title": "Ralph Loop Self-Healing Runner",
@@ -1216,9 +1265,11 @@
     "kind": "star",
     "group": "open_source_tools",
     "originalAuthor": "DeepSeek & Open Source Community",
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": "https://github.com/deepseek-ai/deepseek-harness",
+    "linkText": "DeepSeek Harness Upstream →",
     "uz": {
       "badge": "Agent Dvigateli • dsh",
       "title": "DeepSeek Harness (dsh) Multi-Plugin Engine",
@@ -1270,9 +1321,11 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": null,
+    "linkText": "private / in progress",
     "uz": {
       "badge": "Kiber-Razvedka • OSINT",
       "title": "Titan OSINT Massive Threat Intelligence",
@@ -1324,9 +1377,11 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": null,
+    "linkText": "private / in progress",
     "uz": {
       "badge": "Yadro Xavfsizligi • Sudo Shield",
       "title": "System Sentinel & Sudo Shield",
@@ -1378,9 +1433,11 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": "https://github.com/AzimjonKamiljanov/Cosmic_portifolio",
+    "linkText": "Cosmic Portfolio Repo →",
     "uz": {
       "badge": "3D WebGL • Solar Engine",
       "title": "Cosmic Portfolio 3D Three.js Engine",
@@ -1435,9 +1492,11 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": null,
+    "linkText": "private / in progress",
     "uz": {
       "badge": "Algoritmlar • School 21",
       "title": "School 21 Crypto & Network Lab",
@@ -1489,9 +1548,11 @@
     "kind": "star",
     "group": "my_projects",
     "originalAuthor": null,
-    "categories": ["systems"],
-    "link": "https://github.com/AzimjonKamiljanov",
-    "linkText": "GitHub Profil",
+    "categories": [
+      "systems"
+    ],
+    "link": null,
+    "linkText": "private / in progress",
     "uz": {
       "badge": "Telemetriya • Observer",
       "title": "Task Observer & Mnemoverse Telemetry",

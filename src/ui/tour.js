@@ -190,7 +190,7 @@ export function initTour({
     goToTourStop(tourIndex);
   }
 
-  function exitTour(shouldReset = true) {
+  function exitTour(_shouldReset = true) {
     if (!isTourActive) return;
     playUiClick();
     isTourActive = false;

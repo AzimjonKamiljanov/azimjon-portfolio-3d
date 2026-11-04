@@ -60,4 +60,34 @@ describe('Data Integrity & Fact Verification Tests', () => {
         expect(serialized).not.toContain('kiber-qurol');
         expect(serialized).not.toContain('cyber-weapons');
     });
+
+    it('fails if more than 3 items share one link (A1 regression test)', () => {
+        const linkCounts = {};
+        projects.forEach(p => {
+            if (p.link) {
+                linkCounts[p.link] = (linkCounts[p.link] || 0) + 1;
+            }
+        });
+        const counts = Object.values(linkCounts);
+        const maxShared = counts.length > 0 ? Math.max(...counts) : 0;
+        expect(maxShared).toBeLessThanOrEqual(3);
+    });
+
+    it('contains no Lead AI or Senior Full-Stack in src/ (A2)', () => {
+        function checkDir(dir) {
+            const files = fs.readdirSync(dir, { withFileTypes: true });
+            for (const file of files) {
+                const fullPath = `${dir}/${file.name}`;
+                if (file.isDirectory()) {
+                    checkDir(fullPath);
+                } else if (file.name.endsWith('.js') || file.name.endsWith('.json')) {
+                    const content = fs.readFileSync(fullPath, 'utf8');
+                    expect(content).not.toMatch(/Lead AI/i);
+                    expect(content).not.toMatch(/Senior Full-Stack/i);
+                }
+            }
+        }
+        checkDir('src');
+    });
 });
+
