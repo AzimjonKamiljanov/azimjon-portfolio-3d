@@ -117,7 +117,9 @@ export function initGuide() {
     }
   }
 
-  const creditsModalContainer = document.getElementById("credits-modal-container");
+  const creditsModalContainer = document.getElementById(
+    "credits-modal-container",
+  );
   const creditsToggleBtn = document.getElementById("credits-toggle-btn");
   const creditsCloseBtn = document.getElementById("credits-close-btn");
 
