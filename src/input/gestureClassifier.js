@@ -47,11 +47,20 @@ export class OneEuroFilter {
   }
 }
 
-// 3D Joint angle calculator (Rotation-Invariant)
+// 3D Joint angle calculator with Z-damping (prevents monocular depth estimation noise)
 export function calculateJointAngle(a, b, c) {
   if (!a || !b || !c) return Math.PI;
-  const v1 = { x: a.x - b.x, y: a.y - b.y, z: (a.z || 0) - (b.z || 0) };
-  const v2 = { x: c.x - b.x, y: c.y - b.y, z: (c.z || 0) - (b.z || 0) };
+  const zScale = 0.35;
+  const v1 = {
+    x: a.x - b.x,
+    y: a.y - b.y,
+    z: ((a.z || 0) - (b.z || 0)) * zScale,
+  };
+  const v2 = {
+    x: c.x - b.x,
+    y: c.y - b.y,
+    z: ((c.z || 0) - (b.z || 0)) * zScale,
+  };
   const dot = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
   const mag1 = Math.hypot(v1.x, v1.y, v1.z);
   const mag2 = Math.hypot(v2.x, v2.y, v2.z);
@@ -59,41 +68,42 @@ export function calculateJointAngle(a, b, c) {
   return Math.acos(Math.max(-1, Math.min(1, dot / (mag1 * mag2))));
 }
 
-// Determines if a finger is extended using joint angle and wrist distance ratio
+// Determines if a finger is extended using robust distance ratios and 2D/3D angles
 export function isFingerExtended(mcp, pip, dip, tip, wrist) {
+  if (!mcp || !pip || !dip || !tip || !wrist) return false;
+
+  const distTipWrist = Math.hypot(tip.x - wrist.x, tip.y - wrist.y);
+  const distPipWrist = Math.hypot(pip.x - wrist.x, pip.y - wrist.y);
+
+  const distTipMcp = Math.hypot(tip.x - mcp.x, tip.y - mcp.y);
+  const distPipMcp = Math.hypot(pip.x - mcp.x, pip.y - mcp.y);
+
   const anglePip = calculateJointAngle(mcp, pip, dip);
-  const angleDip = calculateJointAngle(pip, dip, tip);
 
-  const distTip = Math.hypot(
-    tip.x - wrist.x,
-    tip.y - wrist.y,
-    (tip.z || 0) - (wrist.z || 0),
-  );
-  const distPip = Math.hypot(
-    pip.x - wrist.x,
-    pip.y - wrist.y,
-    (pip.z || 0) - (wrist.z || 0),
-  );
+  const isDistExt =
+    distTipWrist > distPipWrist * 1.05 && distTipMcp > distPipMcp * 1.05;
+  const isAngleOpen = anglePip > 2.05;
 
-  // Finger is extended if joints are fairly straight (> 140 deg = 2.44 rad) and tip extends past pip
-  return anglePip > 2.44 && angleDip > 2.3 && distTip > distPip * 1.15;
+  return isDistExt && isAngleOpen;
 }
 
-// Determines if thumb is extended
-export function isThumbExtended(wrist, cmc, mcp, ip, tip) {
-  const angleMcp = calculateJointAngle(cmc, mcp, ip);
-  const angleIp = calculateJointAngle(mcp, ip, tip);
-  const distTip = Math.hypot(
-    tip.x - wrist.x,
-    tip.y - wrist.y,
-    (tip.z || 0) - (wrist.z || 0),
-  );
-  const distMcp = Math.hypot(
-    mcp.x - wrist.x,
-    mcp.y - wrist.y,
-    (mcp.z || 0) - (wrist.z || 0),
-  );
-  return angleMcp > 2.3 && angleIp > 2.2 && distTip > distMcp * 1.25;
+// Determines if thumb is extended away from palm
+export function isThumbExtended(wrist, cmc, mcp, ip, tip, indexMcp) {
+  if (!wrist || !mcp || !tip) return false;
+
+  const distTipWrist = Math.hypot(tip.x - wrist.x, tip.y - wrist.y);
+  const distMcpWrist = Math.hypot(mcp.x - wrist.x, mcp.y - wrist.y);
+
+  let isSeparated = true;
+  if (indexMcp) {
+    const distTipIndex = Math.hypot(tip.x - indexMcp.x, tip.y - indexMcp.y);
+    const distMcpIndex = Math.hypot(mcp.x - indexMcp.x, mcp.y - indexMcp.y);
+    isSeparated = distTipIndex > distMcpIndex * 0.85;
+  }
+
+  const angleIp = ip ? calculateJointAngle(mcp, ip, tip) : Math.PI;
+
+  return distTipWrist > distMcpWrist * 1.08 && isSeparated && angleIp > 1.95;
 }
 
 // Classifies hand gesture from raw MediaPipe 21 landmarks
@@ -128,22 +138,11 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
   const pinkyDip = landmarks[19];
   const pinkyTip = landmarks[20];
 
-  // Hand scale (wrist to middle MCP)
+  // Hand scale (wrist to middle knuckle)
   const handScale =
-    Math.hypot(
-      middleMcp.x - wrist.x,
-      middleMcp.y - wrist.y,
-      (middleMcp.z || 0) - (wrist.z || 0),
-    ) || 0.1;
+    Math.hypot(middleMcp.x - wrist.x, middleMcp.y - wrist.y) || 0.15;
 
-  // Finger extension states
-  const thumbExt = isThumbExtended(
-    wrist,
-    thumbCmc,
-    thumbMcp,
-    thumbIp,
-    thumbTip,
-  );
+  // Finger extension states (forgiving, natural, jitter-resistant)
   const indexExt = isFingerExtended(
     indexMcp,
     indexPip,
@@ -166,15 +165,14 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
     pinkyTip,
     wrist,
   );
-
-  // Pinch distance (thumb tip to index tip) normalized
-  const pinchDist = Math.hypot(
-    thumbTip.x - indexTip.x,
-    thumbTip.y - indexTip.y,
-    (thumbTip.z || 0) - (indexTip.z || 0),
+  const thumbExt = isThumbExtended(
+    wrist,
+    thumbCmc,
+    thumbMcp,
+    thumbIp,
+    thumbTip,
+    indexMcp,
   );
-  const normPinch = pinchDist / handScale;
-  const isPinch = normPinch < 0.38 || pinchDist < 0.065;
 
   const extendedCount =
     (indexExt ? 1 : 0) +
@@ -182,20 +180,40 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
     (ringExt ? 1 : 0) +
     (pinkyExt ? 1 : 0);
 
-  const indexDistFromWrist = Math.hypot(
-    indexTip.x - wrist.x,
-    indexTip.y - wrist.y,
-    (indexTip.z || 0) - (wrist.z || 0),
+  // Distance from index tip to index MCP (knuckle)
+  const distIndexTipMcp = Math.hypot(
+    indexTip.x - indexMcp.x,
+    indexTip.y - indexMcp.y,
   );
-  const indexMcpDistFromWrist = Math.hypot(
-    indexMcp.x - wrist.x,
-    indexMcp.y - wrist.y,
-    (indexMcp.z || 0) - (wrist.z || 0),
-  );
-  const isIndexReaching = indexDistFromWrist > indexMcpDistFromWrist * 1.2;
+  const isIndexReaching = distIndexTipMcp > handScale * 0.35 || indexExt;
 
-  // 1. PINCH (Thumb tip + Index tip meeting while reaching out)
-  if (isPinch && isIndexReaching) {
+  // Pinch distance (thumb tip to index tip)
+  const pinchDist = Math.hypot(
+    thumbTip.x - indexTip.x,
+    thumbTip.y - indexTip.y,
+  );
+  const normPinch = pinchDist / handScale;
+  const isPinchContact = normPinch < 0.28 || pinchDist < 0.052;
+  const isPinch = isPinchContact && isIndexReaching;
+
+  const otherFingersExtendedCount =
+    (middleExt ? 1 : 0) + (ringExt ? 1 : 0) + (pinkyExt ? 1 : 0);
+
+  // 1. OK SIGN (Thumb + Index pinch while middle and at least one other finger is extended)
+  if (isPinch && middleExt && otherFingersExtendedCount >= 2) {
+    return {
+      gesture: "ok",
+      confidence: 0.96,
+      reticle: {
+        x: (thumbTip.x + indexTip.x) / 2,
+        y: (thumbTip.y + indexTip.y) / 2,
+      },
+      handedness,
+    };
+  }
+
+  // 2. PINCH (Thumb tip + Index tip meeting while index reaches out)
+  if (isPinch && otherFingersExtendedCount <= 1) {
     return {
       gesture: "pinch",
       confidence: 0.95,
@@ -209,8 +227,20 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
     };
   }
 
-  // 2. FIST (All 4 fingers curled into palm)
+  // 3. FIST vs THUMBS UP (All 4 main fingers curled)
   if (extendedCount === 0) {
+    // In camera coordinates, y=0 is top. Thumb pointing up has thumbTip.y significantly above wrist.y and MCP
+    const isThumbPointingUp =
+      thumbTip.y < wrist.y - handScale * 0.35 && thumbTip.y < thumbMcp.y;
+
+    if (thumbExt && isThumbPointingUp) {
+      return {
+        gesture: "thumbs_up",
+        confidence: 0.95,
+        handedness,
+      };
+    }
+
     return {
       gesture: "fist",
       confidence: 0.95,
@@ -218,7 +248,53 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
     };
   }
 
-  // 2. POINTING (Index finger extended only)
+  // 4. SHAKA / CALL ME (Thumb and Pinky extended, middle 3 curled)
+  const shakaSpread =
+    Math.hypot(thumbTip.x - pinkyTip.x, thumbTip.y - pinkyTip.y) / handScale;
+  if (
+    thumbExt &&
+    pinkyExt &&
+    !indexExt &&
+    !middleExt &&
+    !ringExt &&
+    shakaSpread > 0.7
+  ) {
+    return {
+      gesture: "shaka",
+      confidence: 0.95,
+      shakaSpread,
+      handedness,
+    };
+  }
+
+  // 5. ROCK / HORNS (Index & Pinky extended, Middle & Ring curled)
+  const rockSpread =
+    Math.hypot(indexTip.x - pinkyTip.x, indexTip.y - pinkyTip.y) / handScale;
+  if (indexExt && pinkyExt && !middleExt && !ringExt && rockSpread > 0.42) {
+    return {
+      gesture: "rock",
+      confidence: 0.94,
+      rockSpread,
+      handedness,
+    };
+  }
+
+  // 6. VICTORY / PEACE (Index & Middle extended, Ring & Pinky curled)
+  if (indexExt && middleExt && !ringExt && !pinkyExt) {
+    const tipSpread =
+      Math.hypot(indexTip.x - middleTip.x, indexTip.y - middleTip.y) /
+      handScale;
+    if (tipSpread > 0.18) {
+      return {
+        gesture: "victory",
+        confidence: 0.94,
+        tipSpread,
+        handedness,
+      };
+    }
+  }
+
+  // 7. POINTING (Index finger extended only)
   if (indexExt && !middleExt && !ringExt && !pinkyExt) {
     return {
       gesture: "pointing",
@@ -229,31 +305,7 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
     };
   }
 
-  // 3. VICTORY / PEACE (Index & Middle extended, Ring & Pinky curled)
-  if (indexExt && middleExt && !ringExt && !pinkyExt) {
-    const tipSpread =
-      Math.hypot(indexTip.x - middleTip.x, indexTip.y - middleTip.y) /
-      handScale;
-    if (tipSpread > 0.22) {
-      return {
-        gesture: "victory",
-        confidence: 0.94,
-        tipSpread,
-        handedness,
-      };
-    }
-  }
-
-  // 4. FIST (All 4 fingers curled)
-  if (extendedCount === 0) {
-    return {
-      gesture: "fist",
-      confidence: 0.95,
-      handedness,
-    };
-  }
-
-  // 5. OPEN PALM (At least 3-4 fingers extended)
+  // 8. OPEN PALM (At least 3 fingers extended)
   if (extendedCount >= 3) {
     return {
       gesture: "palm",
@@ -270,9 +322,9 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
   return { gesture: "none", confidence: 0.1, handedness };
 }
 
-// 5-Frame Majority Vote Filter with Hysteresis
+// Majority Vote Filter with Blink Absorption
 export class GestureStabilizer {
-  constructor(windowSize = 5) {
+  constructor(windowSize = 4) {
     this.windowSize = windowSize;
     this.history = [];
     this.currentStableGesture = "none";
@@ -289,15 +341,24 @@ export class GestureStabilizer {
       counts[g] = (counts[g] || 0) + 1;
     }
 
-    // Require majority (e.g. 3 out of 5 frames) to change stable state
+    // Require majority (e.g. 2 out of 4) to establish a stable gesture
     let topGesture = this.currentStableGesture;
     let topCount = counts[topGesture] || 0;
 
     for (const [g, count] of Object.entries(counts)) {
-      if (count > topCount && count >= Math.ceil(this.windowSize / 2)) {
+      if (
+        g !== "none" &&
+        count > topCount &&
+        count >= Math.ceil(this.windowSize / 2)
+      ) {
         topGesture = g;
         topCount = count;
       }
+    }
+
+    // Only switch to 'none' if all recent frames are 'none' (absorbs blinks)
+    if (counts["none"] === this.history.length) {
+      topGesture = "none";
     }
 
     this.currentStableGesture = topGesture;

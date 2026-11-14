@@ -17,11 +17,41 @@ export function initRaycaster(
   // Hover state
   let hoveredObject = null;
 
+  function isModalOpen() {
+    const infoPanel = document.getElementById("info-panel");
+    if (infoPanel && !infoPanel.classList.contains("hidden")) return true;
+    const catalogModal = document.getElementById("catalog-modal");
+    if (catalogModal && !catalogModal.classList.contains("hidden")) return true;
+    const guideModal = document.getElementById("guide-modal");
+    if (guideModal && !guideModal.classList.contains("hidden")) return true;
+    return false;
+  }
+
+  function isUiInteraction(e) {
+    if (isModalOpen()) return true;
+    if (!e || !e.target) return false;
+    const canvasDom = controls?.domElement;
+    if (canvasDom && e.target !== canvasDom && !canvasDom.contains(e.target)) {
+      return true;
+    }
+    return false;
+  }
+
   function onPointerDown(e) {
+    if (isUiInteraction(e)) return;
     pointerDownPos = { x: e.clientX, y: e.clientY, time: Date.now() };
   }
 
   function onPointerMove(e) {
+    if (isUiInteraction(e)) {
+      if (hoveredObject) {
+        hoveredObject = null;
+        document.body.style.cursor = "default";
+        if (typeof onHoverObject === "function") onHoverObject(null, e);
+      }
+      return;
+    }
+
     mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
@@ -46,6 +76,7 @@ export function initRaycaster(
   }
 
   function onPointerUp(e) {
+    if (isUiInteraction(e)) return;
     const dx = e.clientX - pointerDownPos.x;
     const dy = e.clientY - pointerDownPos.y;
     const dt = Date.now() - pointerDownPos.time;

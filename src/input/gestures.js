@@ -4,7 +4,13 @@ import {
   OneEuroFilter,
 } from "./gestureClassifier.js";
 import { getTranslations } from "../i18n/i18n.js";
-import { playUiOpen, playUiClose } from "../audio/soundscape.js";
+import {
+  playUiOpen,
+  playUiClose,
+  playUiClick,
+  playUiSuccess,
+  playUiHover,
+} from "../audio/soundscape.js";
 
 let isGestureActive = false;
 let gestureStream = null;
@@ -19,15 +25,20 @@ let callbacks = {
   onFreezeToggle: null,
   onTourToggle: null,
   onSwipe: null,
+  onVerticalSwipe: null,
   onOverview: null,
+  onSpeedBoostToggle: null,
+  onCatalogToggle: null,
+  onContactToggle: null,
+  onScaleToggle: null,
   getReticleTarget: null,
 };
 
 const stabilizer = new GestureStabilizer(5);
-const palmFilterX = new OneEuroFilter(30, 1.0, 0.01);
-const palmFilterY = new OneEuroFilter(30, 1.0, 0.01);
-const reticleFilterX = new OneEuroFilter(30, 1.2, 0.015);
-const reticleFilterY = new OneEuroFilter(30, 1.2, 0.015);
+const palmFilterX = new OneEuroFilter(30, 1.2, 0.02);
+const palmFilterY = new OneEuroFilter(30, 1.2, 0.02);
+const reticleFilterX = new OneEuroFilter(30, 1.5, 0.03);
+const reticleFilterY = new OneEuroFilter(30, 1.5, 0.03);
 
 let prevPalmPos = null;
 let prevPinchY = null;
@@ -39,9 +50,29 @@ let lastPinchTriggerTime = 0;
 
 let fistHoldStart = 0;
 let fistTriggered = false;
+let fistLastSeen = 0;
 
 let victoryHoldStart = 0;
 let victoryTriggered = false;
+let victoryLastSeen = 0;
+
+let thumbsUpHoldStart = 0;
+let thumbsUpTriggered = false;
+let thumbsUpLastSeen = 0;
+
+let okHoldStart = 0;
+let okTriggered = false;
+let okLastSeen = 0;
+
+let shakaHoldStart = 0;
+let shakaTriggered = false;
+let shakaLastSeen = 0;
+
+let rockHoldStart = 0;
+let rockTriggered = false;
+let rockLastSeen = 0;
+
+const HOLD_GRACE_MS = 250;
 
 let palmStillStart = 0;
 let lastSwipeTime = 0;
@@ -102,11 +133,34 @@ function drawGestureCanvas(landmarks, gestureName) {
   if (!landmarks || landmarks.length === 0) return;
 
   for (const lm of landmarks) {
+    // Dynamic color coding based on active gesture
+    let strokeColor = "rgba(56, 189, 248, 0.5)";
+    let tipColor = "#ffffff";
+    if (gestureName === "pinch") {
+      strokeColor = "rgba(52, 211, 153, 0.75)";
+      tipColor = "#34d399";
+    } else if (gestureName === "ok") {
+      strokeColor = "rgba(245, 158, 11, 0.75)";
+      tipColor = "#fbbf24";
+    } else if (gestureName === "thumbs_up") {
+      strokeColor = "rgba(6, 182, 212, 0.85)";
+      tipColor = "#22d3ee";
+    } else if (gestureName === "shaka") {
+      strokeColor = "rgba(236, 72, 153, 0.85)";
+      tipColor = "#f472b6";
+    } else if (gestureName === "rock") {
+      strokeColor = "rgba(249, 115, 22, 0.85)";
+      tipColor = "#fb923c";
+    } else if (gestureName === "fist") {
+      strokeColor = "rgba(244, 63, 94, 0.8)";
+      tipColor = "#fb7185";
+    } else if (gestureName === "victory") {
+      strokeColor = "rgba(96, 165, 250, 0.85)";
+      tipColor = "#60a5fa";
+    }
+
     // Draw connections
-    ctx.strokeStyle =
-      gestureName === "pinch"
-        ? "rgba(52, 211, 153, 0.65)"
-        : "rgba(56, 189, 248, 0.5)";
+    ctx.strokeStyle = strokeColor;
     ctx.lineWidth = 1.5;
     for (const [i, j] of HAND_CONNECTIONS) {
       if (lm[i] && lm[j]) {
@@ -127,11 +181,7 @@ function drawGestureCanvas(landmarks, gestureName) {
       const y = lm[i].y * h;
       const isTip = i === 4 || i === 8 || i === 12 || i === 16 || i === 20;
 
-      ctx.fillStyle = isTip
-        ? gestureName === "pinch"
-          ? "#34d399"
-          : "#ffffff"
-        : "#38bdf8";
+      ctx.fillStyle = isTip ? tipColor : "#38bdf8";
       ctx.beginPath();
       ctx.arc(x, y, isTip ? 3.0 : 2.0, 0, Math.PI * 2);
       ctx.fill();
@@ -189,6 +239,14 @@ function processLandmarks(
     fistTriggered = false;
     victoryHoldStart = 0;
     victoryTriggered = false;
+    thumbsUpHoldStart = 0;
+    thumbsUpTriggered = false;
+    okHoldStart = 0;
+    okTriggered = false;
+    shakaHoldStart = 0;
+    shakaTriggered = false;
+    rockHoldStart = 0;
+    rockTriggered = false;
     palmStillStart = 0;
     return;
   }
@@ -247,12 +305,14 @@ function processLandmarks(
       const dy = smoothY - prevPalmPos.y;
       const dt = Math.max(0.001, (timestamp - prevPalmPos.t) / 1000);
       const vx = dx / dt;
+      const vy = dy / dt;
 
-      // Fast Swipe detection (Horizontal velocity check)
+      // Fast Swipe detection (Horizontal & Vertical velocity checks)
       if (
-        Math.abs(vx) > 1.2 &&
-        Math.abs(dx) > 0.1 &&
-        Date.now() - lastSwipeTime > 750
+        Math.abs(vx) > 0.85 &&
+        Math.abs(dx) > 0.04 &&
+        Math.abs(vx) > Math.abs(vy) * 1.2 &&
+        Date.now() - lastSwipeTime > 600
       ) {
         lastSwipeTime = Date.now();
         // Camera is mirrored: moving right in front of webcam produces negative dx
@@ -263,13 +323,37 @@ function processLandmarks(
           if (callbacks.onSwipe) callbacks.onSwipe("left");
           updateHudUI("swipeLeft", trans.swipeLeft, "👈");
         }
+      } else if (
+        Math.abs(vy) > 0.85 &&
+        Math.abs(dy) > 0.04 &&
+        Math.abs(vy) > Math.abs(vx) * 1.2 &&
+        Date.now() - lastSwipeTime > 600
+      ) {
+        lastSwipeTime = Date.now();
+        if (vy < 0) {
+          // moving up in camera
+          if (callbacks.onVerticalSwipe) callbacks.onVerticalSwipe("up");
+          updateHudUI(
+            "swipeUp",
+            trans.swipeUp || "Yuqoriga Siltash • Yaqinlashish",
+            "🔼",
+          );
+        } else {
+          // moving down in camera
+          if (callbacks.onVerticalSwipe) callbacks.onVerticalSwipe("down");
+          updateHudUI(
+            "swipeDown",
+            trans.swipeDown || "Pastga Siltash • Umumiy ko'rinish",
+            "🔽",
+          );
+        }
       } else {
         // Still palm detection for Solar Overview reset
         const moveDist = Math.hypot(dx, dy);
-        if (moveDist < 0.005) {
+        if (moveDist < 0.004) {
           if (!palmStillStart) {
             palmStillStart = timestamp;
-          } else if (timestamp - palmStillStart >= 1500) {
+          } else if (timestamp - palmStillStart >= 1200) {
             if (callbacks.onOverview) callbacks.onOverview();
             updateHudUI("overview", trans.overview, "🌌");
             palmStillStart = 0;
@@ -278,9 +362,9 @@ function processLandmarks(
           }
         } else {
           palmStillStart = 0;
-          // Regular Orbit with deadzone
-          if (moveDist > 0.003 && callbacks.onOrbit) {
-            callbacks.onOrbit(dx * 4.5, dy * 4.5);
+          // Regular Orbit with responsive deadzone
+          if (moveDist > 0.002 && callbacks.onOrbit) {
+            callbacks.onOrbit(dx * 4.8, dy * 4.8);
           }
           updateHudUI("palm", trans.palm, "🖐");
         }
@@ -324,9 +408,9 @@ function processLandmarks(
       if (reticleLabel) reticleLabel.innerText = target.userData.title;
       if (reticleEl) reticleEl.classList.add("reticle-locked");
 
-      // Dwell selection (0.9s hover)
+      // Dwell selection (0.55s responsive hover)
       if (dwellTarget === target) {
-        if (timestamp - dwellStartTime >= 900) {
+        if (timestamp - dwellStartTime >= 550) {
           if (callbacks.onSelect) callbacks.onSelect(target);
           updateHudUI(
             "selected",
@@ -341,6 +425,7 @@ function processLandmarks(
       } else {
         dwellTarget = target;
         dwellStartTime = timestamp;
+        playUiHover();
         updateHudUI("pointing", target.userData.title, "👆");
       }
     } else {
@@ -362,7 +447,7 @@ function processLandmarks(
     if (prevPinchY === null) {
       prevPinchY = pinchY;
       // Quick pinch selection
-      if (Date.now() - lastPinchTriggerTime > 550) {
+      if (Date.now() - lastPinchTriggerTime > 400) {
         lastPinchTriggerTime = Date.now();
         let target = currentHoveredTarget;
         if (!target && callbacks.getReticleTarget) {
@@ -400,9 +485,10 @@ function processLandmarks(
     dwellTarget = null;
     dwellStartTime = 0;
 
+    fistLastSeen = timestamp;
     if (!fistHoldStart) {
       fistHoldStart = timestamp;
-    } else if (timestamp - fistHoldStart >= 500 && !fistTriggered) {
+    } else if (timestamp - fistHoldStart >= 380 && !fistTriggered) {
       if (callbacks.onFreezeToggle) callbacks.onFreezeToggle();
       fistTriggered = true;
       updateHudUI("fist", trans.fist, "✊");
@@ -417,25 +503,132 @@ function processLandmarks(
     dwellTarget = null;
     dwellStartTime = 0;
 
+    victoryLastSeen = timestamp;
     if (!victoryHoldStart) {
       victoryHoldStart = timestamp;
-    } else if (timestamp - victoryHoldStart >= 700 && !victoryTriggered) {
+    } else if (timestamp - victoryHoldStart >= 450 && !victoryTriggered) {
       if (callbacks.onTourToggle) callbacks.onTourToggle();
       victoryTriggered = true;
       updateHudUI("victory", trans.victory, "✌️");
     } else {
       updateHudUI("victory", trans.victory, "✌️");
     }
+  } else if (stableGesture === "ok") {
+    if (reticleEl) reticleEl.classList.add("hidden");
+    prevPalmPos = null;
+    prevPinchY = null;
+    palmStillStart = 0;
+    dwellTarget = null;
+    dwellStartTime = 0;
+
+    okLastSeen = timestamp;
+    if (!okHoldStart) {
+      okHoldStart = timestamp;
+    } else if (timestamp - okHoldStart >= 380 && !okTriggered) {
+      if (callbacks.onCatalogToggle) callbacks.onCatalogToggle();
+      okTriggered = true;
+      playUiOpen();
+      updateHudUI("ok", trans.ok || "OK • Loyihalar Katalogi", "👌");
+    } else {
+      updateHudUI("ok", trans.ok || "OK • Loyihalar Katalogi", "👌");
+    }
+  } else if (stableGesture === "thumbs_up") {
+    if (reticleEl) reticleEl.classList.add("hidden");
+    prevPalmPos = null;
+    prevPinchY = null;
+    palmStillStart = 0;
+    dwellTarget = null;
+    dwellStartTime = 0;
+
+    thumbsUpLastSeen = timestamp;
+    if (!thumbsUpHoldStart) {
+      thumbsUpHoldStart = timestamp;
+    } else if (timestamp - thumbsUpHoldStart >= 380 && !thumbsUpTriggered) {
+      if (callbacks.onSpeedBoostToggle) callbacks.onSpeedBoostToggle();
+      thumbsUpTriggered = true;
+      playUiClick();
+      updateHudUI(
+        "thumbs_up",
+        trans.thumbsUp || "👍 • Giper-Tezlik (3x/1x)",
+        "👍",
+      );
+    } else {
+      updateHudUI(
+        "thumbs_up",
+        trans.thumbsUp || "👍 • Giper-Tezlik (3x/1x)",
+        "👍",
+      );
+    }
+  } else if (stableGesture === "shaka") {
+    if (reticleEl) reticleEl.classList.add("hidden");
+    prevPalmPos = null;
+    prevPinchY = null;
+    palmStillStart = 0;
+    dwellTarget = null;
+    dwellStartTime = 0;
+
+    shakaLastSeen = timestamp;
+    if (!shakaHoldStart) {
+      shakaHoldStart = timestamp;
+    } else if (timestamp - shakaHoldStart >= 400 && !shakaTriggered) {
+      if (callbacks.onContactToggle) callbacks.onContactToggle();
+      shakaTriggered = true;
+      playUiOpen();
+      updateHudUI("shaka", trans.shaka || "🤙 • Aloqa Terminali", "🤙");
+    } else {
+      updateHudUI("shaka", trans.shaka || "🤙 • Aloqa Terminali", "🤙");
+    }
+  } else if (stableGesture === "rock") {
+    if (reticleEl) reticleEl.classList.add("hidden");
+    prevPalmPos = null;
+    prevPinchY = null;
+    palmStillStart = 0;
+    dwellTarget = null;
+    dwellStartTime = 0;
+
+    rockLastSeen = timestamp;
+    if (!rockHoldStart) {
+      rockHoldStart = timestamp;
+    } else if (timestamp - rockHoldStart >= 400 && !rockTriggered) {
+      if (callbacks.onScaleToggle) callbacks.onScaleToggle();
+      rockTriggered = true;
+      playUiSuccess();
+      updateHudUI("rock", trans.rock || "🤘 • Astronomik Masshtab", "🤘");
+    } else {
+      updateHudUI("rock", trans.rock || "🤘 • Astronomik Masshtab", "🤘");
+    }
   }
 
-  // Release flags when gesture changes
-  if (stableGesture !== "fist") {
+  // Release hold and triggered flags when gesture changes, respecting HOLD_GRACE_MS
+  if (stableGesture !== "fist" && timestamp - fistLastSeen > HOLD_GRACE_MS) {
     fistHoldStart = 0;
     fistTriggered = false;
   }
-  if (stableGesture !== "victory") {
+  if (
+    stableGesture !== "victory" &&
+    timestamp - victoryLastSeen > HOLD_GRACE_MS
+  ) {
     victoryHoldStart = 0;
     victoryTriggered = false;
+  }
+  if (stableGesture !== "ok" && timestamp - okLastSeen > HOLD_GRACE_MS) {
+    okHoldStart = 0;
+    okTriggered = false;
+  }
+  if (
+    stableGesture !== "thumbs_up" &&
+    timestamp - thumbsUpLastSeen > HOLD_GRACE_MS
+  ) {
+    thumbsUpHoldStart = 0;
+    thumbsUpTriggered = false;
+  }
+  if (stableGesture !== "shaka" && timestamp - shakaLastSeen > HOLD_GRACE_MS) {
+    shakaHoldStart = 0;
+    shakaTriggered = false;
+  }
+  if (stableGesture !== "rock" && timestamp - rockLastSeen > HOLD_GRACE_MS) {
+    rockHoldStart = 0;
+    rockTriggered = false;
   }
 }
 
@@ -627,6 +820,25 @@ export function stopGestureControl() {
   dwellStartTime = 0;
   currentHoveredTarget = null;
   currentGestureState = "none";
+
+  fistHoldStart = 0;
+  fistTriggered = false;
+  fistLastSeen = 0;
+  victoryHoldStart = 0;
+  victoryTriggered = false;
+  victoryLastSeen = 0;
+  thumbsUpHoldStart = 0;
+  thumbsUpTriggered = false;
+  thumbsUpLastSeen = 0;
+  okHoldStart = 0;
+  okTriggered = false;
+  okLastSeen = 0;
+  shakaHoldStart = 0;
+  shakaTriggered = false;
+  shakaLastSeen = 0;
+  rockHoldStart = 0;
+  rockTriggered = false;
+  rockLastSeen = 0;
 
   stabilizer.reset();
   palmFilterX.reset();

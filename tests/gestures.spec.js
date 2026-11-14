@@ -276,5 +276,134 @@ test.describe('AI Vision Hand Gesture Control Acceptance Tests', () => {
     await expect(modal).not.toHaveClass(/hidden/);
     await expect(page.locator('#info-title')).toContainText('Azimjon Kamiljanov');
   });
+
+  test('6. Injected Thumbs-up gesture toggles speed boost and updates HUD indicator', async ({ page }) => {
+    await page.goto('http://127.0.0.1:8080/');
+    await page.waitForSelector('#canvas-container canvas', { timeout: 10000 });
+
+    await page.evaluate(() => {
+      window.sessionStorage.setItem('gesture_consent_granted', 'true');
+      const hud = document.getElementById('gesture-hud');
+      if (hud) {
+        hud.classList.remove('hidden');
+        hud.style.display = 'block';
+      }
+    });
+
+    const thumbsUpHand = generateHand({
+      thumb: 'extended',
+      index: 'curled',
+      middle: 'curled',
+      ring: 'curled',
+      pinky: 'curled'
+    });
+
+    for (let i = 0; i < 8; i++) {
+      await page.evaluate((lm) => {
+        window.__gestureTest.inject(lm, 'Right');
+      }, thumbsUpHand);
+      await page.waitForTimeout(80);
+    }
+
+    const stateIcon = page.locator('#gesture-indicator-icon');
+    await expect(stateIcon).toHaveText('👍');
+  });
+
+  test('7. Injected OK sign gesture toggles the projects catalog modal', async ({ page }) => {
+    await page.goto('http://127.0.0.1:8080/');
+    await page.waitForSelector('#canvas-container canvas', { timeout: 10000 });
+
+    await page.evaluate(() => {
+      window.sessionStorage.setItem('gesture_consent_granted', 'true');
+      const hud = document.getElementById('gesture-hud');
+      if (hud) {
+        hud.classList.remove('hidden');
+        hud.style.display = 'block';
+      }
+    });
+
+    const okHand = generateHand({
+      thumb: 'extended',
+      index: 'extended',
+      middle: 'extended',
+      ring: 'extended',
+      pinky: 'extended',
+      pinch: true
+    });
+
+    for (let i = 0; i < 9; i++) {
+      await page.evaluate((lm) => {
+        window.__gestureTest.inject(lm, 'Right');
+      }, okHand);
+      await page.waitForTimeout(100);
+    }
+
+    const catalogModal = page.locator('#catalog-modal');
+    await expect(catalogModal).toBeVisible();
+  });
+
+  test('8. Injected Shaka gesture opens the moon contact terminal', async ({ page }) => {
+    await page.goto('http://127.0.0.1:8080/');
+    await page.waitForSelector('#canvas-container canvas', { timeout: 10000 });
+
+    await page.evaluate(() => {
+      window.sessionStorage.setItem('gesture_consent_granted', 'true');
+      const hud = document.getElementById('gesture-hud');
+      if (hud) {
+        hud.classList.remove('hidden');
+        hud.style.display = 'block';
+      }
+    });
+
+    const shakaHand = generateHand({
+      thumb: 'extended',
+      index: 'curled',
+      middle: 'curled',
+      ring: 'curled',
+      pinky: 'extended'
+    });
+
+    for (let i = 0; i < 9; i++) {
+      await page.evaluate((lm) => {
+        window.__gestureTest.inject(lm, 'Right');
+      }, shakaHand);
+      await page.waitForTimeout(100);
+    }
+
+    const moonTerminal = page.locator('#moon-terminal-container');
+    await expect(moonTerminal).toBeVisible();
+  });
+
+  test('9. Injected Rock-on gesture toggles true scale', async ({ page }) => {
+    await page.goto('http://127.0.0.1:8080/');
+    await page.waitForSelector('#canvas-container canvas', { timeout: 10000 });
+
+    await page.evaluate(() => {
+      window.sessionStorage.setItem('gesture_consent_granted', 'true');
+      const hud = document.getElementById('gesture-hud');
+      if (hud) {
+        hud.classList.remove('hidden');
+        hud.style.display = 'block';
+      }
+    });
+
+    const rockHand = generateHand({
+      thumb: 'curled',
+      index: 'extended',
+      middle: 'curled',
+      ring: 'curled',
+      pinky: 'extended'
+    });
+
+    for (let i = 0; i < 8; i++) {
+      await page.evaluate((lm) => {
+        window.__gestureTest.inject(lm, 'Right');
+      }, rockHand);
+      await page.waitForTimeout(90);
+    }
+
+    const stateIcon = page.locator('#gesture-indicator-icon');
+    await expect(stateIcon).toHaveText('🤘');
+  });
 });
 

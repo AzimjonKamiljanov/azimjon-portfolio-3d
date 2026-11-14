@@ -173,6 +173,59 @@ describe('AI Hand Gesture Classifier & Signal Stabilization (Part C)', () => {
     expect(result.gesture).toBe('victory');
   });
 
+  it('correctly classifies thumbs_up gesture (thumb extended, other 4 fingers curled)', () => {
+    const hand = generateHand({
+      thumb: 'extended',
+      index: 'curled',
+      middle: 'curled',
+      ring: 'curled',
+      pinky: 'curled'
+    });
+    const result = classifyHandGesture(hand, 'Right');
+    expect(result.gesture).toBe('thumbs_up');
+    expect(result.confidence).toBeGreaterThan(0.9);
+  });
+
+  it('correctly classifies ok sign (thumb + index touching while middle & ring extended)', () => {
+    const hand = generateHand({
+      thumb: 'extended',
+      index: 'extended',
+      middle: 'extended',
+      ring: 'extended',
+      pinky: 'extended',
+      pinch: true
+    });
+    const result = classifyHandGesture(hand, 'Right');
+    expect(result.gesture).toBe('ok');
+    expect(result.confidence).toBeGreaterThan(0.9);
+  });
+
+  it('correctly classifies shaka / call-me gesture (thumb & pinky extended, middle 3 curled)', () => {
+    const hand = generateHand({
+      thumb: 'extended',
+      index: 'curled',
+      middle: 'curled',
+      ring: 'curled',
+      pinky: 'extended'
+    });
+    const result = classifyHandGesture(hand, 'Right');
+    expect(result.gesture).toBe('shaka');
+    expect(result.confidence).toBeGreaterThan(0.9);
+  });
+
+  it('correctly classifies rock on / horns gesture (index & pinky extended, middle & ring curled)', () => {
+    const hand = generateHand({
+      thumb: 'curled',
+      index: 'extended',
+      middle: 'curled',
+      ring: 'curled',
+      pinky: 'extended'
+    });
+    const result = classifyHandGesture(hand, 'Right');
+    expect(result.gesture).toBe('rock');
+    expect(result.confidence).toBeGreaterThan(0.9);
+  });
+
   it('maintains classification accuracy under hand rotation (rotation invariance)', () => {
     // Test pointing rotated by 45 degrees
     const handRot45 = generateHand({

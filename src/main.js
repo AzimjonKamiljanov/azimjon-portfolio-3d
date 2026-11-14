@@ -304,29 +304,108 @@ initGestureControl({
     if (tour.isActive()) tour.exitTour();
     else tour.startTour();
   },
-  onSwipe: (dir) => {
-    const planetIds = [
-      "Mercury",
-      "Venus",
-      "Earth",
-      "Mars",
-      "Jupiter",
-      "Saturn",
-      "Uranus",
-      "Neptune",
-      "Pluto",
-    ];
-    const currentId = raycasterController.getCurrentTarget()?.userData?.id;
-    let idx = planetIds.indexOf(currentId);
-    if (idx === -1) idx = 0;
-    if (dir === "right") {
-      idx = (idx + 1) % planetIds.length;
+  onSwipe: (dir) => navigatePlanetSwipe(dir),
+  onVerticalSwipe: (dir) => {
+    if (dir === "up") {
+      const zoomDir = camera.getWorldDirection(new THREE.Vector3());
+      camera.position.addScaledVector(zoomDir, 35);
+      controls.update();
     } else {
-      idx = (idx - 1 + planetIds.length) % planetIds.length;
+      if (tour.isActive()) tour.exitTour();
+      modals.closeInfoModal();
+      catalog.closeCatalog();
+      resetToOverview(camera, controls, () => {
+        raycasterController.clearTarget();
+        updateNavActiveState(null);
+      });
     }
-    focusTargetById(planetIds[idx]);
+  },
+  onSpeedBoostToggle: () => {
+    if (currentOrbitSpeed > 1.8) {
+      currentOrbitSpeed = 1.0;
+    } else {
+      currentOrbitSpeed = 3.5;
+    }
+  },
+  onCatalogToggle: () => {
+    if (catalog.isOpen()) {
+      catalog.closeCatalog();
+    } else {
+      catalog.openCatalog();
+    }
+  },
+  onContactToggle: () => {
+    if (moonMesh) {
+      raycasterController.focusOnObject(moonMesh);
+      modals.openInfoModal(moonMesh.userData);
+      updateNavActiveStateForObject(moonMesh);
+    }
+  },
+  onScaleToggle: () => {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.__toggleTrueScale === "function"
+    ) {
+      window.__toggleTrueScale();
+    }
   },
 });
+
+function navigatePlanetSwipe(dir) {
+  const planetIds = [
+    "Mercury",
+    "Venus",
+    "Earth",
+    "Mars",
+    "Jupiter",
+    "Saturn",
+    "Uranus",
+    "Neptune",
+    "Pluto",
+  ];
+  const currentId = raycasterController.getCurrentTarget()?.userData?.id;
+  let idx = planetIds.indexOf(currentId);
+  if (idx === -1) idx = 0;
+  if (dir === "right") {
+    idx = (idx + 1) % planetIds.length;
+  } else {
+    idx = (idx - 1 + planetIds.length) % planetIds.length;
+  }
+  focusTargetById(planetIds[idx]);
+}
+
+// Touch swipe fallback on canvas for touchscreen devices without webcam
+let touchStartX = 0;
+let touchStartY = 0;
+let touchStartTime = 0;
+const canvasContainer = document.getElementById("canvas-container");
+if (canvasContainer) {
+  canvasContainer.addEventListener(
+    "touchstart",
+    (e) => {
+      if (e.touches.length === 1) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+      }
+    },
+    { passive: true },
+  );
+  canvasContainer.addEventListener(
+    "touchend",
+    (e) => {
+      if (e.changedTouches.length === 1) {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        const dt = Date.now() - touchStartTime;
+        if (Math.abs(dx) > 60 && Math.abs(dy) < 40 && dt < 450) {
+          navigatePlanetSwipe(dx > 0 ? "right" : "left");
+        }
+      }
+    },
+    { passive: true },
+  );
+}
 
 // 8. Navigation Active State
 function updateNavActiveState(activeBtn) {
@@ -463,7 +542,15 @@ function onWindowResize() {
     bloomPass.setSize(bloomRes.x, bloomRes.y);
   }
 }
-window.addEventListener("resize", onWindowResize);
+let resizeRafId = null;
+function handleThrottledResize() {
+  if (resizeRafId) return;
+  resizeRafId = requestAnimationFrame(() => {
+    resizeRafId = null;
+    onWindowResize();
+  });
+}
+window.addEventListener("resize", handleThrottledResize);
 
 // WebGL context loss handling
 renderer.domElement.addEventListener(
@@ -507,7 +594,7 @@ function animate() {
 
   if (!isPageVisible) return;
 
-  const delta = clock.getDelta();
+  const delta = Math.min(clock.getDelta(), 0.1);
   const elapsedTime = clock.getElapsedTime();
 
   controls.update();
@@ -533,6 +620,34 @@ animate();
 // Initial progress
 updatePreloaderProgress(15);
 
+function disposeSolarEngine() {
+  if (scene) {
+    scene.traverse((obj) => {
+      if (obj.geometry) {
+        obj.geometry.dispose();
+      }
+      if (obj.material) {
+        if (Array.isArray(obj.material)) {
+          obj.material.forEach((m) => {
+            if (m.map) m.map.dispose();
+            m.dispose();
+          });
+        } else {
+          if (obj.material.map) obj.material.map.dispose();
+          obj.material.dispose();
+        }
+      }
+    });
+  }
+  if (composer && typeof composer.dispose === "function") {
+    composer.dispose();
+  }
+  if (renderer) {
+    renderer.dispose();
+  }
+  window.removeEventListener("resize", handleThrottledResize);
+}
+
 // Global debug handles
 window.__solarEngine = {
   camera,
@@ -544,4 +659,5 @@ window.__solarEngine = {
   resetToOverview: () => resetToOverview(camera, controls),
   catalog,
   modals,
+  dispose: disposeSolarEngine,
 };

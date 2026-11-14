@@ -57,10 +57,12 @@ function isAllowedOrigin(origin, host, isDev) {
   if (isDev && DEV_ALLOWED_ORIGINS.has(origin)) return true;
   try {
     const parsed = new URL(origin);
+    if (!isDev && parsed.protocol !== "https:") return false;
     if (host && parsed.host === host) return true;
     if (
-      parsed.hostname === "azimjon.dev" ||
-      parsed.hostname === "www.azimjon.dev"
+      (parsed.hostname === "azimjon.dev" ||
+        parsed.hostname === "www.azimjon.dev") &&
+      (parsed.port === "" || parsed.port === "443")
     )
       return true;
   } catch (_) {}
@@ -626,9 +628,19 @@ export default {
       // Fine-grained Cache-Control
       if (
         path.startsWith("/assets/") ||
+        path.startsWith("/mediapipe/") ||
+        path.endsWith(".task") ||
         path.match(/\.[a-f0-9]{8,}\.(js|css|webp|woff2|png|jpg)$/)
       ) {
         newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
+      } else if (
+        path === "/manifest.webmanifest" ||
+        path === "/site.webmanifest"
+      ) {
+        newHeaders.set(
+          "Cache-Control",
+          "public, max-age=86400, stale-while-revalidate=604800",
+        );
       } else if (path === "/" || path.endsWith(".html")) {
         newHeaders.set("Cache-Control", "public, max-age=0, must-revalidate");
       }

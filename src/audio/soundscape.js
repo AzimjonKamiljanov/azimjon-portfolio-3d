@@ -22,7 +22,7 @@ if (typeof window !== "undefined") {
       evtType,
       () => {
         if (audioCtx && audioCtx.state === "suspended" && !isAudioMuted) {
-          audioCtx.resume();
+          audioCtx.resume().catch(() => {});
         }
       },
       { passive: true },
@@ -30,10 +30,33 @@ if (typeof window !== "undefined") {
   });
 }
 
+// Suspend AudioContext & pause ambient playback on tab hide to conserve CPU/battery
+if (typeof document !== "undefined") {
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      if (audioCtx && audioCtx.state === "running") {
+        audioCtx.suspend().catch(() => {});
+      }
+      if (ambientMusicAudio && !ambientMusicAudio.paused) {
+        ambientMusicAudio.pause();
+      }
+    } else {
+      if (!isAudioMuted) {
+        if (audioCtx && audioCtx.state === "suspended") {
+          audioCtx.resume().catch(() => {});
+        }
+        if (ambientMusicAudio) {
+          ambientMusicAudio.play().catch(() => {});
+        }
+      }
+    }
+  });
+}
+
 export function playUiClick() {
   if (isAudioMuted || !audioCtx) return;
   try {
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    if (audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = "sine";
@@ -54,7 +77,7 @@ export function playUiClick() {
 export function playUiHover() {
   if (isAudioMuted || !audioCtx) return;
   try {
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    if (audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = "triangle";
@@ -71,7 +94,7 @@ export function playUiHover() {
 export function playUiOpen() {
   if (isAudioMuted || !audioCtx) return;
   try {
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    if (audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
     const now = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -90,7 +113,7 @@ export function playUiOpen() {
 export function playUiClose() {
   if (isAudioMuted || !audioCtx) return;
   try {
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    if (audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
     const now = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -109,7 +132,7 @@ export function playUiClose() {
 export function playUiTransmit() {
   if (isAudioMuted || !audioCtx) return;
   try {
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    if (audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = "sine";
@@ -130,7 +153,7 @@ export function playUiTransmit() {
 export function playUiSuccess() {
   if (isAudioMuted || !audioCtx) return;
   try {
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    if (audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
     const now = audioCtx.currentTime;
     const osc1 = audioCtx.createOscillator();
     const osc2 = audioCtx.createOscillator();
@@ -154,7 +177,7 @@ export function playUiSuccess() {
 export function playUiError() {
   if (isAudioMuted || !audioCtx) return;
   try {
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    if (audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
     const now = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -192,7 +215,7 @@ export function playAmbientTrack() {
 export function toggleAudioMute() {
   initAudio();
   if (audioCtx && audioCtx.state === "suspended") {
-    audioCtx.resume();
+    audioCtx.resume().catch(() => {});
   }
   isAudioMuted = !isAudioMuted;
   if (isAudioMuted) {
