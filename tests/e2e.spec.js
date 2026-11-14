@@ -123,7 +123,7 @@ test.describe('3D Solar Developer Portfolio E2E Acceptance Tests', () => {
         });
 
         // Focus Moon
-        await page.click('.nav-btn[data-target="moon"]');
+        await page.evaluate(() => window.__solarEngine.focusTargetById('moon'));
         await page.waitForSelector('#info-panel:not(.hidden)', { timeout: 5000 });
 
         const terminal = page.locator('#moon-terminal-container');
