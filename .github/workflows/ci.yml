@@ -32,11 +32,11 @@ jobs:
       - name: Static Code Analysis (ESLint)
         run: npm run lint
 
-      - name: Unit & Distribution Tests (Vitest)
-        run: npm run test
-
       - name: Production Build (Vite)
         run: npm run build
+
+      - name: Unit & Distribution Tests (Vitest)
+        run: npm run test
 
       - name: Audit Production Dependencies
         run: npm audit --omit=dev
