@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.1.0] - 2026-11-04
 
 ### Added
+
 - **Photorealistic Deep Space Realism**:
   - Replaced procedural purple nebula with physically calibrated Milky Way galaxy band and galactic dust extinction rifts (mean sRGB of empty sky patch < 8/255 at 1920x1080).
   - AmbientLight calibrated to deep-space darkness (0.008 <= 0.01) with Sun PointLight inverse-square falloff (`decay = 2.0`).
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Automated Playwright test suite (`tests/overflow.spec.js`) verifying zero horizontal scroll across 10 viewports (320px to 3840px) x 3 languages x all modal states.
 
 ### Changed
+
 - **Cloudflare Rate Limiting & CI Workflow**:
   - Corrected `wrangler.jsonc` rate limiting syntax from `"binding"` to `"name": "RATE_LIMITER"` for full compatibility with Cloudflare Workers runtime.
   - Updated `.github/workflows/ci.yml` with triggers for `feat/**` branches and pull requests.
@@ -51,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0] - 2026-11-04
 
 ### Added
+
 - **Vite 6 Modern Build Pipeline**:
   - Vanilla ES Module setup with `npm run dev`, `npm run build`, `npm run preview`, `npm test`, `npm run test:e2e`, `npm run lint`, and `npm run format:check`.
   - Production code splitting with manual chunks for `three`, `gsap`, and application modules.
@@ -87,6 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - GitHub Actions CI workflow (`.github/workflows/ci.yml`) automating linting, formatting checks, production build, unit tests, and E2E tests.
 
 ### Changed
+
 - **Asset Optimization**:
   - Converted 2048px planet and solar textures from PNG/JPG to WebP, saving ~5.0 MB (from 7.7 MB down to 2.7 MB, a 64.9% reduction).
   - Re-encoded ambient audio to 64 kbps mono MP3 with volume attenuation.
@@ -102,6 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Refactored `scripts/generate_resume_pdf.mjs` to eliminate hardcoded absolute paths (`/home/cyber/...`) and suppressed browser headers/footers (`printBackground: true`, `displayHeaderFooter: false`).
 
 ### Fixed
+
 - Fixed Telegram token and chat ID fallback exposure in `worker.js`.
 - Fixed mobile viewport accessibility by removing `user-scalable=no` and `maximum-scale=1` in `index.html`.
 - Added keyboard skip link (`.skip-link`) for WCAG accessibility compliance.
@@ -111,4 +116,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 ## [1.0.0] - 2026-10-19
+
 - Initial release of the 3D Solar System Developer Portfolio with Three.js r160, 9 planets, audio synthesizer, gesture control, and Cloudflare Worker backend.

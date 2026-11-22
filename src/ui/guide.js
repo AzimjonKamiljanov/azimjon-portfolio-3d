@@ -44,11 +44,9 @@ function trapFocus(modalElement) {
         last.focus();
         e.preventDefault();
       }
-    } else {
-      if (document.activeElement === last) {
-        first.focus();
-        e.preventDefault();
-      }
+    } else if (document.activeElement === last) {
+      first.focus();
+      e.preventDefault();
     }
   }
 
@@ -268,5 +266,9 @@ export function initGuide() {
     hideCredits,
     handleGestureRecognized,
     isDismissed: () => isDismissed,
+    isVisible: () => {
+      const el = document.getElementById("guide-modal-container");
+      return Boolean(el) && !el.classList.contains("hidden");
+    },
   };
 }

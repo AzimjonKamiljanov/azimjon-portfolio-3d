@@ -171,7 +171,7 @@ export function initScene() {
     console.warn("WebGL context lost.");
   });
   renderer.domElement.addEventListener("webglcontextrestored", () => {
-    console.log("WebGL context restored.");
+    console.warn("WebGL context restored.");
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(maxPixelRatio);

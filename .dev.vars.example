@@ -1,6 +1,15 @@
-# Cloudflare Workers local development secrets
-# Copy this file to .dev.vars for local testing with wrangler dev
+# Cloudflare Workers local development variables.
+# Copy this file to .dev.vars for local testing with `wrangler dev`.
+# .dev.vars is git-ignored; never put real values in this example file.
+
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
 TELEGRAM_CHAT_ID=your_telegram_chat_id_here
 ENVIRONMENT=dev
+
+# Cloudflare Turnstile — optional, but BOTH keys are required together.
+# The Worker treats the challenge as disabled unless it holds both, and serves
+# the public site key to the browser from GET /api/config. There is therefore
+# no build-time coupling, and the widget can never disagree with the verifier.
+# Setting only one of the two logs an error and leaves the challenge off.
+TURNSTILE_SITE_KEY=optional_turnstile_public_site_key_here
 TURNSTILE_SECRET_KEY=optional_turnstile_secret_key_here

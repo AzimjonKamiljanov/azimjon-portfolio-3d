@@ -305,12 +305,11 @@ export function initPlanets(scene, textureLoader, interactableObjects) {
         shader.uniforms.uNightTexture = { value: nightTex };
         shader.uniforms.uSunPosition = { value: new THREE.Vector3(0, 0, 0) };
 
-        shader.vertexShader =
-          `
+        shader.vertexShader = `
           varying vec3 vEarthWorldPos;
           varying vec3 vEarthWorldNormal;
           varying vec2 vEarthUv;
-        ` + shader.vertexShader;
+        ${shader.vertexShader}`;
 
         shader.vertexShader = shader.vertexShader.replace(
           `void main() {`,
@@ -321,14 +320,13 @@ export function initPlanets(scene, textureLoader, interactableObjects) {
           `,
         );
 
-        shader.fragmentShader =
-          `
+        shader.fragmentShader = `
           uniform sampler2D uNightTexture;
           uniform vec3 uSunPosition;
           varying vec3 vEarthWorldPos;
           varying vec3 vEarthWorldNormal;
           varying vec2 vEarthUv;
-        ` + shader.fragmentShader;
+        ${shader.fragmentShader}`;
 
         shader.fragmentShader = shader.fragmentShader.replace(
           `#include <dithering_fragment>`,

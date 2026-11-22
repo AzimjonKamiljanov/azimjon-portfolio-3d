@@ -91,6 +91,8 @@ export const translations = {
         ok: "OK Belgisi • Loyihalar Katalogi",
         shaka: "Shaka • Aloqa Terminali",
         rock: "Rock • Astronomik Masshtab",
+        thumbsDown: "Bosh Barmoq Pastga • Yopish / Orqaga",
+        scroll: "Ikki Barmoq • Ro'yxatni aylantirish",
         zoom: "Ikki qo'l • Masofa (Zoom)",
         overview: "Kaft turg'un • Umumiy ko'rinish",
         camDenied: "Kamera ruxsati berilmadi",
@@ -182,7 +184,7 @@ export const translations = {
           "Chuqur fazo muhitini his qilish uchun yuqori paneldagi ovozni yoqing.",
         step7Title: "AI Vision Qo'l Boshqaruvi",
         step7Desc:
-          "Veb-kamera orqali qo'l harakatlari yordamida koinotni teging va boshqaring.",
+          'Veb-kamera orqali to\'liq boshqaring: ochish, aylantirish, tanlash va yopish — sichqonchasiz. Sezgirlikni HUD ichidagi "Sozlamalar"dan moslashtiring.',
         step8Title: "Kinematik Sayoxat & Tugmalar",
         step8Desc:
           "Avto-sayoxat rejimi, 'H' ko'rsatma, 'Space' to'xtatish va 'Esc' chiqish.",
@@ -347,6 +349,8 @@ export const translations = {
         ok: "OK Sign • Projects Catalog",
         shaka: "Shaka • Contact Terminal",
         rock: "Rock On • Astronomical Scale",
+        thumbsDown: "Thumbs Down • Close / Back",
+        scroll: "Two Fingers • Scroll the list",
         zoom: "Two Hands • Zoom",
         overview: "Palm Still • Solar Overview",
         camDenied: "Camera access denied",
@@ -435,7 +439,7 @@ export const translations = {
         step6Desc: "Activate spatial ambient audio via the top telemetry bar.",
         step7Title: "AI Vision Hand Gestures",
         step7Desc:
-          "Control the universe with webcam gesture tracking processed locally.",
+          'Drive everything from your webcam — open, orbit, select, scroll and close, no mouse required. Tune sensitivity under "Settings" inside the HUD.',
         step8Title: "Autopilot Tour & Hotkeys",
         step8Desc:
           "Cinematic tour mode, 'H' for guide, 'Space' for time freeze, 'Esc' to exit.",
@@ -596,6 +600,8 @@ export const translations = {
         ok: "Знак ОК • Каталог проектов",
         shaka: "Шака • Терминал связи",
         rock: "Рок • Астрономический масштаб",
+        thumbsDown: "Палец вниз • Закрыть / Назад",
+        scroll: "Два пальца • Прокрутка списка",
         zoom: "Две руки • Зум",
         overview: "Ладонь на месте • Общий вид",
         camDenied: "Доступ к камере отклонен",
@@ -683,7 +689,7 @@ export const translations = {
           "Включите пространственный фоновый звук на верхней панели управления.",
         step7Title: "AI Vision Управление Жестами",
         step7Desc:
-          "Управляйте космосом движениями рук через камеру без отправки данных на сервер.",
+          "Полное управление с веб-камеры: открыть, вращать, выбрать, прокрутить и закрыть — без мыши. Чувствительность настраивается в «Настройках» внутри HUD.",
         step8Title: "Авто-Тур и Горячие Клавиши",
         step8Desc:
           "Кинематический тур, 'H' для справки, 'Пробел' для паузы, 'Esc' для выхода.",

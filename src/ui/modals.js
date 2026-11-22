@@ -50,11 +50,9 @@ function trapFocus(modalElement) {
         last.focus();
         e.preventDefault();
       }
-    } else {
-      if (document.activeElement === last) {
-        first.focus();
-        e.preventDefault();
-      }
+    } else if (document.activeElement === last) {
+      first.focus();
+      e.preventDefault();
     }
   }
 

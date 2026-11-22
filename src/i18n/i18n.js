@@ -20,8 +20,8 @@ export function onLanguageChange(fn) {
   return () => listeners.delete(fn);
 }
 
-export function setLanguage(lang) {
-  if (!translations.ui[lang]) lang = "uz";
+export function setLanguage(requestedLang) {
+  const lang = translations.ui[requestedLang] ? requestedLang : "uz";
   currentLang = lang;
   try {
     localStorage.setItem("portfolio_lang", lang);

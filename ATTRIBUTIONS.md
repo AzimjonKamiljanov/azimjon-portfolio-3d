@@ -8,26 +8,26 @@ This project adheres to strict open-source licensing standards and provides veri
 
 All celestial textures used in this portfolio are sourced from verified public-domain scientific archives (NASA, USGS, ESA) or open-access creative commons repositories (Solar System Scope, CC BY 4.0).
 
-| Body / Feature | File Path (Optimized WebP / Source) | Source & Science Team Credit | License |
-|---|---|---|---|
-| **Sun (Photosphere)** | `public/assets/sun_photosphere.webp`<br>`assets/sun_photosphere.jpg` | NASA / SDO (Solar Dynamics Observatory) & AIA / HMI Science Teams | Public Domain (NASA Guidelines) |
-| **Sun (Photosphere Exact)** | `public/assets/sun_photosphere_exact.webp`<br>`assets/sun_photosphere_exact.jpg` | NASA / SDO continuum filter maps | Public Domain (NASA Guidelines) |
-| **Sun (Prominences & Corona)** | `public/assets/sun_prominences_exact.webp`<br>`assets/sun_corona.png` | NASA / SDO AIA 304Å extreme ultraviolet | Public Domain (NASA Guidelines) |
-| **Sun (Plasma Flow)** | `public/assets/sun_plasma.webp`<br>`assets/sun_plasma.jpg` | NASA / SOHO / SDO composite flow | Public Domain (NASA Guidelines) |
-| **Earth (Day Albedo)** | `public/assets/earth_atmos_2048.webp`<br>`assets/earth_atmos_2048.jpg` | NASA Earth Observatory (`Blue Marble: Next Generation`) | Public Domain (NASA Guidelines) |
-| **Earth (Cloud Layer)** | `public/assets/earth_clouds_2048.webp`<br>`assets/earth_clouds_2048.png` | NASA Visible Earth cloud composite | Public Domain (NASA Guidelines) |
-| **Earth (Night Lights)** | `public/assets/earth_night_2048.webp`<br>`assets/earth_night_2048.jpg` | NASA Earth Observatory / NOAA NGDC (`Black Marble`) | Public Domain (NASA Guidelines) |
-| **Earth (Normal & Specular)** | `public/assets/earth_normal_2048.webp`<br>`assets/earth_specular_2048.webp` | NASA Blue Marble topography & bathymetry maps | Public Domain (NASA Guidelines) |
-| **Moon** | `public/assets/moon_1024.webp`<br>`assets/moon_1024.jpg` | NASA / GSFC Scientific Visualization Studio (LRO / LOLA) | Public Domain (NASA Guidelines) |
-| **Mercury** | `public/assets/mercury_2048.webp`<br>`assets/mercury_2048.jpg` | NASA / Johns Hopkins University APL / Carnegie Institution (MESSENGER) | Public Domain (NASA Guidelines) |
-| **Venus** | `public/assets/venus_2048.webp`<br>`assets/venus_2048.jpg` | NASA / JPL-Caltech / USGS Astrogeology Science Center (Magellan radar map) | Public Domain (NASA Guidelines) |
-| **Mars** | `public/assets/mars_2048.webp`<br>`assets/mars_2048.jpg` | NASA / JPL-Caltech / USGS Astrogeology (Viking Orbiter MDIM 2.1) | Public Domain (NASA Guidelines) |
-| **Jupiter** | `public/assets/jupiter_2048.webp`<br>`assets/jupiter_2048.jpg` | NASA / JPL-Caltech / Space Science Institute / Solar System Scope | CC BY 4.0 ([Solar System Scope](https://www.solarsystemscope.com/textures/)) |
-| **Saturn & Rings** | `public/assets/saturn_2048.webp`<br>`public/assets/saturn_ring.webp` | NASA / JPL-Caltech / Space Science Institute / Solar System Scope | CC BY 4.0 ([Solar System Scope](https://www.solarsystemscope.com/textures/)) |
-| **Uranus & Rings** | `public/assets/uranus_2048.webp`<br>`public/assets/uranus_ring.webp` | NASA / JPL-Caltech / Solar System Scope (Voyager 2 composite) | CC BY 4.0 ([Solar System Scope](https://www.solarsystemscope.com/textures/)) |
-| **Neptune** | `public/assets/neptune_2048.webp`<br>`assets/neptune_2048.jpg` | NASA / JPL-Caltech / Solar System Scope (Voyager 2 composite) | CC BY 4.0 ([Solar System Scope](https://www.solarsystemscope.com/textures/)) |
-| **Pluto** | `public/assets/pluto_2048.webp`<br>`assets/pluto_2048.jpg` | NASA / Johns Hopkins APL / Southwest Research Institute (New Horizons) | Public Domain (NASA Guidelines) |
-| **Space Ambient Audio** | `public/assets/space_ambient.mp3`<br>`assets/space_ambient.mp3` | Procedural Web Audio API soundscape synthesis & NASA public domain radio emissions archive | CC0 1.0 Universal / Public Domain |
+| Body / Feature                 | File Path (Optimized WebP / Source)                                              | Source & Science Team Credit                                                               | License                                                                      |
+| ------------------------------ | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| **Sun (Photosphere)**          | `public/assets/sun_photosphere.webp`<br>`assets/sun_photosphere.jpg`             | NASA / SDO (Solar Dynamics Observatory) & AIA / HMI Science Teams                          | Public Domain (NASA Guidelines)                                              |
+| **Sun (Photosphere Exact)**    | `public/assets/sun_photosphere_exact.webp`<br>`assets/sun_photosphere_exact.jpg` | NASA / SDO continuum filter maps                                                           | Public Domain (NASA Guidelines)                                              |
+| **Sun (Prominences & Corona)** | `public/assets/sun_prominences_exact.webp`<br>`assets/sun_corona.png`            | NASA / SDO AIA 304Å extreme ultraviolet                                                    | Public Domain (NASA Guidelines)                                              |
+| **Sun (Plasma Flow)**          | `public/assets/sun_plasma.webp`<br>`assets/sun_plasma.jpg`                       | NASA / SOHO / SDO composite flow                                                           | Public Domain (NASA Guidelines)                                              |
+| **Earth (Day Albedo)**         | `public/assets/earth_atmos_2048.webp`<br>`assets/earth_atmos_2048.jpg`           | NASA Earth Observatory (`Blue Marble: Next Generation`)                                    | Public Domain (NASA Guidelines)                                              |
+| **Earth (Cloud Layer)**        | `public/assets/earth_clouds_2048.webp`<br>`assets/earth_clouds_2048.png`         | NASA Visible Earth cloud composite                                                         | Public Domain (NASA Guidelines)                                              |
+| **Earth (Night Lights)**       | `public/assets/earth_night_2048.webp`<br>`assets/earth_night_2048.jpg`           | NASA Earth Observatory / NOAA NGDC (`Black Marble`)                                        | Public Domain (NASA Guidelines)                                              |
+| **Earth (Normal & Specular)**  | `public/assets/earth_normal_2048.webp`<br>`assets/earth_specular_2048.webp`      | NASA Blue Marble topography & bathymetry maps                                              | Public Domain (NASA Guidelines)                                              |
+| **Moon**                       | `public/assets/moon_1024.webp`<br>`assets/moon_1024.jpg`                         | NASA / GSFC Scientific Visualization Studio (LRO / LOLA)                                   | Public Domain (NASA Guidelines)                                              |
+| **Mercury**                    | `public/assets/mercury_2048.webp`<br>`assets/mercury_2048.jpg`                   | NASA / Johns Hopkins University APL / Carnegie Institution (MESSENGER)                     | Public Domain (NASA Guidelines)                                              |
+| **Venus**                      | `public/assets/venus_2048.webp`<br>`assets/venus_2048.jpg`                       | NASA / JPL-Caltech / USGS Astrogeology Science Center (Magellan radar map)                 | Public Domain (NASA Guidelines)                                              |
+| **Mars**                       | `public/assets/mars_2048.webp`<br>`assets/mars_2048.jpg`                         | NASA / JPL-Caltech / USGS Astrogeology (Viking Orbiter MDIM 2.1)                           | Public Domain (NASA Guidelines)                                              |
+| **Jupiter**                    | `public/assets/jupiter_2048.webp`<br>`assets/jupiter_2048.jpg`                   | NASA / JPL-Caltech / Space Science Institute / Solar System Scope                          | CC BY 4.0 ([Solar System Scope](https://www.solarsystemscope.com/textures/)) |
+| **Saturn & Rings**             | `public/assets/saturn_2048.webp`<br>`public/assets/saturn_ring.webp`             | NASA / JPL-Caltech / Space Science Institute / Solar System Scope                          | CC BY 4.0 ([Solar System Scope](https://www.solarsystemscope.com/textures/)) |
+| **Uranus & Rings**             | `public/assets/uranus_2048.webp`<br>`public/assets/uranus_ring.webp`             | NASA / JPL-Caltech / Solar System Scope (Voyager 2 composite)                              | CC BY 4.0 ([Solar System Scope](https://www.solarsystemscope.com/textures/)) |
+| **Neptune**                    | `public/assets/neptune_2048.webp`<br>`assets/neptune_2048.jpg`                   | NASA / JPL-Caltech / Solar System Scope (Voyager 2 composite)                              | CC BY 4.0 ([Solar System Scope](https://www.solarsystemscope.com/textures/)) |
+| **Pluto**                      | `public/assets/pluto_2048.webp`<br>`assets/pluto_2048.jpg`                       | NASA / Johns Hopkins APL / Southwest Research Institute (New Horizons)                     | Public Domain (NASA Guidelines)                                              |
+| **Space Ambient Audio**        | `public/assets/space_ambient.mp3`<br>`assets/space_ambient.mp3`                  | Procedural Web Audio API soundscape synthesis & NASA public domain radio emissions archive | CC0 1.0 Universal / Public Domain                                            |
 
 ---
 
@@ -49,14 +49,14 @@ For users with high-bandwidth connections desiring maximum graphical fidelity, 4
 
 ## 3. Open-Source Libraries & AI Frameworks
 
-| Library | Author / Organization | License | Role in Application |
-|---|---|---|---|
-| **Three.js (r186)** | Ricardo Cabello (Mr.doob) & Three.js Authors | MIT | 3D WebGL / WebGPU scene graph, PBR shaders, and postprocessing pipeline |
-| **@mediapipe/tasks-vision** | Google LLC | Apache 2.0 | On-device computer vision HandLandmarker ML model & WASM pipeline |
-| **GSAP (GreenSock)** | GreenSock Inc. | Standard GreenSock License | High-performance camera dives, smooth tweening, and UI transition timeline |
-| **Inter Font** | Rasmus Andersson | SIL Open Font License 1.1 | Modern neutral body typography |
-| **Plus Jakarta Sans** | Gumpita Rahayu, Tokotype | SIL Open Font License 1.1 | Distinctive geometric heading typography |
-| **JetBrains Mono** | JetBrains s.r.o. | SIL Open Font License 1.1 | High-legibility monospace font for orbital telemetry, coordinates, and terminal |
+| Library                     | Author / Organization                        | License                    | Role in Application                                                             |
+| --------------------------- | -------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------- |
+| **Three.js (r186)**         | Ricardo Cabello (Mr.doob) & Three.js Authors | MIT                        | 3D WebGL / WebGPU scene graph, PBR shaders, and postprocessing pipeline         |
+| **@mediapipe/tasks-vision** | Google LLC                                   | Apache 2.0                 | On-device computer vision HandLandmarker ML model & WASM pipeline               |
+| **GSAP (GreenSock)**        | GreenSock Inc.                               | Standard GreenSock License | High-performance camera dives, smooth tweening, and UI transition timeline      |
+| **Inter Font**              | Rasmus Andersson                             | SIL Open Font License 1.1  | Modern neutral body typography                                                  |
+| **Plus Jakarta Sans**       | Gumpita Rahayu, Tokotype                     | SIL Open Font License 1.1  | Distinctive geometric heading typography                                        |
+| **JetBrains Mono**          | JetBrains s.r.o.                             | SIL Open Font License 1.1  | High-legibility monospace font for orbital telemetry, coordinates, and terminal |
 
 ---
 

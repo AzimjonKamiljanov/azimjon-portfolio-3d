@@ -5,14 +5,20 @@ import {
   playUiError,
 } from "../audio/soundscape.js";
 import { translations } from "../i18n/translations.js";
+import {
+  mountTurnstile,
+  getTurnstileToken,
+  resetTurnstile,
+  unmountTurnstile,
+} from "./turnstile.js";
 
 let currentContactType = "tg";
 
-export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
-  if (!termTexts) {
-    termTexts =
-      translations.ui[currentLang]?.terminal || translations.ui.uz.terminal;
-  }
+export function renderMoonTerminal(currentLang = "uz", overrideTexts = null) {
+  const termTexts =
+    overrideTexts ||
+    translations.ui[currentLang]?.terminal ||
+    translations.ui.uz.terminal;
   const container = document.getElementById("moon-terminal-container");
   if (!container) return;
   container.classList.remove("hidden");
@@ -20,7 +26,7 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
 
   const prevName = document.getElementById("terminal-name")?.value || "";
   const prevContact = document.getElementById("terminal-contact")?.value || "";
-  let prevMsg = document.getElementById("terminal-message")?.value || "";
+  const prevMsg = document.getElementById("terminal-message")?.value || "";
 
   const topicIcons = ["🤝", "💼", "⚡", "☕"];
   const topicKeys = [
@@ -125,6 +131,11 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
                     </div>
                 </div>
 
+                <!-- Cloudflare Turnstile. Rendered only when the Worker
+                     reports the challenge as configured; otherwise it stays
+                     hidden and no external origin is contacted. -->
+                <div id="terminal-turnstile" class="terminal-turnstile hidden"></div>
+
                 <button type="submit" id="terminal-submit-btn" class="terminal-send-btn">
                     <span class="send-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
                     <span id="terminal-send-text">${termTexts.sendBtn || "Xabarni Yuborish"}</span>
@@ -181,7 +192,7 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
           contactInput.value &&
           !contactInput.value.startsWith("@")
         ) {
-          contactInput.value = "@" + contactInput.value.replace(/^@/, "");
+          contactInput.value = `@${contactInput.value.replace(/^@/, "")}`;
         }
       }
     });
@@ -200,7 +211,7 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
       const msgArea = document.getElementById("terminal-message");
       if (msgArea) {
         const clean = msgArea.value.replace(/^\[.*?\]\s*/, "");
-        msgArea.value = `[${topicStr}] ` + clean;
+        msgArea.value = `[${topicStr}] ${clean}`;
         msgArea.dispatchEvent(new Event("input"));
         msgArea.focus();
       }
@@ -215,6 +226,15 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
       charCount.innerText = String(msgArea.value.length);
     });
   }
+
+  // Cloudflare Turnstile. A previous render may still hold a widget handle,
+  // so tear the old one down before mounting into the fresh markup.
+  unmountTurnstile();
+  const turnstileHost = document.getElementById("terminal-turnstile");
+  let turnstileActive = false;
+  mountTurnstile(turnstileHost).then((active) => {
+    turnstileActive = active;
+  });
 
   // Form submission
   const form = document.getElementById("terminal-form");
@@ -252,6 +272,21 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
         return;
       }
 
+      // A Turnstile token is single-use. Read it before the request and
+      // reset the widget afterwards so a retry gets a fresh challenge.
+      const turnstileToken = turnstileActive ? getTurnstileToken() : null;
+      if (turnstileActive && !turnstileToken) {
+        playUiError();
+        if (feedback) {
+          feedback.className = "terminal-feedback feedback-error";
+          feedback.innerText =
+            termTexts.turnstilePending ||
+            "Xavfsizlik tekshiruvini kuting yoki qayta urinib ko'ring.";
+          feedback.classList.remove("hidden");
+        }
+        return;
+      }
+
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.style.opacity = "0.6";
@@ -267,6 +302,9 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
             message,
             lang: currentLang,
             _hp: hp,
+            ...(turnstileToken
+              ? { "cf-turnstile-response": turnstileToken }
+              : {}),
           }),
         });
 
@@ -301,6 +339,7 @@ export function renderMoonTerminal(currentLang = "uz", termTexts = null) {
           feedback.classList.remove("hidden");
         }
       } finally {
+        if (turnstileActive) resetTurnstile();
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.style.opacity = "1";

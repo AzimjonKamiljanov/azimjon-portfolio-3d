@@ -74,6 +74,9 @@
     </script>
 
     <link rel="stylesheet" href="style.css">
+    <!-- Loaded after the component rules so the shared focus ring, glass
+         recipe and motion scale can unify what grew per-component. -->
+    <link rel="stylesheet" href="/src/styles/refinements.css">
 </head>
 <body>
     <noscript>
@@ -504,14 +507,15 @@ RTX 5070 CUDA bilan tezlashtirilgan Hashcat, Nmap, Radare2, Lynis, Volatility3, 
                         <span class="step-icon"><svg class="btn-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v4"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/></svg></span>
                     </div>
                     <h3 id="guide-step7-title">AI Vision Qo'l Boshqaruvi</h3>
-                    <p id="guide-step7-desc">Veb-kamera orqali qo'l harakatlari yordamida koinotni teging va boshqaring.</p>
+                    <p id="guide-step7-desc">Veb-kamera orqali qo'l harakatlari bilan to'liq boshqaring: ochish, aylantirish, tanlash va yopish — sichqonchasiz. Sezgirlikni HUD ichidagi "Sozlamalar"dan moslashtiring.</p>
                     <div class="gesture-practice-chips" id="gesture-practice-chips">
                         <span class="gesture-practice-chip" data-gesture="palm" title="Kaft: 360° aylantirish">🖐 Kaft <span class="chip-status"></span></span>
                         <span class="gesture-practice-chip" data-gesture="pointing" title="Ko'rsatkich: Reticle nishon">👆 Reticle <span class="chip-status"></span></span>
-                        <span class="gesture-practice-chip" data-gesture="pinch" title="Chimchilash: Tanlash / Zoom">🤏 Pinch <span class="chip-status"></span></span>
+                        <span class="gesture-practice-chip" data-gesture="pinch" title="Chimchilash: tanlash, yon tomonga — aniq orbit, yuqori-past — zoom">🤏 Pinch <span class="chip-status"></span></span>
                         <span class="gesture-practice-chip" data-gesture="fist" title="Musht: Vaqtni to'xtatish">✊ Musht <span class="chip-status"></span></span>
-                        <span class="gesture-practice-chip" data-gesture="victory" title="G'alaba: Ekskursiya rejimi">✌️ Ekskursiya <span class="chip-status"></span></span>
-                        <span class="gesture-practice-chip" data-gesture="thumbs_up" title="Bosh barmoq: Giper-tezlik">👍 Giper-Tezlik <span class="chip-status"></span></span>
+                        <span class="gesture-practice-chip" data-gesture="victory" title="G'alaba: qimirlamasa — ekskursiya, yuqori-past — ro'yxatni aylantirish">✌️ Ekskursiya <span class="chip-status"></span></span>
+                        <span class="gesture-practice-chip" data-gesture="thumbs_up" title="Bosh barmoq yuqoriga: Giper-tezlik">👍 Giper-Tezlik <span class="chip-status"></span></span>
+                        <span class="gesture-practice-chip" data-gesture="thumbs_down" title="Bosh barmoq pastga: ochiq oynani yopish / orqaga">👎 Yopish <span class="chip-status"></span></span>
                         <span class="gesture-practice-chip" data-gesture="ok" title="OK: Loyihalar katalogi">👌 Katalog <span class="chip-status"></span></span>
                         <span class="gesture-practice-chip" data-gesture="shaka" title="Shaka: Aloqa terminali">🤙 Aloqa <span class="chip-status"></span></span>
                         <span class="gesture-practice-chip" data-gesture="rock" title="Rock: Astronomik masshtab">🤘 Masshtab <span class="chip-status"></span></span>
@@ -608,12 +612,73 @@ RTX 5070 CUDA bilan tezlashtirilgan Hashcat, Nmap, Radare2, Lynis, Volatility3, 
                     <span class="gesture-indicator-icon" id="gesture-indicator-icon">🖐</span>
                     <span class="gesture-state-text" id="gesture-state-text">Qo'l qidirilmoqda...</span>
                 </div>
-                <div class="gesture-quick-guide" id="gesture-quick-guide">🖐 Orbit • 👆 Reticle • 🤏 Tanlash • ✊ Stop • ✌️ Tour • 👍 3x • 👌 Katalog • 🤙 Aloqa • 🤘 Masshtab</div>
+                <!-- Hold progress. A pose that must be held for 400 ms is
+                     indistinguishable from a broken control unless the wait
+                     is visible, so every hold action fills this bar. -->
+                <div class="gesture-hold-track" aria-hidden="true">
+                    <span class="gesture-hold-fill" id="gesture-hold-progress"></span>
+                </div>
+
+                <!-- The cheat sheet is a grid, not a run-on sentence: eleven
+                     poses separated by bullets wrapped into an unreadable
+                     block, and a reference you cannot scan is not a reference. -->
+                <ul class="gesture-quick-guide" id="gesture-quick-guide">
+                    <li><span class="gq-icon">🖐</span><span class="gq-label">Orbit</span></li>
+                    <li><span class="gq-icon">👆</span><span class="gq-label">Nishon</span></li>
+                    <li><span class="gq-icon">🤏</span><span class="gq-label">Aniq</span></li>
+                    <li><span class="gq-icon">👐</span><span class="gq-label">Zoom</span></li>
+                    <li><span class="gq-icon">✊</span><span class="gq-label">To'xtat</span></li>
+                    <li><span class="gq-icon">✌️</span><span class="gq-label">Sayohat</span></li>
+                    <li><span class="gq-icon">👍</span><span class="gq-label">Tezlik</span></li>
+                    <li><span class="gq-icon">👎</span><span class="gq-label">Yopish</span></li>
+                    <li><span class="gq-icon">👌</span><span class="gq-label">Katalog</span></li>
+                    <li><span class="gq-icon">🤙</span><span class="gq-label">Aloqa</span></li>
+                    <li><span class="gq-icon">🤘</span><span class="gq-label">Masshtab</span></li>
+                </ul>
+
+                <button type="button" class="gesture-settings-toggle" id="gesture-settings-toggle" aria-expanded="false" aria-controls="gesture-settings-panel">
+                    <span>Sozlamalar</span>
+                    <span class="gesture-settings-chevron" aria-hidden="true">⌄</span>
+                </button>
+
+                <!-- Calibration. Webcams, lighting and arm reach differ enough
+                     that fixed thresholds made hand control unusable for some
+                     visitors; these are the values worth exposing. -->
+                <div class="gesture-settings-panel hidden" id="gesture-settings-panel">
+                    <label class="gesture-setting">
+                        <span class="gesture-setting-label">Sezgirlik <output id="gs-sensitivity-out">1.0</output></span>
+                        <input type="range" id="gs-sensitivity" min="0.3" max="2.5" step="0.1" value="1">
+                    </label>
+                    <label class="gesture-setting">
+                        <span class="gesture-setting-label">Tanlash kutishi <output id="gs-dwell-out">550 ms</output></span>
+                        <input type="range" id="gs-dwell" min="250" max="1500" step="50" value="550">
+                    </label>
+                    <label class="gesture-setting">
+                        <span class="gesture-setting-label">Ushlab turish <output id="gs-hold-out">400 ms</output></span>
+                        <input type="range" id="gs-hold" min="200" max="1200" step="50" value="400">
+                    </label>
+                    <label class="gesture-setting">
+                        <span class="gesture-setting-label">O'lik zona <output id="gs-deadzone-out">0.0035</output></span>
+                        <input type="range" id="gs-deadzone" min="0.001" max="0.02" step="0.001" value="0.0035">
+                    </label>
+                    <label class="gesture-setting gesture-setting-row">
+                        <input type="checkbox" id="gs-mirrored" checked>
+                        <span>Oynadagidek (mirror)</span>
+                    </label>
+                    <label class="gesture-setting gesture-setting-row">
+                        <input type="checkbox" id="gs-skeleton" checked>
+                        <span>Qo'l skeletini ko'rsatish</span>
+                    </label>
+                    <button type="button" class="gesture-settings-reset" id="gs-reset">Standart holatga qaytarish</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="gesture-reticle" class="gesture-reticle hidden">
+        <!-- Dwell ring: sweeps from 0 to 360 degrees over the dwell window so
+             the visitor can see selection coming and can pull away in time. -->
+        <div class="reticle-progress-ring" id="reticle-progress-ring" aria-hidden="true"></div>
         <div class="reticle-ring"></div>
         <div class="reticle-crosshair"></div>
         <div class="reticle-target-label" id="reticle-target-label"></div>

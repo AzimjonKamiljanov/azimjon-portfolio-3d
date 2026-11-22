@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
-import './StarBorder.css';
+import "./StarBorder.css";
 
 const THEMES = {
   dark: {
-    surface: '#0c0c0f',
-    text: '#fafafa',
-    track: 'rgba(255, 255, 255, 0.1)',
-    light: '#ffffff'
+    surface: "#0c0c0f",
+    text: "#fafafa",
+    track: "rgba(255, 255, 255, 0.1)",
+    light: "#ffffff",
   },
   light: {
-    surface: '#ffffff',
-    text: '#18181b',
-    track: 'rgba(24, 24, 27, 0.12)',
-    light: '#18181b'
-  }
+    surface: "#ffffff",
+    text: "#18181b",
+    track: "rgba(24, 24, 27, 0.12)",
+    light: "#18181b",
+  },
 };
 
-const HOVERS = ['lap', 'brighten', 'reveal', 'none'];
+const HOVERS = ["lap", "brighten", "reveal", "none"];
 const BLEED = 48;
 const LAP = 0.9;
 const TAU = Math.PI * 2;
@@ -27,20 +27,25 @@ const WHITE = [255, 255, 255];
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const wrap = (value, total) => ((value % total) + total) % total;
-const ease = t => (t < 0.5 ? 4 * t * t * t : 1 - (2 - 2 * t) ** 3 / 2);
-const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (2 - 2 * t) ** 3 / 2);
+const mix = (a, b, t) => [
+  a[0] + (b[0] - a[0]) * t,
+  a[1] + (b[1] - a[1]) * t,
+  a[2] + (b[2] - a[2]) * t,
+];
 const rgba = (rgb, alpha) =>
   `rgba(${Math.round(rgb[0])}, ${Math.round(rgb[1])}, ${Math.round(rgb[2])}, ${clamp(alpha, 0, 1).toFixed(3)})`;
 
 let colorContext = null;
 
-const toRgb = color => {
-  colorContext = colorContext ?? document.createElement('canvas').getContext('2d');
+const toRgb = (color) => {
+  colorContext =
+    colorContext ?? document.createElement("canvas").getContext("2d");
   if (!colorContext) return WHITE;
-  colorContext.fillStyle = '#000000';
+  colorContext.fillStyle = "#000000";
   colorContext.fillStyle = color;
   const value = String(colorContext.fillStyle);
-  if (value.startsWith('#')) {
+  if (value.startsWith("#")) {
     const hex = parseInt(value.slice(1, 7), 16);
     return [(hex >> 16) & 255, (hex >> 8) & 255, hex & 255];
   }
@@ -61,15 +66,15 @@ const outline = (width, height, radius) => {
     { length: across, x: width - r, y: height, dx: -1, dy: 0, angle: null },
     { length: arc, x: r, y: height - r, dx: 0, dy: 0, angle: Math.PI / 2 },
     { length: down, x: 0, y: height - r, dx: 0, dy: -1, angle: null },
-    { length: arc, x: r, y: r, dx: 0, dy: 0, angle: Math.PI }
+    { length: arc, x: r, y: r, dx: 0, dy: 0, angle: Math.PI },
   ];
   return {
     r,
     segments,
     total: Math.max(
       1,
-      segments.reduce((sum, segment) => sum + segment.length, 0)
-    )
+      segments.reduce((sum, segment) => sum + segment.length, 0),
+    ),
   };
 };
 
@@ -100,18 +105,26 @@ const project = (shape, px, py) => {
   let best = Infinity;
   let found = 0;
   let offset = 0;
-  shape.segments.forEach(segment => {
+  shape.segments.forEach((segment) => {
     if (segment.length > 0) {
       let s = 0;
       let x = 0;
       let y = 0;
       if (segment.angle === null) {
-        s = clamp((px - segment.x) * segment.dx + (py - segment.y) * segment.dy, 0, segment.length);
+        s = clamp(
+          (px - segment.x) * segment.dx + (py - segment.y) * segment.dy,
+          0,
+          segment.length,
+        );
         x = segment.x + segment.dx * s;
         y = segment.y + segment.dy * s;
       } else {
-        let angle = wrap(Math.atan2(py - segment.y, px - segment.x) - segment.angle, TAU);
-        if (angle > Math.PI / 2) angle = angle > Math.PI * 1.25 ? 0 : Math.PI / 2;
+        let angle = wrap(
+          Math.atan2(py - segment.y, px - segment.x) - segment.angle,
+          TAU,
+        );
+        if (angle > Math.PI / 2)
+          angle = angle > Math.PI * 1.25 ? 0 : Math.PI / 2;
         s = angle * shape.r;
         x = segment.x + Math.cos(segment.angle + angle) * shape.r;
         y = segment.y + Math.sin(segment.angle + angle) * shape.r;
@@ -128,9 +141,9 @@ const project = (shape, px, py) => {
 };
 
 const StarBorder = ({
-  as: Component = 'button',
+  as: Component = "button",
   children,
-  className = '',
+  className = "",
   style,
   color,
   trailColor,
@@ -141,10 +154,10 @@ const StarBorder = ({
   stars = 1,
   glow = 0.6,
   sparkle = false,
-  direction = 'clockwise',
-  hover = 'lap',
+  direction = "clockwise",
+  hover = "lap",
   clickPulse = true,
-  theme = 'dark',
+  theme = "dark",
   backgroundColor,
   textColor,
   borderColor,
@@ -156,7 +169,7 @@ const StarBorder = ({
   const palette = THEMES[theme] ?? THEMES.dark;
   const light = color ?? palette.light;
   const settings = {
-    light: theme === 'light',
+    light: theme === "light",
     color: light,
     trailColor: trailColor ?? light,
     duration: Math.max(0.3, duration),
@@ -166,9 +179,9 @@ const StarBorder = ({
     stars: clamp(Math.round(stars), 1, 6),
     glow: clamp(glow, 0, 1),
     sparkle,
-    direction: direction === 'counterclockwise' ? -1 : 1,
-    hover: HOVERS.includes(hover) ? hover : 'lap',
-    clickPulse
+    direction: direction === "counterclockwise" ? -1 : 1,
+    hover: HOVERS.includes(hover) ? hover : "lap",
+    clickPulse,
   };
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
@@ -176,10 +189,11 @@ const StarBorder = ({
   useEffect(() => {
     const root = rootRef.current;
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
+    const ctx = canvas?.getContext("2d");
     if (!root || !canvas || !ctx) return undefined;
 
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    const reduce =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
     const point = { x: 0, y: 0, nx: 0, ny: -1 };
     const state = {
       width: 0,
@@ -198,11 +212,11 @@ const StarBorder = ({
       focused: false,
       pointerX: 0,
       pointerY: 0,
-      visible: true
+      visible: true,
     };
     const pulses = [];
     const dust = [];
-    const colors = { key: '', head: WHITE, tail: WHITE };
+    const colors = { key: "", head: WHITE, tail: WHITE };
     let raf = 0;
     let last = performance.now();
     let alive = true;
@@ -211,23 +225,32 @@ const StarBorder = ({
       state.width = root.offsetWidth;
       state.height = root.offsetHeight;
       state.dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.max(1, Math.round((state.width + BLEED * 2) * state.dpr));
-      canvas.height = Math.max(1, Math.round((state.height + BLEED * 2) * state.dpr));
+      canvas.width = Math.max(
+        1,
+        Math.round((state.width + BLEED * 2) * state.dpr),
+      );
+      canvas.height = Math.max(
+        1,
+        Math.round((state.height + BLEED * 2) * state.dpr),
+      );
       wake();
     };
 
-    const local = event => {
+    const local = (event) => {
       const rect = root.getBoundingClientRect();
       const scaleX = rect.width ? state.width / rect.width : 1;
       const scaleY = rect.height ? state.height / rect.height : 1;
-      return [(event.clientX - rect.left) * scaleX, (event.clientY - rect.top) * scaleY];
+      return [
+        (event.clientX - rect.left) * scaleX,
+        (event.clientY - rect.top) * scaleY,
+      ];
     };
 
-    const shapeFor = s =>
+    const shapeFor = (s) =>
       outline(
         Math.max(1, state.width - s.thickness),
         Math.max(1, state.height - s.thickness),
-        s.radius - s.thickness / 2
+        s.radius - s.thickness / 2,
       );
 
     const stroke = (x1, y1, x2, y2, width, style) => {
@@ -251,8 +274,15 @@ const StarBorder = ({
         const fade = u * u * intensity;
         let tone = mix(colors.tail, colors.head, u);
         if (!s.light) tone = mix(tone, WHITE, u ** 6 * 0.65);
-        ctx.lineCap = tip && i === 1 ? 'round' : 'butt';
-        stroke(px, py, point.x, point.y, 2 + 6 * s.glow, rgba(tone, fade * (s.light ? 0.1 : 0.2) * s.glow));
+        ctx.lineCap = tip && i === 1 ? "round" : "butt";
+        stroke(
+          px,
+          py,
+          point.x,
+          point.y,
+          2 + 6 * s.glow,
+          rgba(tone, fade * (s.light ? 0.1 : 0.2) * s.glow),
+        );
         stroke(px, py, point.x, point.y, s.thickness, rgba(tone, fade));
         px = point.x;
         py = point.y;
@@ -276,8 +306,14 @@ const StarBorder = ({
       const size = (1 + s.thickness * 0.6) * (s.light ? 0.85 : 1);
       const core = ctx.createRadialGradient(x, y, 0, x, y, size * 2.2);
       core.addColorStop(0, rgba(s.light ? tone : WHITE, intensity));
-      core.addColorStop(s.light ? 0.3 : 0.4, rgba(s.light ? tone : mix(tone, WHITE, 0.5), intensity * 0.9));
-      core.addColorStop(s.light ? 0.55 : 1, rgba(tone, s.light ? intensity * 0.12 : 0));
+      core.addColorStop(
+        s.light ? 0.3 : 0.4,
+        rgba(s.light ? tone : mix(tone, WHITE, 0.5), intensity * 0.9),
+      );
+      core.addColorStop(
+        s.light ? 0.55 : 1,
+        rgba(tone, s.light ? intensity * 0.12 : 0),
+      );
       core.addColorStop(1, rgba(tone, 0));
       ctx.fillStyle = core;
       ctx.beginPath();
@@ -310,19 +346,22 @@ const StarBorder = ({
         age: 0,
         life: 0.35 + Math.random() * 0.5,
         size: 0.45 + Math.random() * 0.7,
-        seed: Math.random() * TAU
+        seed: Math.random() * TAU,
       });
     };
 
     const draw = (base, shape) => {
-      const s = state.boost > 0.001 ? { ...base, glow: Math.min(1.5, base.glow + 0.4 * state.boost) } : base;
+      const s =
+        state.boost > 0.001
+          ? { ...base, glow: Math.min(1.5, base.glow + 0.4 * state.boost) }
+          : base;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (state.width < 2 || state.height < 2) return;
       const offset = (BLEED + s.thickness / 2) * state.dpr;
       ctx.setTransform(state.dpr, 0, 0, state.dpr, offset, offset);
-      ctx.globalCompositeOperation = s.light ? 'source-over' : 'lighter';
-      ctx.lineCap = 'butt';
+      ctx.globalCompositeOperation = s.light ? "source-over" : "lighter";
+      ctx.lineCap = "butt";
 
       const total = shape.total;
       const spacing = total / s.stars;
@@ -330,9 +369,12 @@ const StarBorder = ({
       const sign = state.motion >= 0 ? 1 : -1;
       const span = s.trailLength * s.duration;
       const length = Math.min(speed * span, spacing * 0.92, total * 0.6);
-      const intensity = state.reveal * (1 + 0.4 * state.boost + 0.6 * state.flash);
+      const intensity =
+        state.reveal * (1 + 0.4 * state.boost + 0.6 * state.flash);
 
-      const ring = state.flash * (s.light ? 0.18 : 0.32) + state.boost * state.reveal * (s.light ? 0.07 : 0.12);
+      const ring =
+        state.flash * (s.light ? 0.18 : 0.32) +
+        state.boost * state.reveal * (s.light ? 0.07 : 0.12);
       if (ring > 0.005) {
         ctx.lineWidth = s.thickness + 2 * s.glow;
         ctx.strokeStyle = rgba(colors.head, ring);
@@ -342,12 +384,14 @@ const StarBorder = ({
           0,
           Math.max(1, state.width - s.thickness),
           Math.max(1, state.height - s.thickness),
-          Math.max(0, shape.r)
+          Math.max(0, shape.r),
         );
         ctx.stroke();
       }
 
-      const still = clamp(1 - speed / Math.max(1, (total / s.duration) * 0.6), 0, 1) * Math.min(1, intensity);
+      const still =
+        clamp(1 - speed / Math.max(1, (total / s.duration) * 0.6), 0, 1) *
+        Math.min(1, intensity);
       const rest = (10 + 14 * s.glow + s.thickness * 2) * still;
       for (let i = 0; i < s.stars; i++) {
         const head = state.phase + i * spacing;
@@ -358,12 +402,13 @@ const StarBorder = ({
         }
       }
 
-      pulses.forEach(pulse => {
+      pulses.forEach((pulse) => {
         const progress = pulse.age / 0.65;
         const fade = (1 - progress) ** 2;
-        const travel = (total / 2) * (1 - (1 - Math.min(1, pulse.age / 0.5)) ** 2);
+        const travel =
+          (total / 2) * (1 - (1 - Math.min(1, pulse.age / 0.5)) ** 2);
         const tail = Math.min(travel, total * 0.16);
-        [1, -1].forEach(way => {
+        [1, -1].forEach((way) => {
           const front = pulse.origin + way * travel;
           drawTrail(s, shape, front, tail, way, fade);
           pointAt(shape, front, point);
@@ -373,23 +418,30 @@ const StarBorder = ({
 
       for (let i = 0; i < s.stars; i++) {
         pointAt(shape, state.phase + i * spacing, point);
-        const twinkle = 0.82 + 0.18 * Math.sin(state.time * 6.1 + i * 2.3) * Math.sin(state.time * 2.7 + i);
+        const twinkle =
+          0.82 +
+          0.18 *
+            Math.sin(state.time * 6.1 + i * 2.3) *
+            Math.sin(state.time * 2.7 + i);
         drawHead(s, point.x, point.y, Math.min(1.3, intensity), twinkle);
       }
 
-      dust.forEach(mote => {
+      dust.forEach((mote) => {
         const left = 1 - mote.age / mote.life;
         const shimmer = 0.45 + 0.55 * Math.sin(state.time * 20 + mote.seed);
         const alpha = left * shimmer * state.reveal * (s.light ? 0.35 : 0.9);
         if (alpha <= 0.01) return;
-        ctx.fillStyle = rgba(s.light ? colors.head : mix(colors.tail, WHITE, 0.6), alpha);
+        ctx.fillStyle = rgba(
+          s.light ? colors.head : mix(colors.tail, WHITE, 0.6),
+          alpha,
+        );
         ctx.beginPath();
         ctx.arc(mote.x, mote.y, mote.size * (0.6 + 0.4 * left), 0, TAU);
         ctx.fill();
       });
     };
 
-    const frame = now => {
+    const frame = (now) => {
       raf = 0;
       if (!alive) return;
       const s = settingsRef.current;
@@ -410,10 +462,14 @@ const StarBorder = ({
       const engaged = state.hovered || state.focused;
       const cruise = reduce ? 0 : (s.direction * total) / s.duration;
 
-      const revealTarget = s.hover === 'reveal' && !engaged ? 0 : 1;
-      state.reveal += (revealTarget - state.reveal) * (1 - Math.exp(-dt / (revealTarget > state.reveal ? 0.16 : 0.45)));
-      const boostTarget = s.hover === 'brighten' && engaged ? 1 : 0;
-      state.boost += (boostTarget - state.boost) * (1 - Math.exp(-dt / (boostTarget > state.boost ? 0.18 : 0.5)));
+      const revealTarget = s.hover === "reveal" && !engaged ? 0 : 1;
+      state.reveal +=
+        (revealTarget - state.reveal) *
+        (1 - Math.exp(-dt / (revealTarget > state.reveal ? 0.16 : 0.45)));
+      const boostTarget = s.hover === "brighten" && engaged ? 1 : 0;
+      state.boost +=
+        (boostTarget - state.boost) *
+        (1 - Math.exp(-dt / (boostTarget > state.boost ? 0.18 : 0.5)));
       state.flash *= Math.exp(-dt / 0.22);
 
       state.velocity += (cruise - state.velocity) * (1 - Math.exp(-dt / 0.45));
@@ -421,18 +477,24 @@ const StarBorder = ({
       if (state.lap >= 0) {
         const before = ease(Math.min(1, state.lap / LAP));
         state.lap += dt;
-        extra = (ease(Math.min(1, state.lap / LAP)) - before) * total * s.direction;
+        extra =
+          (ease(Math.min(1, state.lap / LAP)) - before) * total * s.direction;
         if (state.lap >= LAP) state.lap = -1;
       }
       state.motion = state.velocity + extra / dt;
       state.phase = wrap(state.phase + state.velocity * dt + extra, total);
 
-      const pace = Math.abs(state.motion) / Math.max(1, Math.abs(total / s.duration));
+      const pace =
+        Math.abs(state.motion) / Math.max(1, Math.abs(total / s.duration));
       if (s.sparkle && !reduce && state.reveal > 0.05) {
         state.emit += dt * (2 + 6 * Math.min(2, pace)) * s.stars;
         while (state.emit > 1) {
           state.emit -= 1;
-          pointAt(shape, state.phase + Math.floor(Math.random() * s.stars) * spacing, point);
+          pointAt(
+            shape,
+            state.phase + Math.floor(Math.random() * s.stars) * spacing,
+            point,
+          );
           spawnDust(point.x, point.y, point.nx, point.ny, state.motion);
         }
       }
@@ -458,9 +520,11 @@ const StarBorder = ({
         state.flash > 0.01 ||
         pulses.length > 0 ||
         dust.length > 0;
-      const moving = Math.abs(state.motion) > 0.05 || cruise !== 0 || state.lap >= 0;
+      const moving =
+        Math.abs(state.motion) > 0.05 || cruise !== 0 || state.lap >= 0;
       const showing = state.reveal > 0.002 || revealTarget > 0;
-      if (state.visible && (settling || (moving && showing) || state.hovered)) raf = requestAnimationFrame(frame);
+      if (state.visible && (settling || (moving && showing) || state.hovered))
+        raf = requestAnimationFrame(frame);
     };
 
     const wake = () => {
@@ -470,40 +534,50 @@ const StarBorder = ({
     };
     wakeRef.current = wake;
 
-    const onEnter = event => {
+    const onEnter = (event) => {
       const s = settingsRef.current;
       [state.pointerX, state.pointerY] = local(event);
       state.hovered = true;
-      if (s.hover === 'reveal' && state.reveal < 0.15) {
-        state.phase = project(shapeFor(s), state.pointerX - s.thickness / 2, state.pointerY - s.thickness / 2);
+      if (s.hover === "reveal" && state.reveal < 0.15) {
+        state.phase = project(
+          shapeFor(s),
+          state.pointerX - s.thickness / 2,
+          state.pointerY - s.thickness / 2,
+        );
         state.velocity = 0;
       }
-      if (s.hover === 'lap' && state.lap < 0 && !reduce) state.lap = 0;
+      if (s.hover === "lap" && state.lap < 0 && !reduce) state.lap = 0;
       wake();
     };
     const onLeave = () => {
       state.hovered = false;
       wake();
     };
-    const pulse = origin => {
+    const pulse = (origin) => {
       if (!settingsRef.current.clickPulse) return;
       pulses.push({ origin, age: 0 });
       if (pulses.length > 4) pulses.shift();
       state.flash = 1;
       wake();
     };
-    const onDown = event => {
-      if (event.button !== 0 && event.pointerType === 'mouse') return;
+    const onDown = (event) => {
+      if (event.button !== 0 && event.pointerType === "mouse") return;
       const s = settingsRef.current;
       const [x, y] = local(event);
       pulse(project(shapeFor(s), x - s.thickness / 2, y - s.thickness / 2));
     };
-    const onClick = event => {
+    const onClick = (event) => {
       if (event.detail === 0) pulse(state.phase);
     };
     const onFocus = () => {
-      state.focused = root.matches(':focus-visible');
-      if (state.focused && settingsRef.current.hover === 'lap' && state.lap < 0 && !reduce) state.lap = 0;
+      state.focused = root.matches(":focus-visible");
+      if (
+        state.focused &&
+        settingsRef.current.hover === "lap" &&
+        state.lap < 0 &&
+        !reduce
+      )
+        state.lap = 0;
       wake();
     };
     const onBlur = () => {
@@ -513,17 +587,17 @@ const StarBorder = ({
 
     const resizeObserver = new ResizeObserver(measure);
     resizeObserver.observe(root);
-    const visibility = new IntersectionObserver(entries => {
-      state.visible = entries.some(entry => entry.isIntersecting);
+    const visibility = new IntersectionObserver((entries) => {
+      state.visible = entries.some((entry) => entry.isIntersecting);
       if (state.visible) wake();
     });
     visibility.observe(root);
-    root.addEventListener('pointerenter', onEnter);
-    root.addEventListener('pointerleave', onLeave);
-    root.addEventListener('pointerdown', onDown);
-    root.addEventListener('click', onClick);
-    root.addEventListener('focus', onFocus);
-    root.addEventListener('blur', onBlur);
+    root.addEventListener("pointerenter", onEnter);
+    root.addEventListener("pointerleave", onLeave);
+    root.addEventListener("pointerdown", onDown);
+    root.addEventListener("click", onClick);
+    root.addEventListener("focus", onFocus);
+    root.addEventListener("blur", onBlur);
     measure();
 
     return () => {
@@ -532,12 +606,12 @@ const StarBorder = ({
       cancelAnimationFrame(raf);
       resizeObserver.disconnect();
       visibility.disconnect();
-      root.removeEventListener('pointerenter', onEnter);
-      root.removeEventListener('pointerleave', onLeave);
-      root.removeEventListener('pointerdown', onDown);
-      root.removeEventListener('click', onClick);
-      root.removeEventListener('focus', onFocus);
-      root.removeEventListener('blur', onBlur);
+      root.removeEventListener("pointerenter", onEnter);
+      root.removeEventListener("pointerleave", onLeave);
+      root.removeEventListener("pointerdown", onDown);
+      root.removeEventListener("click", onClick);
+      root.removeEventListener("focus", onFocus);
+      root.removeEventListener("blur", onBlur);
     };
   }, []);
 
@@ -548,19 +622,25 @@ const StarBorder = ({
   return (
     <Component
       ref={rootRef}
-      className={`star-border${className ? ` ${className}` : ''}`}
+      className={`star-border${className ? ` ${className}` : ""}`}
       style={{
-        '--star-border-radius': `${settings.radius}px`,
-        '--star-border-thickness': `${settings.thickness}px`,
-        '--star-border-surface': backgroundColor ?? palette.surface,
-        '--star-border-text': textColor ?? palette.text,
-        '--star-border-track': borderColor ?? palette.track,
-        ...style
+        "--star-border-radius": `${settings.radius}px`,
+        "--star-border-thickness": `${settings.thickness}px`,
+        "--star-border-surface": backgroundColor ?? palette.surface,
+        "--star-border-text": textColor ?? palette.text,
+        "--star-border-track": borderColor ?? palette.track,
+        ...style,
       }}
-      {...(Component === 'button' && rest.type === undefined ? { type: 'button' } : null)}
+      {...(Component === "button" && rest.type === undefined
+        ? { type: "button" }
+        : null)}
       {...rest}
     >
-      <canvas ref={canvasRef} className="star-border__light" aria-hidden="true" />
+      <canvas
+        ref={canvasRef}
+        className="star-border__light"
+        aria-hidden="true"
+      />
       {children}
     </Component>
   );

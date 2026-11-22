@@ -1,37 +1,41 @@
-import { spawn } from 'child_process';
+import { spawn } from "child_process";
 
 const port = 9240;
-const chromeProc = spawn('google-chrome-stable', [
-    '--headless=new',
-    '--no-sandbox',
-    '--disable-gpu-sandbox',
-    `--remote-debugging-port=${port}`,
-    'http://127.0.0.1:8080/'
+const chromeProc = spawn("google-chrome-stable", [
+  "--headless=new",
+  "--no-sandbox",
+  "--disable-gpu-sandbox",
+  `--remote-debugging-port=${port}`,
+  "http://127.0.0.1:8080/",
 ]);
 
-await new Promise(r => setTimeout(r, 2000));
+await new Promise((r) => setTimeout(r, 2000));
 const tabs = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
-const tab = tabs.find(t => t.type === 'page');
+const tab = tabs.find((t) => t.type === "page");
 const ws = new WebSocket(tab.webSocketDebuggerUrl);
 let id = 1;
-const req = (method, params = {}) => new Promise(res => {
+const req = (method, params = {}) =>
+  new Promise((res) => {
     const cur = id++;
     const h = (e) => {
-        const m = JSON.parse(e.data);
-        if (m.id === cur) { ws.removeEventListener('message', h); res(m.result); }
+      const m = JSON.parse(e.data);
+      if (m.id === cur) {
+        ws.removeEventListener("message", h);
+        res(m.result);
+      }
     };
-    ws.addEventListener('message', h);
+    ws.addEventListener("message", h);
     ws.send(JSON.stringify({ id: cur, method, params }));
-});
+  });
 
-await new Promise(r => ws.onopen = r);
-await req('Runtime.enable');
+await new Promise((r) => (ws.onopen = r));
+await req("Runtime.enable");
 
 // Wait for load
-await new Promise(r => setTimeout(r, 2000));
+await new Promise((r) => setTimeout(r, 2000));
 
-const res = await req('Runtime.evaluate', {
-    expression: `(() => {
+const res = await req("Runtime.evaluate", {
+  expression: `(() => {
         const btn = document.getElementById("guide-toggle-btn");
         const container = document.getElementById("guide-modal-container");
         const closeBtn = document.getElementById("guide-close-btn");
@@ -52,7 +56,7 @@ const res = await req('Runtime.evaluate', {
             containerClasses: container.className
         };
     })()`,
-    returnByValue: true
+  returnByValue: true,
 });
 
 console.log("DEBUG GUIDE RESULT:", res.result ? res.result.value : res);

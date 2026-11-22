@@ -1,21 +1,21 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 import {
   OneEuroFilter,
   calculateJointAngle,
   classifyHandGesture,
-  GestureStabilizer
-} from '../src/input/gestureClassifier.js';
+  GestureStabilizer,
+} from "../src/input/gestureClassifier.js";
 
 // Helper to generate a realistic neutral hand landmark set
 function generateHand({
-  thumb = 'extended',
-  index = 'extended',
-  middle = 'extended',
-  ring = 'extended',
-  pinky = 'extended',
+  thumb = "extended",
+  index = "extended",
+  middle = "extended",
+  ring = "extended",
+  pinky = "extended",
   pinch = false,
   rotation = 0,
-  isLeft = false
+  isLeft = false,
 } = {}) {
   // 21 points
   const lm = [];
@@ -26,14 +26,14 @@ function generateHand({
   const fingerXSpreads = [
     { base: 0.44, step: -0.02 }, // Thumb
     { base: 0.47, step: -0.01 }, // Index
-    { base: 0.50, step: 0.00 },  // Middle
-    { base: 0.53, step: 0.01 },  // Ring
-    { base: 0.56, step: 0.02 }   // Pinky
+    { base: 0.5, step: 0.0 }, // Middle
+    { base: 0.53, step: 0.01 }, // Ring
+    { base: 0.56, step: 0.02 }, // Pinky
   ];
 
   // Helper to add finger points
   function addFinger(startIndex, extState, xSpread, isThumb = false) {
-    const isExt = extState === 'extended';
+    const isExt = extState === "extended";
     const mcpY = 0.58;
     const len = isThumb ? 0.05 : 0.06;
 
@@ -45,20 +45,32 @@ function generateHand({
       lm[1] = { x: 0.46, y: 0.72, z: 0 };
       lm[2] = { x: 0.43, y: 0.65, z: 0 };
       if (isExt) {
-        lm[3] = { x: 0.40, y: 0.58, z: 0 };
+        lm[3] = { x: 0.4, y: 0.58, z: 0 };
         lm[4] = { x: 0.37, y: 0.51, z: 0 };
       } else {
         // Curled thumb
-        lm[3] = { x: 0.46, y: 0.60, z: 0.02 };
+        lm[3] = { x: 0.46, y: 0.6, z: 0.02 };
         lm[4] = { x: 0.48, y: 0.61, z: 0.03 };
       }
       return;
     }
 
     if (isExt) {
-      lm[startIndex + 1] = { x: xSpread.base + xSpread.step, y: mcpY - len, z: 0 };
-      lm[startIndex + 2] = { x: xSpread.base + xSpread.step * 2, y: mcpY - len * 2, z: 0 };
-      lm[startIndex + 3] = { x: xSpread.base + xSpread.step * 3, y: mcpY - len * 3, z: 0 };
+      lm[startIndex + 1] = {
+        x: xSpread.base + xSpread.step,
+        y: mcpY - len,
+        z: 0,
+      };
+      lm[startIndex + 2] = {
+        x: xSpread.base + xSpread.step * 2,
+        y: mcpY - len * 2,
+        z: 0,
+      };
+      lm[startIndex + 3] = {
+        x: xSpread.base + xSpread.step * 3,
+        y: mcpY - len * 3,
+        z: 0,
+      };
     } else {
       // Curled finger (PIP angles sharply down into palm)
       lm[startIndex + 1] = { x: xSpread.base, y: mcpY - len * 0.8, z: -0.02 };
@@ -90,7 +102,8 @@ function generateHand({
   if (rotation !== 0) {
     const cosR = Math.cos(rotation);
     const sinR = Math.sin(rotation);
-    const cx = 0.5, cy = 0.6;
+    const cx = 0.5,
+      cy = 0.6;
     for (let i = 0; i < lm.length; i++) {
       const dx = lm[i].x - cx;
       const dy = lm[i].y - cy;
@@ -102,8 +115,8 @@ function generateHand({
   return lm;
 }
 
-describe('AI Hand Gesture Classifier & Signal Stabilization (Part C)', () => {
-  it('calculateJointAngle calculates exact 3D angle between joints', () => {
+describe("AI Hand Gesture Classifier & Signal Stabilization (Part C)", () => {
+  it("calculateJointAngle calculates exact 3D angle between joints", () => {
     const a = { x: 0, y: 1, z: 0 };
     const b = { x: 0, y: 0, z: 0 };
     const c = { x: 1, y: 0, z: 0 };
@@ -111,162 +124,204 @@ describe('AI Hand Gesture Classifier & Signal Stabilization (Part C)', () => {
     expect(angle).toBeCloseTo(Math.PI / 2, 4);
   });
 
-  it('correctly classifies an open palm gesture', () => {
+  it("correctly classifies an open palm gesture", () => {
     const hand = generateHand();
-    const result = classifyHandGesture(hand, 'Right');
-    expect(result.gesture).toBe('palm');
+    const result = classifyHandGesture(hand, "Right");
+    expect(result.gesture).toBe("palm");
     expect(result.confidence).toBeGreaterThan(0.8);
   });
 
-  it('correctly classifies a fist gesture when all fingers are curled', () => {
+  it("correctly classifies a fist gesture when all fingers are curled", () => {
     const hand = generateHand({
-      thumb: 'curled',
-      index: 'curled',
-      middle: 'curled',
-      ring: 'curled',
-      pinky: 'curled'
+      thumb: "curled",
+      index: "curled",
+      middle: "curled",
+      ring: "curled",
+      pinky: "curled",
     });
-    const result = classifyHandGesture(hand, 'Right');
-    expect(result.gesture).toBe('fist');
+    const result = classifyHandGesture(hand, "Right");
+    expect(result.gesture).toBe("fist");
     expect(result.confidence).toBeGreaterThan(0.8);
   });
 
-  it('correctly classifies an index pointing gesture', () => {
+  it("correctly classifies an index pointing gesture", () => {
     const hand = generateHand({
-      thumb: 'curled',
-      index: 'extended',
-      middle: 'curled',
-      ring: 'curled',
-      pinky: 'curled'
+      thumb: "curled",
+      index: "extended",
+      middle: "curled",
+      ring: "curled",
+      pinky: "curled",
     });
-    const result = classifyHandGesture(hand, 'Right');
-    expect(result.gesture).toBe('pointing');
+    const result = classifyHandGesture(hand, "Right");
+    expect(result.gesture).toBe("pointing");
     expect(result.reticle).toBeDefined();
   });
 
-  it('correctly classifies a pinch gesture (thumb + index touching)', () => {
+  it("correctly classifies a pinch gesture (thumb + index touching)", () => {
     const hand = generateHand({
-      thumb: 'extended',
-      index: 'extended',
-      middle: 'curled',
-      ring: 'curled',
-      pinky: 'curled',
-      pinch: true
+      thumb: "extended",
+      index: "extended",
+      middle: "curled",
+      ring: "curled",
+      pinky: "curled",
+      pinch: true,
     });
-    const result = classifyHandGesture(hand, 'Right');
-    expect(result.gesture).toBe('pinch');
+    const result = classifyHandGesture(hand, "Right");
+    expect(result.gesture).toBe("pinch");
     expect(result.normPinch).toBeLessThan(0.38);
   });
 
-  it('correctly classifies victory/peace sign (index + middle in V)', () => {
+  it("correctly classifies victory/peace sign (index + middle in V)", () => {
     const hand = generateHand({
-      thumb: 'curled',
-      index: 'extended',
-      middle: 'extended',
-      ring: 'curled',
-      pinky: 'curled'
+      thumb: "curled",
+      index: "extended",
+      middle: "extended",
+      ring: "curled",
+      pinky: "curled",
     });
     // Spread index and middle slightly for V
     hand[8].x -= 0.03;
     hand[12].x += 0.03;
-    const result = classifyHandGesture(hand, 'Right');
-    expect(result.gesture).toBe('victory');
+    const result = classifyHandGesture(hand, "Right");
+    expect(result.gesture).toBe("victory");
   });
 
-  it('correctly classifies thumbs_up gesture (thumb extended, other 4 fingers curled)', () => {
+  it("correctly classifies thumbs_up gesture (thumb extended, other 4 fingers curled)", () => {
     const hand = generateHand({
-      thumb: 'extended',
-      index: 'curled',
-      middle: 'curled',
-      ring: 'curled',
-      pinky: 'curled'
+      thumb: "extended",
+      index: "curled",
+      middle: "curled",
+      ring: "curled",
+      pinky: "curled",
     });
-    const result = classifyHandGesture(hand, 'Right');
-    expect(result.gesture).toBe('thumbs_up');
+    const result = classifyHandGesture(hand, "Right");
+    expect(result.gesture).toBe("thumbs_up");
     expect(result.confidence).toBeGreaterThan(0.9);
   });
 
-  it('correctly classifies ok sign (thumb + index touching while middle & ring extended)', () => {
+  it("classifies thumbs_down when the same fist points the thumb downward", () => {
+    // Thumbs down is the inverse of thumbs up and the only way to close a
+    // panel by hand, so the two must never be confused. The camera's y axis
+    // grows downward, hence a tip *below* the wrist.
     const hand = generateHand({
-      thumb: 'extended',
-      index: 'extended',
-      middle: 'extended',
-      ring: 'extended',
-      pinky: 'extended',
-      pinch: true
+      thumb: "extended",
+      index: "curled",
+      middle: "curled",
+      ring: "curled",
+      pinky: "curled",
     });
-    const result = classifyHandGesture(hand, 'Right');
-    expect(result.gesture).toBe('ok');
+
+    const wrist = hand[0];
+    const handScale = Math.hypot(hand[9].x - wrist.x, hand[9].y - wrist.y);
+    hand[2] = { ...hand[2], y: wrist.y + handScale * 0.3 };
+    hand[3] = { ...hand[3], y: wrist.y + handScale * 0.55 };
+    hand[4] = { ...hand[4], y: wrist.y + handScale * 0.8 };
+
+    const result = classifyHandGesture(hand, "Right");
+    expect(result.gesture).toBe("thumbs_down");
     expect(result.confidence).toBeGreaterThan(0.9);
   });
 
-  it('correctly classifies shaka / call-me gesture (thumb & pinky extended, middle 3 curled)', () => {
+  it("falls back to fist when a curled hand's thumb is neither up nor down", () => {
+    // A sideways thumb must not be read as either toggle; guessing here would
+    // freeze time or close a panel the visitor was reading.
     const hand = generateHand({
-      thumb: 'extended',
-      index: 'curled',
-      middle: 'curled',
-      ring: 'curled',
-      pinky: 'extended'
+      thumb: "extended",
+      index: "curled",
+      middle: "curled",
+      ring: "curled",
+      pinky: "curled",
     });
-    const result = classifyHandGesture(hand, 'Right');
-    expect(result.gesture).toBe('shaka');
+
+    const wrist = hand[0];
+    for (const i of [2, 3, 4]) {
+      hand[i] = { ...hand[i], y: wrist.y + 0.002 };
+    }
+
+    expect(classifyHandGesture(hand, "Right").gesture).toBe("fist");
+  });
+
+  it("correctly classifies ok sign (thumb + index touching while middle & ring extended)", () => {
+    const hand = generateHand({
+      thumb: "extended",
+      index: "extended",
+      middle: "extended",
+      ring: "extended",
+      pinky: "extended",
+      pinch: true,
+    });
+    const result = classifyHandGesture(hand, "Right");
+    expect(result.gesture).toBe("ok");
     expect(result.confidence).toBeGreaterThan(0.9);
   });
 
-  it('correctly classifies rock on / horns gesture (index & pinky extended, middle & ring curled)', () => {
+  it("correctly classifies shaka / call-me gesture (thumb & pinky extended, middle 3 curled)", () => {
     const hand = generateHand({
-      thumb: 'curled',
-      index: 'extended',
-      middle: 'curled',
-      ring: 'curled',
-      pinky: 'extended'
+      thumb: "extended",
+      index: "curled",
+      middle: "curled",
+      ring: "curled",
+      pinky: "extended",
     });
-    const result = classifyHandGesture(hand, 'Right');
-    expect(result.gesture).toBe('rock');
+    const result = classifyHandGesture(hand, "Right");
+    expect(result.gesture).toBe("shaka");
     expect(result.confidence).toBeGreaterThan(0.9);
   });
 
-  it('maintains classification accuracy under hand rotation (rotation invariance)', () => {
+  it("correctly classifies rock on / horns gesture (index & pinky extended, middle & ring curled)", () => {
+    const hand = generateHand({
+      thumb: "curled",
+      index: "extended",
+      middle: "curled",
+      ring: "curled",
+      pinky: "extended",
+    });
+    const result = classifyHandGesture(hand, "Right");
+    expect(result.gesture).toBe("rock");
+    expect(result.confidence).toBeGreaterThan(0.9);
+  });
+
+  it("maintains classification accuracy under hand rotation (rotation invariance)", () => {
     // Test pointing rotated by 45 degrees
     const handRot45 = generateHand({
-      thumb: 'curled',
-      index: 'extended',
-      middle: 'curled',
-      ring: 'curled',
-      pinky: 'curled',
-      rotation: Math.PI / 4
+      thumb: "curled",
+      index: "extended",
+      middle: "curled",
+      ring: "curled",
+      pinky: "curled",
+      rotation: Math.PI / 4,
     });
-    const resultRot45 = classifyHandGesture(handRot45, 'Right');
-    expect(resultRot45.gesture).toBe('pointing');
+    const resultRot45 = classifyHandGesture(handRot45, "Right");
+    expect(resultRot45.gesture).toBe("pointing");
 
     // Test fist rotated by 90 degrees
     const fistRot90 = generateHand({
-      thumb: 'curled',
-      index: 'curled',
-      middle: 'curled',
-      ring: 'curled',
-      pinky: 'curled',
-      rotation: Math.PI / 2
+      thumb: "curled",
+      index: "curled",
+      middle: "curled",
+      ring: "curled",
+      pinky: "curled",
+      rotation: Math.PI / 2,
     });
-    const resultFist90 = classifyHandGesture(fistRot90, 'Right');
-    expect(resultFist90.gesture).toBe('fist');
+    const resultFist90 = classifyHandGesture(fistRot90, "Right");
+    expect(resultFist90.gesture).toBe("fist");
   });
 
-  it('supports left hand correctly', () => {
+  it("supports left hand correctly", () => {
     const leftPointing = generateHand({
-      thumb: 'curled',
-      index: 'extended',
-      middle: 'curled',
-      ring: 'curled',
-      pinky: 'curled',
-      isLeft: true
+      thumb: "curled",
+      index: "extended",
+      middle: "curled",
+      ring: "curled",
+      pinky: "curled",
+      isLeft: true,
     });
-    const result = classifyHandGesture(leftPointing, 'Left');
-    expect(result.gesture).toBe('pointing');
-    expect(result.handedness).toBe('Left');
+    const result = classifyHandGesture(leftPointing, "Left");
+    expect(result.gesture).toBe("pointing");
+    expect(result.handedness).toBe("Left");
   });
 
-  it('OneEuroFilter smooths signal and reduces jitter', () => {
+  it("OneEuroFilter smooths signal and reduces jitter", () => {
     const filter = new OneEuroFilter(30, 1.0, 0.007, 1.0);
     const now = 1000;
     const v1 = filter.filter(10.0, now);
@@ -278,13 +333,13 @@ describe('AI Hand Gesture Classifier & Signal Stabilization (Part C)', () => {
     expect(v2).toBeGreaterThan(10.0);
   });
 
-  it('GestureStabilizer enforces 5-frame majority vote to prevent flickering', () => {
+  it("GestureStabilizer enforces 5-frame majority vote to prevent flickering", () => {
     const stabilizer = new GestureStabilizer(5);
-    expect(stabilizer.update('pointing')).toBe('none'); // Frame 1
-    expect(stabilizer.update('pointing')).toBe('none'); // Frame 2
-    expect(stabilizer.update('pointing')).toBe('pointing'); // Frame 3 (majority 3/5 achieved!)
+    expect(stabilizer.update("pointing")).toBe("none"); // Frame 1
+    expect(stabilizer.update("pointing")).toBe("none"); // Frame 2
+    expect(stabilizer.update("pointing")).toBe("pointing"); // Frame 3 (majority 3/5 achieved!)
 
     // Transient single-frame glitch
-    expect(stabilizer.update('fist')).toBe('pointing'); // Maintained through hysteresis!
+    expect(stabilizer.update("fist")).toBe("pointing"); // Maintained through hysteresis!
   });
 });

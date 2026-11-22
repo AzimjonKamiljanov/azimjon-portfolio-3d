@@ -1,0 +1,26 @@
+# Build output and vendored code.
+dist/
+node_modules/
+.wrangler/
+test-results/
+playwright-report/
+package-lock.json
+worker-configuration.d.ts
+
+# Served verbatim, and partly vendored: public/mediapipe holds Google's WASM
+# glue, which must stay byte-for-byte as shipped. Formatting it would produce
+# a vast diff over code nobody here maintains.
+public/
+
+# Tool state, not source.
+.agents/
+.claude/
+
+# index.html is deliberately not formatted by Prettier.
+# Its HTML printer rewrites the whole 724-line file and lowercases the
+# doctype, which produces a 2000-line diff for no readability gain and breaks
+# the dist integrity tests that assert the document's exact preamble.
+index.html
+
+# Generated data: rewritten by scripts/build_projects_data.mjs.
+src/data/projects.json

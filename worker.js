@@ -4,7 +4,9 @@
  * honeypot protection, strict origin allowlist, and hardened Telegram dispatch.
  */
 
-const SECURITY_HEADERS = {
+const TURNSTILE_ORIGIN = "https://challenges.cloudflare.com";
+
+const STATIC_SECURITY_HEADERS = {
   "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
@@ -13,28 +15,86 @@ const SECURITY_HEADERS = {
     "camera=(self), microphone=(), geolocation=(), payment=()",
   "Cross-Origin-Opener-Policy": "same-origin",
   "Cross-Origin-Resource-Policy": "same-origin",
-  "Content-Security-Policy": [
+};
+
+/**
+ * Turnstile needs a cross-origin script and iframe. Those origins are added to
+ * the policy only while the challenge is actually configured, so a deployment
+ * without Turnstile keeps a self-only policy and no external script origin.
+ */
+function buildCsp(turnstileEnabled) {
+  const scriptSrc = ["'self'", "'wasm-unsafe-eval'"];
+  const frameSrc = ["'self'"];
+  const connectSrc = ["'self'"];
+
+  if (turnstileEnabled) {
+    scriptSrc.push(TURNSTILE_ORIGIN);
+    frameSrc.push(TURNSTILE_ORIGIN);
+    connectSrc.push(TURNSTILE_ORIGIN);
+  }
+
+  return [
     "default-src 'self'",
-    "script-src 'self' 'wasm-unsafe-eval'",
+    `script-src ${scriptSrc.join(" ")}`,
     "style-src 'self'",
     "font-src 'self' data:",
     "img-src 'self' data: blob: https:",
     "media-src 'self' data: blob:",
-    "connect-src 'self'",
+    `connect-src ${connectSrc.join(" ")}`,
     "worker-src 'self' blob:",
     "child-src 'self' blob:",
+    `frame-src ${frameSrc.join(" ")}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",
     "upgrade-insecure-requests",
-  ].join("; "),
-};
+  ].join("; ");
+}
 
-function applySecurityHeaders(headers) {
-  for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+const CSP_WITHOUT_TURNSTILE = buildCsp(false);
+const CSP_WITH_TURNSTILE = buildCsp(true);
+
+/**
+ * Turnstile is live only when BOTH halves are present: the public site key the
+ * browser needs to render the widget, and the secret the Worker needs to
+ * verify the token. Half a configuration previously meant every submission was
+ * rejected, so the two are now checked together and reported as one state.
+ */
+export function getTurnstileConfig(env) {
+  const siteKey =
+    typeof env?.TURNSTILE_SITE_KEY === "string"
+      ? env.TURNSTILE_SITE_KEY.trim()
+      : "";
+  const secretKey =
+    typeof env?.TURNSTILE_SECRET_KEY === "string"
+      ? env.TURNSTILE_SECRET_KEY.trim()
+      : "";
+
+  if (siteKey && secretKey) {
+    return { enabled: true, siteKey, secretKey };
+  }
+
+  if (siteKey || secretKey) {
+    console.error(
+      "Turnstile is half-configured: " +
+        `${siteKey ? "TURNSTILE_SITE_KEY" : "TURNSTILE_SECRET_KEY"} is set but ` +
+        `${siteKey ? "TURNSTILE_SECRET_KEY" : "TURNSTILE_SITE_KEY"} is missing. ` +
+        "The challenge stays disabled; honeypot and rate limiting still apply.",
+    );
+  }
+
+  return { enabled: false, siteKey: null, secretKey: null };
+}
+
+function applySecurityHeaders(headers, turnstileEnabled = false) {
+  for (const [key, value] of Object.entries(STATIC_SECURITY_HEADERS)) {
     headers.set(key, value);
   }
+  headers.set(
+    "Content-Security-Policy",
+    turnstileEnabled ? CSP_WITH_TURNSTILE : CSP_WITHOUT_TURNSTILE,
+  );
 }
 
 const PRODUCTION_ALLOWED_ORIGINS = new Set([
@@ -65,7 +125,9 @@ function isAllowedOrigin(origin, host, isDev) {
       (parsed.port === "" || parsed.port === "443")
     )
       return true;
-  } catch (_) {}
+  } catch {
+    // A malformed Origin header is simply not an allowed origin.
+  }
   return false;
 }
 
@@ -162,7 +224,10 @@ function escapeTg(str) {
 // Strip non-printable ASCII control characters
 function sanitizeInput(str) {
   if (typeof str !== "string") return "";
-  // Allow tabs (9), newlines (10), carriage returns (13); strip others below 32 and delete (127)
+  // Allow tabs (9), newlines (10), carriage returns (13); strip every other
+  // C0 control character plus DEL. Matching control characters is the entire
+  // purpose of this expression, hence the targeted rule suppression.
+  // eslint-disable-next-line no-control-regex
   return str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "").trim();
 }
 
@@ -224,62 +289,91 @@ async function verifyTurnstile(token, secretKey, clientIp) {
   }
 }
 
+/**
+ * Single exit point for every JSON response the Worker produces.
+ *
+ * Previously each branch rebuilt its own `Headers`, called
+ * `applySecurityHeaders` and stringified its own body — seventeen copies of
+ * the same four lines, which is how the Turnstile CSP entries would have been
+ * missed on at least one path. One helper means one place to get it right.
+ */
+function jsonResponse(payload, { status = 200, cors, turnstile, extra } = {}) {
+  const headers = new Headers({ "Content-Type": "application/json" });
+  if (cors) {
+    for (const [key, value] of Object.entries(cors)) headers.set(key, value);
+  } else {
+    headers.set("Vary", "Origin");
+  }
+  if (extra) {
+    for (const [key, value] of Object.entries(extra)) headers.set(key, value);
+  }
+  applySecurityHeaders(headers, Boolean(turnstile));
+  return new Response(JSON.stringify(payload), { status, headers });
+}
+
+/** Public runtime configuration the browser needs before rendering the form. */
+function handleConfig(env) {
+  const turnstile = getTurnstileConfig(env);
+  return jsonResponse(
+    {
+      ok: true,
+      // A Turnstile *site* key is public by design — it ships in the markup of
+      // every site that uses the widget. Serving it here instead of baking it
+      // into the bundle keeps one runtime source of truth, so the widget and
+      // the Worker's verification can never disagree about whether the
+      // challenge is active.
+      turnstile: {
+        enabled: turnstile.enabled,
+        siteKey: turnstile.siteKey,
+      },
+    },
+    {
+      turnstile: turnstile.enabled,
+      extra: {
+        "Cache-Control": "public, max-age=60, stale-while-revalidate=300",
+      },
+    },
+  );
+}
+
+const MAX_CONTACT_BYTES = 10240;
+
 async function handleContact(request, env, url) {
   const isDev = env.ENVIRONMENT === "dev";
   const origin = request.headers.get("Origin");
   const corsHeaders = getCorsHeaders(origin, url.host, isDev);
+  const turnstile = getTurnstileConfig(env);
+  const reply = (payload, status, extra) =>
+    jsonResponse(payload, {
+      status,
+      cors: corsHeaders,
+      turnstile: turnstile.enabled,
+      extra,
+    });
 
   // 1. Origin verification
   if (origin && !isAllowedOrigin(origin, url.host, isDev)) {
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      Vary: "Origin",
-    });
-    applySecurityHeaders(headers);
-    return new Response(
-      JSON.stringify({ ok: false, error: getMsg("uz", "forbiddenOrigin") }),
-      {
-        status: 403,
-        headers,
-      },
+    return jsonResponse(
+      { ok: false, error: getMsg("uz", "forbiddenOrigin") },
+      { status: 403, turnstile: turnstile.enabled },
     );
   }
 
   // 2. Strict Content-Type check
   const contentType = request.headers.get("content-type") || "";
   if (!contentType.toLowerCase().includes("application/json")) {
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      ...corsHeaders,
-    });
-    applySecurityHeaders(headers);
-    return new Response(
-      JSON.stringify({ ok: false, error: getMsg("uz", "invalidJson") }),
-      {
-        status: 415,
-        headers,
-      },
-    );
+    return reply({ ok: false, error: getMsg("uz", "invalidJson") }, 415);
   }
 
-  // 3. Payload size check (max 10KB)
-  const contentLength = parseInt(
+  // 3. Declared payload size check. A request may omit Content-Length
+  //    (chunked transfer), so this is only the cheap early rejection; the
+  //    authoritative cap is applied on the bytes actually read, below.
+  const declaredLength = Number.parseInt(
     request.headers.get("content-length") || "0",
     10,
   );
-  if (contentLength > 10240) {
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      ...corsHeaders,
-    });
-    applySecurityHeaders(headers);
-    return new Response(
-      JSON.stringify({ ok: false, error: getMsg("uz", "validationError") }),
-      {
-        status: 413,
-        headers,
-      },
-    );
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_CONTACT_BYTES) {
+    return reply({ ok: false, error: getMsg("uz", "validationError") }, 413);
   }
 
   // 4. Client IP resolution (do not trust x-forwarded-for)
@@ -290,41 +384,27 @@ async function handleContact(request, env, url) {
   // 5. Rate limiting
   const rate = await checkRateLimit(clientIp, env, isDev);
   if (!rate.allowed) {
-    const headers = new Headers({
-      "Content-Type": "application/json",
+    return reply({ ok: false, error: getMsg("uz", "rateLimited") }, 429, {
       "Retry-After": String(rate.retryAfter),
-      ...corsHeaders,
     });
-    applySecurityHeaders(headers);
-    return new Response(
-      JSON.stringify({
-        ok: false,
-        error: getMsg("uz", "rateLimited"),
-      }),
-      {
-        status: 429,
-        headers,
-      },
-    );
   }
 
-  // 6. JSON payload parsing
+  // 6. Read the body under a hard byte cap, then parse.
   let body;
   try {
-    body = await request.json();
-  } catch (_) {
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      ...corsHeaders,
-    });
-    applySecurityHeaders(headers);
-    return new Response(
-      JSON.stringify({ ok: false, error: getMsg("uz", "invalidJson") }),
-      {
-        status: 400,
-        headers,
-      },
-    );
+    const raw = await request.text();
+    // `.length` counts UTF-16 units; a multi-byte body can only be larger in
+    // bytes, so this never lets an oversized payload through.
+    if (raw.length > MAX_CONTACT_BYTES) {
+      return reply({ ok: false, error: getMsg("uz", "validationError") }, 413);
+    }
+    body = JSON.parse(raw);
+  } catch {
+    return reply({ ok: false, error: getMsg("uz", "invalidJson") }, 400);
+  }
+
+  if (body === null || typeof body !== "object" || Array.isArray(body)) {
+    return reply({ ok: false, error: getMsg("uz", "invalidJson") }, 400);
   }
 
   const lang = ["uz", "en", "ru"].includes(body.lang?.toLowerCase())
@@ -334,41 +414,19 @@ async function handleContact(request, env, url) {
   // 7. Honeypot check (anti-bot trap)
   if (body._hp || body.website || body.honeypot) {
     // Silently accept without transmitting spam
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      ...corsHeaders,
-    });
-    applySecurityHeaders(headers);
-    return new Response(
-      JSON.stringify({ ok: true, message: getMsg(lang, "success") }),
-      {
-        status: 200,
-        headers,
-      },
-    );
+    return reply({ ok: true, message: getMsg(lang, "success") }, 200);
   }
 
-  // 8. Turnstile verification (if secret configured)
-  if (env.TURNSTILE_SECRET_KEY) {
+  // 8. Turnstile verification, only when the challenge is fully configured.
+  if (turnstile.enabled) {
     const turnstileToken = body["cf-turnstile-response"] || body.turnstileToken;
     const passed = await verifyTurnstile(
       turnstileToken,
-      env.TURNSTILE_SECRET_KEY,
+      turnstile.secretKey,
       clientIp,
     );
     if (!passed) {
-      const headers = new Headers({
-        "Content-Type": "application/json",
-        ...corsHeaders,
-      });
-      applySecurityHeaders(headers);
-      return new Response(
-        JSON.stringify({ ok: false, error: getMsg(lang, "turnstileFailed") }),
-        {
-          status: 400,
-          headers,
-        },
-      );
+      return reply({ ok: false, error: getMsg(lang, "turnstileFailed") }, 400);
     }
   }
 
@@ -393,21 +451,7 @@ async function handleContact(request, env, url) {
     actualBody.length < 3 ||
     rawMessage.length > 2500
   ) {
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      ...corsHeaders,
-    });
-    applySecurityHeaders(headers);
-    return new Response(
-      JSON.stringify({
-        ok: false,
-        error: getMsg(lang, "validationError"),
-      }),
-      {
-        status: 400,
-        headers,
-      },
-    );
+    return reply({ ok: false, error: getMsg(lang, "validationError") }, 400);
   }
 
   // 10. Contact type identification
@@ -416,7 +460,7 @@ async function handleContact(request, env, url) {
     detectedType = "email";
   } else if (contact.startsWith("@")) {
     detectedType = "tg";
-  } else if (/^\+?\d[\d\s\-\(\)]{6,}$/.test(contact)) {
+  } else if (/^\+?\d[\d\s\-()]{6,}$/.test(contact)) {
     detectedType = "phone";
   }
 
@@ -427,24 +471,29 @@ async function handleContact(request, env, url) {
   };
   const currentTypeLabel = typeLabels[detectedType] || "Aloqa Manzili";
 
-  const now = new Date();
-  const dateStr = now.toISOString().replace("T", " ").slice(0, 19) + " UTC";
+  const dateStr = `${new Date().toISOString().replace("T", " ").slice(0, 19)} UTC`;
 
   // 11. Format Telegram message (guaranteed <= 4096 chars)
   let safeMessage = rawMessage;
   if (safeMessage.length > 2000) {
-    safeMessage = safeMessage.slice(0, 2000) + "... [truncated]";
+    safeMessage = `${safeMessage.slice(0, 2000)}... [truncated]`;
   }
 
-  const tgText =
-    `🌌 <b>YANGI MUROJAAT (3D Portfolio Moon Terminal)</b>\n\n` +
-    `👤 <b>F.I.SH / Ismi:</b> ${escapeTg(name)}\n` +
-    `📡 <b>Aloqa Turi:</b> ${escapeTg(currentTypeLabel)}\n` +
-    `📱 <b>Aloqa Manzili:</b> ${escapeTg(contact)}\n` +
-    (finalTopic ? `🎯 <b>Mavzu:</b> ${escapeTg(finalTopic)}\n` : "") +
-    `📝 <b>Xabar Matni:</b>\n${escapeTg(safeMessage)}\n\n` +
-    `⏱ <b>Vaqt:</b> ${dateStr}\n` +
-    `🌐 <b>Til:</b> ${escapeTg(lang.toUpperCase())}`;
+  const tgLines = [
+    "🌌 <b>YANGI MUROJAAT (3D Portfolio Moon Terminal)</b>",
+    "",
+    `👤 <b>F.I.SH / Ismi:</b> ${escapeTg(name)}`,
+    `📡 <b>Aloqa Turi:</b> ${escapeTg(currentTypeLabel)}`,
+    `📱 <b>Aloqa Manzili:</b> ${escapeTg(contact)}`,
+  ];
+  if (finalTopic) tgLines.push(`🎯 <b>Mavzu:</b> ${escapeTg(finalTopic)}`);
+  tgLines.push(
+    `📝 <b>Xabar Matni:</b>\n${escapeTg(safeMessage)}`,
+    "",
+    `⏱ <b>Vaqt:</b> ${dateStr}`,
+    `🌐 <b>Til:</b> ${escapeTg(lang.toUpperCase())}`,
+  );
+  const tgText = tgLines.join("\n");
 
   // Inline action buttons
   const inlineButtons = [];
@@ -487,7 +536,7 @@ async function handleContact(request, env, url) {
     },
   ]);
 
-  // 12. Telegram API dispatch - ONLY from env vars, NO fallback defaults!
+  // 12. Telegram API dispatch — env vars only, no fallback defaults.
   const botToken = env.TELEGRAM_BOT_TOKEN;
   const chatId = env.TELEGRAM_CHAT_ID;
 
@@ -495,18 +544,7 @@ async function handleContact(request, env, url) {
     console.error(
       "Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID in environment.",
     );
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      ...corsHeaders,
-    });
-    applySecurityHeaders(headers);
-    return new Response(
-      JSON.stringify({ ok: false, error: getMsg(lang, "serviceUnavailable") }),
-      {
-        status: 500,
-        headers,
-      },
-    );
+    return reply({ ok: false, error: getMsg(lang, "serviceUnavailable") }, 500);
   }
 
   try {
@@ -519,59 +557,21 @@ async function handleContact(request, env, url) {
           chat_id: chatId,
           text: tgText,
           parse_mode: "HTML",
-          reply_markup: {
-            inline_keyboard: inlineButtons,
-          },
+          reply_markup: { inline_keyboard: inlineButtons },
         }),
       },
     );
 
     const tgData = await tgRes.json();
     if (tgRes.ok && tgData.ok) {
-      const headers = new Headers({
-        "Content-Type": "application/json",
-        ...corsHeaders,
-      });
-      applySecurityHeaders(headers);
-      return new Response(
-        JSON.stringify({ ok: true, message: getMsg(lang, "success") }),
-        {
-          status: 200,
-          headers,
-        },
-      );
-    } else {
-      console.error("Telegram API error status:", tgRes.status);
-      const headers = new Headers({
-        "Content-Type": "application/json",
-        ...corsHeaders,
-      });
-      applySecurityHeaders(headers);
-      return new Response(
-        JSON.stringify({
-          ok: false,
-          error: getMsg(lang, "serviceUnavailable"),
-        }),
-        {
-          status: 502,
-          headers,
-        },
-      );
+      return reply({ ok: true, message: getMsg(lang, "success") }, 200);
     }
-  } catch (_err) {
+
+    console.error("Telegram API error status:", tgRes.status);
+    return reply({ ok: false, error: getMsg(lang, "serviceUnavailable") }, 502);
+  } catch {
     console.error("Telegram dispatch error");
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      ...corsHeaders,
-    });
-    applySecurityHeaders(headers);
-    return new Response(
-      JSON.stringify({ ok: false, error: getMsg(lang, "serviceUnavailable") }),
-      {
-        status: 500,
-        headers,
-      },
-    );
+    return reply({ ok: false, error: getMsg(lang, "serviceUnavailable") }, 500);
   }
 }
 
@@ -580,50 +580,49 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
     const isDev = env.ENVIRONMENT === "dev";
+    const turnstileEnabled = getTurnstileConfig(env).enabled;
+
+    // Public runtime config
+    if (path === "/api/config") {
+      if (request.method !== "GET" && request.method !== "HEAD") {
+        return jsonResponse(
+          { ok: false, error: "Method Not Allowed" },
+          { status: 405, turnstile: turnstileEnabled },
+        );
+      }
+      return handleConfig(env);
+    }
 
     // CORS preflight for /api/contact
     if (path === "/api/contact" && request.method === "OPTIONS") {
       const origin = request.headers.get("Origin");
       if (origin && !isAllowedOrigin(origin, url.host, isDev)) {
-        const headers = new Headers({
-          "Content-Type": "application/json",
-          Vary: "Origin",
-        });
-        applySecurityHeaders(headers);
-        return new Response(
-          JSON.stringify({ ok: false, error: getMsg("uz", "forbiddenOrigin") }),
-          {
-            status: 403,
-            headers,
-          },
+        return jsonResponse(
+          { ok: false, error: getMsg("uz", "forbiddenOrigin") },
+          { status: 403, turnstile: turnstileEnabled },
         );
       }
       const headers = new Headers(getCorsHeaders(origin, url.host, isDev));
-      applySecurityHeaders(headers);
+      applySecurityHeaders(headers, turnstileEnabled);
       return new Response(null, { status: 204, headers });
     }
 
     // Contact endpoint POST
     if (path === "/api/contact") {
       if (request.method !== "POST") {
-        const headers = new Headers({ "Content-Type": "application/json" });
-        applySecurityHeaders(headers);
-        return new Response(
-          JSON.stringify({ ok: false, error: "Method Not Allowed" }),
-          {
-            status: 405,
-            headers,
-          },
+        return jsonResponse(
+          { ok: false, error: "Method Not Allowed" },
+          { status: 405, turnstile: turnstileEnabled },
         );
       }
       return handleContact(request, env, url);
     }
 
-    // Static Assets handling via Cloudflare binding
+    // Static assets via the Cloudflare ASSETS binding
     if (env.ASSETS && typeof env.ASSETS.fetch === "function") {
       const assetRes = await env.ASSETS.fetch(request);
       const newHeaders = new Headers(assetRes.headers);
-      applySecurityHeaders(newHeaders);
+      applySecurityHeaders(newHeaders, turnstileEnabled);
 
       // Fine-grained Cache-Control
       if (
@@ -667,7 +666,7 @@ export default {
 
     // Fallback 404
     const headers = new Headers({ "Content-Type": "text/plain" });
-    applySecurityHeaders(headers);
+    applySecurityHeaders(headers, turnstileEnabled);
     return new Response("Not Found", { status: 404, headers });
   },
 };

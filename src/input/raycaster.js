@@ -136,7 +136,7 @@ export function initRaycaster(
 
     const isMobile = window.innerWidth < 768;
     let finalCamPos;
-    let finalTargetPos = targetWorldPos.clone();
+    const finalTargetPos = targetWorldPos.clone();
 
     if (object.userData.isSun) {
       finalCamPos = targetWorldPos.clone().add(new THREE.Vector3(0, 4, 22));

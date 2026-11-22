@@ -227,25 +227,26 @@ export function classifyHandGesture(landmarks, handedness = "Right") {
     };
   }
 
-  // 3. FIST vs THUMBS UP (All 4 main fingers curled)
+  // 3. FIST vs THUMBS UP vs THUMBS DOWN (all four main fingers curled)
   if (extendedCount === 0) {
-    // In camera coordinates, y=0 is top. Thumb pointing up has thumbTip.y significantly above wrist.y and MCP
+    // Camera coordinates put y=0 at the top, so "up" is a smaller y. Both
+    // orientations require the tip to clear the wrist by a third of the hand's
+    // own scale, which keeps the test size- and distance-independent.
+    const thumbRise = wrist.y - thumbTip.y;
     const isThumbPointingUp =
-      thumbTip.y < wrist.y - handScale * 0.35 && thumbTip.y < thumbMcp.y;
+      thumbRise > handScale * 0.35 && thumbTip.y < thumbMcp.y;
+    const isThumbPointingDown =
+      thumbRise < -handScale * 0.35 && thumbTip.y > thumbMcp.y;
 
     if (thumbExt && isThumbPointingUp) {
-      return {
-        gesture: "thumbs_up",
-        confidence: 0.95,
-        handedness,
-      };
+      return { gesture: "thumbs_up", confidence: 0.95, handedness };
     }
 
-    return {
-      gesture: "fist",
-      confidence: 0.95,
-      handedness,
-    };
+    if (thumbExt && isThumbPointingDown) {
+      return { gesture: "thumbs_down", confidence: 0.95, handedness };
+    }
+
+    return { gesture: "fist", confidence: 0.95, handedness };
   }
 
   // 4. SHAKA / CALL ME (Thumb and Pinky extended, middle 3 curled)

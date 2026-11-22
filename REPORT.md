@@ -4,13 +4,14 @@
 **Target URL:** [https://azimjon.dev](https://azimjon.dev)  
 **Branch:** `feat/photorealistic-deep-space-and-gestures`  
 **Engineer:** Antigravity AI Engineering Worker  
-**Date:** November 4, 2026  
+**Date:** November 4, 2026
 
 ---
 
 ## 1. Executive Summary
 
 This comprehensive engineering pass resolved all outstanding graphics, interaction, responsiveness, and data integrity challenges across the 3D Solar Developer Portfolio:
+
 1. **Photographic Deep Space Realism:** Replaced cartoonish magenta nebulae and washed-out ambient washes with a physically grounded deep celestial sphere (measured mean background sRGB of **0.16/255**, far below the strict 8/255 threshold), physically accurate inverse-square solar decay (`PointLight.decay = 2.0`), minimal ambient lighting (`0.008`), high-dynamic-range Bloom (`threshold: 1.05`, `HalfFloatType` render target), tidally locked Moon, analytical soft planetary ring shadows, and true astronomical scale toggling.
 2. **AI Vision Hand Gestures (`@mediapipe/tasks-vision`):** Migrated to self-hosted `@mediapipe/tasks-vision` HandLandmarker with WASM execution, rotation-invariant joint angle detection, One-Euro adaptive filter, 5-frame stabilizer with hysteresis, and accurate Three.js Normalized Device Coordinate (NDC) raycasting (`ndcX = (x / W) * 2 - 1`, `ndcY = -(y / H) * 2 + 1`). Users can point at any celestial body, hover with reticle tracking, and pinch to inspect objects and launch details.
 3. **Responsive Architecture & Fluid Typography:** Completely eliminated horizontal overflow across 10 distinct viewports (from ultra-compact 320x568 to 4K 3840x2160) and 3 languages (Uzbek, English, Russian). Redesigned the preloader with fluid `clamp()` typography (>= 12px), zero fixed widths, and added `<noscript>` and WebGL failure error fallbacks. Added a trilingual Credits modal and button.
@@ -20,33 +21,35 @@ This comprehensive engineering pass resolved all outstanding graphics, interacti
 
 ## 2. Before vs. After Verification Matrix
 
-| Area / Feature | BEFORE Implementation | AFTER Implementation | Evidence / Command / Artifact |
-|---|---|---|---|
-| **Deep Space Skybox** | Procedural purple/magenta nebula with glowing violet ribbons | Realistic Milky Way band with warm stellar core & galactic dust extinction rifts | `tests/visual.spec.js` (Test 1: mean sRGB < 8/255)<br>`docs/screenshots/deep_space_realism_1920.png` |
-| **Empty Sky Luminance** | sRGB ~ 28–45/255 (visible purple background wash) | **Mean sRGB: 0.16/255** (strictly < 8/255 threshold) | Verified via Playwright WebGL buffer scan (`gl.readPixels()`) |
-| **Ambient & Sun Lighting** | `AmbientLight` 0.35 (washed-out dark sides), PointLight decay 0.6 | **`AmbientLight`: 0.008** (<= 0.01), PointLight decay 2.0 (inverse-square physical falloff) | `src/scene/setup.js:199-203` |
-| **HDR Bloom Postprocessing** | Threshold 0.82 (planets bloomed like neon lamps) | **Threshold: 1.05** with `HalfFloatType` render target (only HDR Sun photosphere glows > 1.0) | `src/scene/postprocessing.js:11-37` |
-| **Earth Realism** | Static unlit surface with uniform clouds | Dynamic day/night cycle: golden city lights on dark hemisphere, cloud layer, Rayleigh rim | `src/bodies/planets.js:300-336` |
-| **Moon Motion** | Independent spinning showing far side to Earth | **Tidally locked**: synchronous rotation keeping same lunar face to Earth | `src/bodies/planets.js:498-501` |
-| **Saturn & Rings** | Synthetic single gradient ring | Multi-band ring with Cassini division & analytical soft planetary shadow projection | `src/bodies/planets.js:35-93`, `370-389` |
-| **Astronomical Scale** | Artistic compressed radii only | Artistic mode + **True Scale Toggle** (`window.__toggleTrueScale`) | `tests/overflow.spec.js` (Test 13 passing) |
-| **Hand Gesture Vision** | Legacy unbundled script; zero-byte placeholder assets | Modern `@mediapipe/tasks-vision` HandLandmarker with WASM self-hosted, GPU/CPU fallback | `tests/gestures.test.js` (10 tests passing)<br>`src/input/gestures.js` |
-| **Gesture Reticle Raycast** | Passed raw `[0, 1]` coordinates; missed celestial objects | Exact Three.js NDC mapping `[-1, +1]`: point -> hover -> pinch opens modal smoothly | `tests/gestures.spec.js` (Test 5 passing) |
-| **Preloader Experience** | Fixed `width: 380px` card, tiny 9.5px fonts, simulated timer | Fluid `width: min(92vw, 420px)`, clamp typography (>= 12px), LoadingManager, `<noscript>` banner | `style.css:2186-2240`, `index.html:150-175` |
-| **First-Visit Guide** | 4 static generic text cards | 8-step interactive guide with **live gesture practice mode chips** (green checkmarks) | `docs/screenshots/hand_gestures_practice_guide.png` |
-| **Credits & Attributions** | No UI link; incomplete asset documentation | Dedicated trilingual Credits Modal + `#credits-toggle-btn` + detailed `ATTRIBUTIONS.md` | `src/ui/guide.js`, `ATTRIBUTIONS.md`, `style.css` |
-| **Horizontal Text Overflow** | Rigid `white-space: nowrap !important;` causing mobile clip | Zero horizontal overflow across 10 viewports x 3 languages x all modals | `tests/overflow.spec.js` (13 tests passing) |
-| **CSP & Inline Styles** | Inline `style=` attributes on fallback cards | 0 inline styles (`style-src 'self'`), all extracted to `style.css` classes | `tests/dist.test.js` (Test 9: 0 inline styles) |
-| **Wrangler Rate Limiter** | Invalid `"binding": "RATE_LIMITER"` causing deploy error | Valid `"name": "RATE_LIMITER"` validated by `wrangler types` | `wrangler.jsonc:11` |
-| **Developer Attribution** | Inflated "Lead Architect / Senior Engineer" titles | Truthful **"AI & Full-Stack Developer (Student)"** | `src/data/projects.json`, `index.html`, `translations.js` |
-| **Automated Test Coverage** | 20 unit tests, 7 E2E tests | **35 Vitest unit tests, 29 Playwright E2E tests (64 total tests)** | `npm test` & `npx playwright test` |
+| Area / Feature               | BEFORE Implementation                                             | AFTER Implementation                                                                             | Evidence / Command / Artifact                                                                        |
+| ---------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| **Deep Space Skybox**        | Procedural purple/magenta nebula with glowing violet ribbons      | Realistic Milky Way band with warm stellar core & galactic dust extinction rifts                 | `tests/visual.spec.js` (Test 1: mean sRGB < 8/255)<br>`docs/screenshots/deep_space_realism_1920.png` |
+| **Empty Sky Luminance**      | sRGB ~ 28–45/255 (visible purple background wash)                 | **Mean sRGB: 0.16/255** (strictly < 8/255 threshold)                                             | Verified via Playwright WebGL buffer scan (`gl.readPixels()`)                                        |
+| **Ambient & Sun Lighting**   | `AmbientLight` 0.35 (washed-out dark sides), PointLight decay 0.6 | **`AmbientLight`: 0.008** (<= 0.01), PointLight decay 2.0 (inverse-square physical falloff)      | `src/scene/setup.js:199-203`                                                                         |
+| **HDR Bloom Postprocessing** | Threshold 0.82 (planets bloomed like neon lamps)                  | **Threshold: 1.05** with `HalfFloatType` render target (only HDR Sun photosphere glows > 1.0)    | `src/scene/postprocessing.js:11-37`                                                                  |
+| **Earth Realism**            | Static unlit surface with uniform clouds                          | Dynamic day/night cycle: golden city lights on dark hemisphere, cloud layer, Rayleigh rim        | `src/bodies/planets.js:300-336`                                                                      |
+| **Moon Motion**              | Independent spinning showing far side to Earth                    | **Tidally locked**: synchronous rotation keeping same lunar face to Earth                        | `src/bodies/planets.js:498-501`                                                                      |
+| **Saturn & Rings**           | Synthetic single gradient ring                                    | Multi-band ring with Cassini division & analytical soft planetary shadow projection              | `src/bodies/planets.js:35-93`, `370-389`                                                             |
+| **Astronomical Scale**       | Artistic compressed radii only                                    | Artistic mode + **True Scale Toggle** (`window.__toggleTrueScale`)                               | `tests/overflow.spec.js` (Test 13 passing)                                                           |
+| **Hand Gesture Vision**      | Legacy unbundled script; zero-byte placeholder assets             | Modern `@mediapipe/tasks-vision` HandLandmarker with WASM self-hosted, GPU/CPU fallback          | `tests/gestures.test.js` (10 tests passing)<br>`src/input/gestures.js`                               |
+| **Gesture Reticle Raycast**  | Passed raw `[0, 1]` coordinates; missed celestial objects         | Exact Three.js NDC mapping `[-1, +1]`: point -> hover -> pinch opens modal smoothly              | `tests/gestures.spec.js` (Test 5 passing)                                                            |
+| **Preloader Experience**     | Fixed `width: 380px` card, tiny 9.5px fonts, simulated timer      | Fluid `width: min(92vw, 420px)`, clamp typography (>= 12px), LoadingManager, `<noscript>` banner | `style.css:2186-2240`, `index.html:150-175`                                                          |
+| **First-Visit Guide**        | 4 static generic text cards                                       | 8-step interactive guide with **live gesture practice mode chips** (green checkmarks)            | `docs/screenshots/hand_gestures_practice_guide.png`                                                  |
+| **Credits & Attributions**   | No UI link; incomplete asset documentation                        | Dedicated trilingual Credits Modal + `#credits-toggle-btn` + detailed `ATTRIBUTIONS.md`          | `src/ui/guide.js`, `ATTRIBUTIONS.md`, `style.css`                                                    |
+| **Horizontal Text Overflow** | Rigid `white-space: nowrap !important;` causing mobile clip       | Zero horizontal overflow across 10 viewports x 3 languages x all modals                          | `tests/overflow.spec.js` (13 tests passing)                                                          |
+| **CSP & Inline Styles**      | Inline `style=` attributes on fallback cards                      | 0 inline styles (`style-src 'self'`), all extracted to `style.css` classes                       | `tests/dist.test.js` (Test 9: 0 inline styles)                                                       |
+| **Wrangler Rate Limiter**    | Invalid `"binding": "RATE_LIMITER"` causing deploy error          | Valid `"name": "RATE_LIMITER"` validated by `wrangler types`                                     | `wrangler.jsonc:11`                                                                                  |
+| **Developer Attribution**    | Inflated "Lead Architect / Senior Engineer" titles                | Truthful **"AI & Full-Stack Developer (Student)"**                                               | `src/data/projects.json`, `index.html`, `translations.js`                                            |
+| **Automated Test Coverage**  | 20 unit tests, 7 E2E tests                                        | **35 Vitest unit tests, 29 Playwright E2E tests (64 total tests)**                               | `npm test` & `npx playwright test`                                                                   |
 
 ---
 
 ## 3. Deep Verification Record
 
 ### 3.1 Vitest Unit Suite (35 Tests Passing)
+
 Command executed: `npm test`
+
 ```
 > azimjon-portfolio-3d@1.0.0 test
 > vitest run
@@ -61,16 +64,19 @@ Command executed: `npm test`
    Start at  11:42:12
    Duration  196ms
 ```
+
 - **`tests/data.test.js`**: Validates `projects.json` structure, valid links (`https://` or `null` for private), all 10 open-source tool attributions, truthful student profile, zero sensationalized weapon terms.
 - **`tests/dist.test.js`**: Validates modern HTML doctype, meta viewport with user zoom enabled (WCAG 1.4.4), zero external CDNs, self-hosted fonts/WASM, zero inline `style=` attributes in `dist/index.html` (A5 strict CSP), zero 0-byte build files in `dist/`.
 - **`tests/gestures.test.js`**: Unit tests for rotation-invariant angle calculation, palm, fist, pointing, pinch, victory, rotated hands (45°, 90°), left hand, One-Euro filter smoothing, and 5-frame stabilizer hysteresis.
 - **`tests/worker.test.js`**: Validates Cloudflare Worker Origin allowlist, Honeypot bot protection, 10 KB size cap, rate limiter headers, Telegram API truncation and HTML sanitization.
 
 ### 3.2 Playwright End-to-End Suite (29 Tests Passing)
+
 Command executed: `npm run build && npx playwright test --project=chrome`
 Output: `29 passed (58.1s)`
 
 #### A. Core E2E Acceptance (`tests/e2e.spec.js` - 8 tests)
+
 ```
   ✓  1. Loads production application with 0 console errors and renders 3D canvas (908ms)
   ✓  2. Language switcher dynamically updates document lang and localized UI text (897ms)
@@ -83,6 +89,7 @@ Output: `29 passed (58.1s)`
 ```
 
 #### B. Hand Gesture Control Acceptance (`tests/gestures.spec.js` - 5 tests)
+
 ```
   ✓  1. Consent modal shows on initial activation, deny closes modal, allow grants permission (2.0s)
   ✓  2. Injected Pointing gesture activates reticle and tracks coordinates (602ms)
@@ -92,6 +99,7 @@ Output: `29 passed (58.1s)`
 ```
 
 #### C. Responsive Viewport & Multi-Language (`tests/overflow.spec.js` - 13 tests)
+
 ```
   ✓   1. No horizontal overflow on Mobile Ultra-Compact (320x568) across UZ, EN, RU (747ms)
   ✓   2. No horizontal overflow on Mobile Standard (360x800) across UZ, EN, RU (731ms)
@@ -109,6 +117,7 @@ Output: `29 passed (58.1s)`
 ```
 
 #### D. Visual Regression & Deep-Space Luminance (`tests/visual.spec.js` - 3 tests)
+
 ```
   ✓  1. Deep space background sky patch sRGB is strictly < 8/255 (3.1s)
   ✓  2. Sun core photosphere produces high luminance (> 200/255) (4.7s)
@@ -116,11 +125,14 @@ Output: `29 passed (58.1s)`
 ```
 
 ### 3.3 Static Code Analysis (0 Errors, 0 Warnings)
+
 Command executed: `npm run lint`
+
 ```
 > azimjon-portfolio-3d@1.0.0 lint
 > eslint src/ worker.js tests/
 ```
+
 Clean output: 0 errors, 0 warnings.
 
 ---
@@ -131,15 +143,15 @@ The following verified screenshots document the production interface:
 
 1. **Photographic Deep Space Realism (1920x1080):**
    `docs/screenshots/deep_space_realism_1920.png`
-   *Shows pitch-black deep celestial background (mean sRGB 0.16/255), subtle natural Milky Way disk, unbloomed planetary bodies, and high-dynamic-range solar photosphere.*
+   _Shows pitch-black deep celestial background (mean sRGB 0.16/255), subtle natural Milky Way disk, unbloomed planetary bodies, and high-dynamic-range solar photosphere._
 
 2. **Interactive Onboarding Guide & Live Gesture Practice Mode:**
    `docs/screenshots/hand_gestures_practice_guide.png`
-   *Shows the 8-step guide modal opened via keyboard hotkey 'H', showing live interactive gesture practice chips (`🖐 Kaft`, `👆 Reticle`, `🤏 Pinch`, `✊ Musht`, `✌️ Ekskursiya`).*
+   _Shows the 8-step guide modal opened via keyboard hotkey 'H', showing live interactive gesture practice chips (`🖐 Kaft`, `👆 Reticle`, `🤏 Pinch`, `✊ Musht`, `✌️ Ekskursiya`)._
 
 3. **Responsive Mobile 320x568 Viewport:**
    `docs/screenshots/responsive_mobile_320.png`
-   *Validates zero horizontal overflow on ultra-compact 320px screens with fluid telemetry controls, touch targets, and safe area insets.*
+   _Validates zero horizontal overflow on ultra-compact 320px screens with fluid telemetry controls, touch targets, and safe area insets._
 
 ---
 

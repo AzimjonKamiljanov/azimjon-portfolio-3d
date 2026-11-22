@@ -1,6 +1,14 @@
 import projectsData from "../data/projects.json";
 import { playUiClick, playUiOpen, playUiClose } from "../audio/soundscape.js";
 
+// Card micro-copy that is not worth a round trip through the i18n bundle.
+const AUTHOR_LABELS = { uz: "Muallif", ru: "Автор", en: "Author" };
+const PRIVATE_LABELS = {
+  uz: "Yopiq repo / Ishlanmoqda",
+  ru: "Приватный / В разработке",
+  en: "Private / In progress",
+};
+
 let activeTrapCleanup = null;
 
 function trapFocus(modalElement) {
@@ -45,11 +53,9 @@ function trapFocus(modalElement) {
         last.focus();
         e.preventDefault();
       }
-    } else {
-      if (document.activeElement === last) {
-        first.focus();
-        e.preventDefault();
-      }
+    } else if (document.activeElement === last) {
+      first.focus();
+      e.preventDefault();
     }
   }
 
@@ -166,8 +172,7 @@ export function initCatalog({ onSelectTarget }) {
       const tr = proj[lang] || proj.uz;
       const targetAttr = proj.id ? `data-target="${proj.id}"` : "";
       const cats = (proj.categories || []).join(" ");
-      const authorLabel =
-        lang === "uz" ? "Muallif" : lang === "ru" ? "Автор" : "Author";
+      const authorLabel = AUTHOR_LABELS[lang] || AUTHOR_LABELS.uz;
       const authorNotice = proj.originalAuthor
         ? `<div class="card-attribution"><span class="author-badge">${authorLabel}: ${proj.originalAuthor}</span></div>`
         : "";
@@ -175,12 +180,7 @@ export function initCatalog({ onSelectTarget }) {
       const tagsHtml = (tr.tags || [])
         .map((t) => `<span>#${t}</span>`)
         .join("");
-      const privateLabel =
-        lang === "uz"
-          ? "Yopiq repo / Ishlanmoqda"
-          : lang === "ru"
-            ? "Приватный / В разработке"
-            : "Private / In progress";
+      const privateLabel = PRIVATE_LABELS[lang] || PRIVATE_LABELS.uz;
       const linkHtml = proj.link
         ? `<a href="${proj.link}" target="_blank" rel="noopener noreferrer" class="card-link" onclick="event.stopPropagation();">${proj.linkText || "GitHub Repo →"}</a>`
         : `<span class="card-link card-link-private">${privateLabel}</span>`;

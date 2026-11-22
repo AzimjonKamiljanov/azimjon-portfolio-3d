@@ -38,6 +38,7 @@ import { initTour } from "./ui/tour.js";
 import { initGuide } from "./ui/guide.js";
 import { initTerminal } from "./ui/terminal.js";
 import { initSpotlightCards } from "./ui/effects.js";
+import { initGestureSettingsPanel } from "./ui/gestureSettingsPanel.js";
 
 import {
   initLanguageSwitcher,
@@ -195,6 +196,7 @@ const tour = initTour({
 });
 
 const guide = initGuide();
+initGestureSettingsPanel();
 
 // 4. Raycaster Setup
 const raycasterController = initRaycaster(
@@ -349,7 +351,71 @@ initGestureControl({
       window.__toggleTrueScale();
     }
   },
+
+  // Thumbs down dismisses whatever is on top. Everything a visitor can open by
+  // hand now closes by hand too; previously the only way out of a modal was a
+  // mouse or the Escape key, which defeated the point of hand control.
+  onBack: () => {
+    if (guide.isVisible?.()) {
+      guide.hideGuide();
+      return;
+    }
+    if (catalog.isOpen()) {
+      catalog.closeCatalog();
+      return;
+    }
+    if (modals.isOpen()) {
+      modals.closeInfoModal();
+      return;
+    }
+    if (tour.isActive()) {
+      tour.exitTour();
+      return;
+    }
+    // Nothing is layered over the scene, so "back" means back to the system.
+    resetToOverview(camera, controls, () => {
+      raycasterController.clearTarget();
+      updateNavActiveState(null);
+    });
+  },
+
+  // Scrolls the topmost scrollable panel, so long lists are reachable without
+  // touching the mouse.
+  onScroll: (deltaY) => {
+    const scrollable = getActiveScrollContainer();
+    if (scrollable) scrollable.scrollTop += deltaY;
+  },
+
+  // Two-hand roll orbits the camera horizontally; the gesture layer has
+  // already unwrapped the angle, so this is a plain delta.
+  onRoll: (deltaAngle) => {
+    controls.object.position.applyAxisAngle(
+      new THREE.Vector3(0, 1, 0),
+      deltaAngle,
+    );
+    controls.update();
+  },
 });
+
+/**
+ * The scroll container currently under the visitor's attention, chosen by the
+ * same precedence as onBack so the two gestures never disagree about which
+ * panel is "on top".
+ */
+function getActiveScrollContainer() {
+  const candidates = [
+    catalog.isOpen() ? document.getElementById("catalog-modal") : null,
+    modals.isOpen() ? document.getElementById("info-panel") : null,
+    guide.isVisible?.()
+      ? document.getElementById("guide-modal-container")
+      : null,
+  ];
+
+  for (const el of candidates) {
+    if (el && el.scrollHeight > el.clientHeight + 4) return el;
+  }
+  return null;
+}
 
 function navigatePlanetSwipe(dir) {
   const planetIds = [
@@ -565,7 +631,7 @@ renderer.domElement.addEventListener(
 renderer.domElement.addEventListener(
   "webglcontextrestored",
   () => {
-    console.info("WebGL context restored. Re-initializing renderer.");
+    console.warn("WebGL context restored. Re-initializing renderer.");
     onWindowResize();
   },
   false,

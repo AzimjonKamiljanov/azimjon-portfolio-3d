@@ -1,6 +1,6 @@
-import { spawn } from 'child_process';
-import fs from 'fs';
-import path from 'path';
+import { spawn } from "child_process";
+import fs from "fs";
+import path from "path";
 
 const resumeHtml = `<!DOCTYPE html>
 <html lang="en">
@@ -265,34 +265,44 @@ const resumeHtml = `<!DOCTYPE html>
 </html>
 `;
 
-const htmlPath = path.resolve('/tmp/resume_azimjon.html');
-const pdfPath = path.resolve(process.cwd(), 'assets/Azimjon_Kamiljanov_Resume.pdf');
-const publicPdfPath = path.resolve(process.cwd(), 'public/assets/Azimjon_Kamiljanov_Resume.pdf');
+const htmlPath = path.resolve("/tmp/resume_azimjon.html");
+const pdfPath = path.resolve(
+  process.cwd(),
+  "assets/Azimjon_Kamiljanov_Resume.pdf",
+);
+const publicPdfPath = path.resolve(
+  process.cwd(),
+  "public/assets/Azimjon_Kamiljanov_Resume.pdf",
+);
 
-fs.writeFileSync(htmlPath, resumeHtml, 'utf8');
+fs.writeFileSync(htmlPath, resumeHtml, "utf8");
 
-console.log("Generating ATS-friendly 1-page A4 Resume PDF via Chrome headless...");
+console.log(
+  "Generating ATS-friendly 1-page A4 Resume PDF via Chrome headless...",
+);
 
 const chromeArgs = [
-    '--headless=new',
-    '--no-sandbox',
-    '--disable-gpu',
-    '--print-to-pdf-no-header',
-    `--print-to-pdf=${pdfPath}`,
-    htmlPath
+  "--headless=new",
+  "--no-sandbox",
+  "--disable-gpu",
+  "--print-to-pdf-no-header",
+  `--print-to-pdf=${pdfPath}`,
+  htmlPath,
 ];
 
-const proc = spawn('google-chrome-stable', chromeArgs);
+const proc = spawn("google-chrome-stable", chromeArgs);
 
-proc.on('close', (code) => {
-    if (code === 0 && fs.existsSync(pdfPath)) {
-        const stats = fs.statSync(pdfPath);
-        fs.mkdirSync(path.dirname(publicPdfPath), { recursive: true });
-        fs.copyFileSync(pdfPath, publicPdfPath);
-        console.log(`✓ Resume PDF generated successfully! Size: ${stats.size} bytes at ${pdfPath}`);
-        console.log(`✓ Mirrored to ${publicPdfPath}`);
-    } else {
-        console.error(`Failed to generate PDF. Exit code: ${code}`);
-        process.exit(1);
-    }
+proc.on("close", (code) => {
+  if (code === 0 && fs.existsSync(pdfPath)) {
+    const stats = fs.statSync(pdfPath);
+    fs.mkdirSync(path.dirname(publicPdfPath), { recursive: true });
+    fs.copyFileSync(pdfPath, publicPdfPath);
+    console.log(
+      `✓ Resume PDF generated successfully! Size: ${stats.size} bytes at ${pdfPath}`,
+    );
+    console.log(`✓ Mirrored to ${publicPdfPath}`);
+  } else {
+    console.error(`Failed to generate PDF. Exit code: ${code}`);
+    process.exit(1);
+  }
 });

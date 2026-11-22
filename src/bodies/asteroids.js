@@ -63,7 +63,7 @@ export function initAsteroidBelt(scene) {
 
     const isDwarf = i % 65 === 0;
     const baseScale = isDwarf
-      ? 1.8 + Math.random() * 1.0
+      ? 1.8 + Math.random()
       : 0.45 + Math.random() * 0.95;
     dummyObj.scale.set(
       baseScale * (0.75 + Math.random() * 0.5),

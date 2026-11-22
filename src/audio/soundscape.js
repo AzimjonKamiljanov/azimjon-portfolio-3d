@@ -40,14 +40,12 @@ if (typeof document !== "undefined") {
       if (ambientMusicAudio && !ambientMusicAudio.paused) {
         ambientMusicAudio.pause();
       }
-    } else {
-      if (!isAudioMuted) {
-        if (audioCtx && audioCtx.state === "suspended") {
-          audioCtx.resume().catch(() => {});
-        }
-        if (ambientMusicAudio) {
-          ambientMusicAudio.play().catch(() => {});
-        }
+    } else if (!isAudioMuted) {
+      if (audioCtx && audioCtx.state === "suspended") {
+        audioCtx.resume().catch(() => {});
+      }
+      if (ambientMusicAudio) {
+        ambientMusicAudio.play().catch(() => {});
       }
     }
   });
@@ -71,7 +69,9 @@ export function playUiClick() {
     gain.connect(audioCtx.destination);
     osc.start();
     osc.stop(audioCtx.currentTime + 0.05);
-  } catch (_) {}
+  } catch {
+    // A single UI blip failing is never worth surfacing.
+  }
 }
 
 export function playUiHover() {
@@ -88,7 +88,9 @@ export function playUiHover() {
     gain.connect(audioCtx.destination);
     osc.start();
     osc.stop(audioCtx.currentTime + 0.03);
-  } catch (_) {}
+  } catch {
+    // A single UI blip failing is never worth surfacing.
+  }
 }
 
 export function playUiOpen() {
@@ -107,7 +109,9 @@ export function playUiOpen() {
     gain.connect(audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.13);
-  } catch (_) {}
+  } catch {
+    // A single UI blip failing is never worth surfacing.
+  }
 }
 
 export function playUiClose() {
@@ -126,7 +130,9 @@ export function playUiClose() {
     gain.connect(audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.11);
-  } catch (_) {}
+  } catch {
+    // A single UI blip failing is never worth surfacing.
+  }
 }
 
 export function playUiTransmit() {
@@ -147,7 +153,9 @@ export function playUiTransmit() {
     gain.connect(audioCtx.destination);
     osc.start();
     osc.stop(audioCtx.currentTime + 0.22);
-  } catch (_) {}
+  } catch {
+    // A single UI blip failing is never worth surfacing.
+  }
 }
 
 export function playUiSuccess() {
@@ -171,7 +179,9 @@ export function playUiSuccess() {
     osc1.stop(now + 0.15);
     osc2.start(now + 0.08);
     osc2.stop(now + 0.35);
-  } catch (_) {}
+  } catch {
+    // A single UI blip failing is never worth surfacing.
+  }
 }
 
 export function playUiError() {
@@ -190,7 +200,9 @@ export function playUiError() {
     gain.connect(audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.24);
-  } catch (_) {}
+  } catch {
+    // A single UI blip failing is never worth surfacing.
+  }
 }
 
 export function isMuted() {
