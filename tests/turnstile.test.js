@@ -143,9 +143,10 @@ describe("Content-Security-Policy follows the Turnstile state", () => {
     );
     const csp = res.headers.get("Content-Security-Policy");
 
-    expect(csp).toContain(
-      "script-src 'self' 'wasm-unsafe-eval' https://challenges.cloudflare.com",
-    );
+    // Asserted per-directive rather than as one literal string, so adding an
+    // unrelated origin elsewhere in the policy cannot break this test.
+    const scriptSrc = csp.split("; ").find((d) => d.startsWith("script-src "));
+    expect(scriptSrc).toContain("https://challenges.cloudflare.com");
     expect(csp).toContain("frame-src 'self' https://challenges.cloudflare.com");
     // Unrelated directives must not loosen as a side effect.
     expect(csp).toContain("object-src 'none'");

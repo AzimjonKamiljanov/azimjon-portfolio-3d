@@ -16,9 +16,11 @@ export default defineConfig({
     target: "esnext",
     minify: "esbuild",
     chunkSizeWarningLimit: 600,
-    // Source maps are small next to the textures and make a production stack
-    // trace from errors.js actionable instead of a list of mangled names.
-    sourcemap: true,
+    // "hidden" emits the maps but writes no sourceMappingURL comment, so the
+    // browser never fetches them and the site does not hand every visitor a
+    // 479 KB map plus the unminified source. They stay in dist/ for anyone
+    // debugging a stack trace from errors.js locally.
+    sourcemap: "hidden",
     rollupOptions: {
       input: {
         main: resolve(rootDir, "index.html"),

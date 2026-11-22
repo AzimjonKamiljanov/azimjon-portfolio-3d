@@ -6,6 +6,13 @@
 
 const TURNSTILE_ORIGIN = "https://challenges.cloudflare.com";
 
+// Cloudflare Web Analytics injects its beacon from this origin. The policy
+// did not name it, so the script was blocked on every page load and the
+// account collected nothing at all while reporting a CSP violation in the
+// console. It is privacy-preserving (no cookies, no cross-site identifiers),
+// which is why it is allowed rather than removed.
+const CF_ANALYTICS_ORIGIN = "https://static.cloudflareinsights.com";
+
 const STATIC_SECURITY_HEADERS = {
   "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
   "X-Content-Type-Options": "nosniff",
@@ -23,9 +30,11 @@ const STATIC_SECURITY_HEADERS = {
  * without Turnstile keeps a self-only policy and no external script origin.
  */
 function buildCsp(turnstileEnabled) {
-  const scriptSrc = ["'self'", "'wasm-unsafe-eval'"];
+  // The analytics beacon loads from one origin and reports to it, so it needs
+  // both script-src and connect-src. Nothing else is relaxed.
+  const scriptSrc = ["'self'", "'wasm-unsafe-eval'", CF_ANALYTICS_ORIGIN];
   const frameSrc = ["'self'"];
-  const connectSrc = ["'self'"];
+  const connectSrc = ["'self'", CF_ANALYTICS_ORIGIN];
 
   if (turnstileEnabled) {
     scriptSrc.push(TURNSTILE_ORIGIN);
@@ -336,6 +345,65 @@ function handleConfig(env) {
   );
 }
 
+/**
+ * Paths this site actually serves. Everything else is a 404 rather than a
+ * silent fall back to the home page.
+ *
+ * `/assets/` and `/mediapipe/` are build output with hashed or fixed names,
+ * so a prefix match is right for them; the rest is a short, explicit list,
+ * which is practical because the site is a single page with no routing.
+ */
+const SERVABLE_PREFIXES = ["/assets/", "/mediapipe/"];
+const SERVABLE_PATHS = new Set([
+  "/",
+  "/index.html",
+  "/favicon.ico",
+  "/favicon.svg",
+  "/robots.txt",
+  "/sitemap.xml",
+  "/manifest.webmanifest",
+  "/site.webmanifest",
+  "/desktop_overview_clean.png",
+]);
+
+export function isServablePath(path) {
+  if (SERVABLE_PATHS.has(path)) return true;
+  return SERVABLE_PREFIXES.some((prefix) => path.startsWith(prefix));
+}
+
+function notFound(turnstileEnabled) {
+  const headers = new Headers({ "Content-Type": "text/html; charset=utf-8" });
+  applySecurityHeaders(headers, turnstileEnabled);
+  // Tell crawlers not to keep a soft 404 around, and do not let the edge
+  // cache a miss for long.
+  headers.set("Cache-Control", "public, max-age=0, must-revalidate");
+  headers.set("X-Robots-Tag", "noindex");
+  return new Response(NOT_FOUND_HTML, { status: 404, headers });
+}
+
+// Inline so a 404 costs no extra request and cannot itself 404. Styled with
+// the same tokens as the site, and self-contained because the CSP forbids
+// inline script and the page needs none.
+const NOT_FOUND_HTML = `<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>404 — Sahifa topilmadi | Azimjon Kamiljanov</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#04060d;color:#d4d4d8;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px">
+<main>
+<p style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#71717a;margin:0 0 12px">Signal yo'qoldi</p>
+<h1 style="font-size:clamp(32px,8vw,56px);margin:0 0 12px;color:#f4f4f5;letter-spacing:-.02em">404</h1>
+<p style="margin:0 0 32px;color:#a1a1aa;max-width:38ch;line-height:1.6">Bu orbitada hech narsa yo'q. Siz izlagan sahifa mavjud emas yoki ko'chirilgan.</p>
+<a href="/" style="display:inline-block;padding:12px 24px;border:1px solid rgba(255,255,255,.14);border-radius:999px;color:#f4f4f5;text-decoration:none;font-size:14px">Quyosh tizimiga qaytish</a>
+</main>
+</body>
+</html>`;
+
 const MAX_CONTACT_BYTES = 10240;
 
 async function handleContact(request, env, url) {
@@ -618,7 +686,17 @@ export default {
       return handleContact(request, env, url);
     }
 
-    // Static assets via the Cloudflare ASSETS binding
+    // Static assets via the Cloudflare ASSETS binding.
+    //
+    // The binding is configured for single-page-application fallback, which
+    // answered *any* unknown path with index.html and HTTP 200. This site has
+    // no client-side router, so every one of those was a soft 404: a crawler
+    // could index azimjon.dev/anything as a real, duplicate page. Unknown
+    // paths are therefore rejected here before the fallback can apply.
+    if (!isServablePath(path)) {
+      return notFound(turnstileEnabled);
+    }
+
     if (env.ASSETS && typeof env.ASSETS.fetch === "function") {
       const assetRes = await env.ASSETS.fetch(request);
       const newHeaders = new Headers(assetRes.headers);
@@ -664,9 +742,7 @@ export default {
       });
     }
 
-    // Fallback 404
-    const headers = new Headers({ "Content-Type": "text/plain" });
-    applySecurityHeaders(headers, turnstileEnabled);
-    return new Response("Not Found", { status: 404, headers });
+    // No ASSETS binding (plain `wrangler dev` against the Worker alone).
+    return notFound(turnstileEnabled);
   },
 };

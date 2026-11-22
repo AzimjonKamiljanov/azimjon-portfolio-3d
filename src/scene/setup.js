@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { choosePixelRatio, pickBudget } from "./pixelBudget.js";
 
 // Procedural GLSL Milky Way Galaxy & Cosmic Nebulae Skydome
 const milkyWayVertexShader = `
@@ -139,11 +140,28 @@ export function initScene() {
   );
   camera.position.set(0, 120, 420);
 
-  // Renderer with hardware performance capping
-  const isMobile = window.innerWidth <= 768;
-  const maxPixelRatio = isMobile
-    ? 1.5
-    : Math.min(window.devicePixelRatio || 1, 2);
+  // Renderer with hardware performance capping.
+  //
+  // The pixel ratio comes from a pixel budget rather than from screen width.
+  // Width does not predict fill rate: a 1024-wide window at DPR 2 on a tall
+  // display is 9.1 megapixels -- more than 4K -- and measured 16 FPS on real
+  // hardware, while a 760-wide window was being forced down to 1.5 on a GPU
+  // that could afford far more. See pixelBudget.js.
+  const coarsePointer =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(pointer: coarse)").matches;
+  const isMobile = coarsePointer && window.innerWidth <= 820;
+
+  function currentPixelRatio() {
+    return choosePixelRatio({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      dpr: window.devicePixelRatio,
+      budget: pickBudget({ width: window.innerWidth, coarsePointer }),
+    });
+  }
+
+  const maxPixelRatio = currentPixelRatio();
 
   let renderer;
   try {
@@ -175,6 +193,11 @@ export function initScene() {
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(maxPixelRatio);
+  // Rotating a phone or dragging a window between displays changes both the
+  // viewport and the display's own ratio, so the budget is re-evaluated
+  // rather than fixed at load.
+  renderer.recomputePixelRatio = () =>
+    renderer.setPixelRatio(currentPixelRatio());
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
   renderer.shadowMap.enabled = true;

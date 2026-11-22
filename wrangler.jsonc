@@ -6,8 +6,12 @@
   "observability": {
     "enabled": true
   },
+  // Cloudflare Workers Builds runs this on every push to main and deploys
+  // only if it exits 0. GitHub Actions does not deploy, so without the tests
+  // here a red CI run would still have shipped. `verify` covers format, lint,
+  // build and unit tests, and leaves the built dist/ in place for upload.
   "build": {
-    "command": "npm run build"
+    "command": "npm run verify"
   },
   "assets": {
     "directory": "./dist",

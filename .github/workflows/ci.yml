@@ -112,6 +112,30 @@ jobs:
           path: test-results
           retention-days: 7
 
+  budget:
+    name: Bundle size budget
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      # Lighthouse is deliberately not used here. The page runs a continuous
+      # requestAnimationFrame loop, so Lighthouse's load model never sees the
+      # CPU go idle and the run does not terminate -- measured locally: no
+      # result after 400 s. A runner also has no GPU, so any frame rate it
+      # reported would measure SwiftShader rather than the site. Transfer
+      # size is the part of performance that is deterministic here, and the
+      # part that regresses silently when a dependency is added.
+      - name: First-view transfer budget
+        run: npm run budget
+
   security:
     name: Dependency audit & secret scan
     runs-on: ubuntu-latest

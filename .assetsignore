@@ -1,3 +1,9 @@
+# Source maps are generated (vite `sourcemap: "hidden"`) so a local stack
+# trace stays readable, but they are never uploaded: together they are over
+# 4 MB and they hand anyone the unminified source on request.
+*.map
+assets/*.map
+
 node_modules
 node_modules/**
 .git

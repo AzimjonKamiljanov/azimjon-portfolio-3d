@@ -589,6 +589,9 @@ function startInitialDive() {
 
 // 10. Window Event Handlers
 function onWindowResize() {
+  // Re-derive the pixel ratio: the viewport and the display's own ratio can
+  // both change on rotation or when the window moves between monitors.
+  renderer.recomputePixelRatio?.();
   const isMobile = window.innerWidth <= 768;
   const maxPixelRatio = isMobile
     ? 1.5
