@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { CANVAS_TIMEOUT, PANEL_TIMEOUT } from "./helpers/timeouts.js";
 import AxeBuilder from "@axe-core/playwright";
 
 test.describe("3D Solar Developer Portfolio E2E Acceptance Tests", () => {
@@ -23,7 +24,9 @@ test.describe("3D Solar Developer Portfolio E2E Acceptance Tests", () => {
     page.on("pageerror", (err) => errors.push(err.message));
 
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     expect(errors).toHaveLength(0);
 
@@ -116,7 +119,9 @@ test.describe("3D Solar Developer Portfolio E2E Acceptance Tests", () => {
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     // Intercept /api/contact
     await page.route("**/api/contact", async (route) => {
@@ -140,7 +145,9 @@ test.describe("3D Solar Developer Portfolio E2E Acceptance Tests", () => {
 
     // Focus Moon
     await page.evaluate(() => window.__solarEngine.focusTargetById("moon"));
-    await page.waitForSelector("#info-panel:not(.hidden)", { timeout: 5000 });
+    await page.waitForSelector("#info-panel:not(.hidden)", {
+      timeout: PANEL_TIMEOUT,
+    });
 
     const terminal = page.locator("#moon-terminal-container");
     await expect(terminal).toBeVisible();
@@ -168,7 +175,9 @@ test.describe("3D Solar Developer Portfolio E2E Acceptance Tests", () => {
     // Mobile iPhone SE viewport
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     const hasHorizontalOverflow = await page.evaluate(() => {
       return (
@@ -206,7 +215,9 @@ test.describe("3D Solar Developer Portfolio E2E Acceptance Tests", () => {
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
     const results = await new AxeBuilder({ page })
       .disableRules(["color-contrast"])
       .analyze();

@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { CANVAS_TIMEOUT } from "./helpers/timeouts.js";
 
 // Helper to generate normalized hand landmarks
 function generateHand({
@@ -121,7 +122,9 @@ test.describe("AI Vision Hand Gesture Control Acceptance Tests", () => {
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
     // Ensure preloader has finished
     await page.waitForTimeout(800);
 
@@ -158,7 +161,9 @@ test.describe("AI Vision Hand Gesture Control Acceptance Tests", () => {
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     // Grant consent and open HUD via test harness
     await page.evaluate(() => {
@@ -196,7 +201,9 @@ test.describe("AI Vision Hand Gesture Control Acceptance Tests", () => {
 
   test("3. Injected Fist gesture toggles time freeze", async ({ page }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     const fistHand = generateHand({
       thumb: "curled",
@@ -222,7 +229,9 @@ test.describe("AI Vision Hand Gesture Control Acceptance Tests", () => {
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     const victoryHand = generateHand({
       thumb: "curled",
@@ -249,7 +258,9 @@ test.describe("AI Vision Hand Gesture Control Acceptance Tests", () => {
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
     await page.waitForTimeout(1000);
 
     // Grant consent and open HUD via test harness
@@ -315,7 +326,9 @@ test.describe("AI Vision Hand Gesture Control Acceptance Tests", () => {
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     await page.evaluate(() => {
       window.sessionStorage.setItem("gesture_consent_granted", "true");
@@ -349,7 +362,9 @@ test.describe("AI Vision Hand Gesture Control Acceptance Tests", () => {
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     await page.evaluate(() => {
       window.sessionStorage.setItem("gesture_consent_granted", "true");
@@ -384,7 +399,9 @@ test.describe("AI Vision Hand Gesture Control Acceptance Tests", () => {
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     await page.evaluate(() => {
       window.sessionStorage.setItem("gesture_consent_granted", "true");
@@ -416,7 +433,9 @@ test.describe("AI Vision Hand Gesture Control Acceptance Tests", () => {
 
   test("9. Injected Rock-on gesture toggles true scale", async ({ page }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     await page.evaluate(() => {
       window.sessionStorage.setItem("gesture_consent_granted", "true");

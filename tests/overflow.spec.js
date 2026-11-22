@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { CANVAS_TIMEOUT, PANEL_TIMEOUT } from "./helpers/timeouts.js";
 
 test.describe("Responsive Layout & Zero Overflow Across Viewports & Languages", () => {
   const viewports = [
@@ -28,7 +29,7 @@ test.describe("Responsive Layout & Zero Overflow Across Viewports & Languages", 
 
       await page.goto("http://127.0.0.1:8080/");
       await page.waitForSelector("#canvas-container canvas", {
-        timeout: 10000,
+        timeout: CANVAS_TIMEOUT,
       });
 
       for (const lang of languages) {
@@ -148,7 +149,9 @@ test.describe("Responsive Layout & Zero Overflow Across Viewports & Languages", 
     });
 
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     for (const lang of ["uz", "en", "ru"]) {
       await page.evaluate((targetLang) => {
@@ -221,7 +224,7 @@ test.describe("Responsive Layout & Zero Overflow Across Viewports & Languages", 
       });
       await page.waitForSelector(
         "#info-panel:not(.hidden) #moon-terminal-container .cyber-terminal",
-        { timeout: 6000 },
+        { timeout: PANEL_TIMEOUT },
       );
       const terminalResult = await page.evaluate(() => {
         const modal = document.querySelector(".cyber-terminal");
@@ -254,7 +257,9 @@ test.describe("Responsive Layout & Zero Overflow Across Viewports & Languages", 
           window.__solarEngine.focusTargetById("sun");
         }
       });
-      await page.waitForSelector("#info-panel:not(.hidden)", { timeout: 6000 });
+      await page.waitForSelector("#info-panel:not(.hidden)", {
+        timeout: PANEL_TIMEOUT,
+      });
       const infoPanelResult = await page.evaluate(() => {
         const panel = document.querySelector("#info-panel");
         return panel
@@ -275,7 +280,9 @@ test.describe("Responsive Layout & Zero Overflow Across Viewports & Languages", 
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
 
     const isTrueScale = await page.evaluate(() => {
       return typeof window.__toggleTrueScale === "function";

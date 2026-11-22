@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { CANVAS_TIMEOUT } from "./helpers/timeouts.js";
 
 test.describe("Photorealistic Deep-Space Visual Regression & Luminance Verification @visual", () => {
   test.beforeEach(async ({ page }) => {
@@ -14,7 +15,9 @@ test.describe("Photorealistic Deep-Space Visual Regression & Luminance Verificat
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
     await page.waitForTimeout(2500);
 
     const skyMean = await page.evaluate(() => {
@@ -52,7 +55,9 @@ test.describe("Photorealistic Deep-Space Visual Regression & Luminance Verificat
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
     await page.waitForTimeout(2500);
 
     // Focus on Sun
@@ -99,7 +104,9 @@ test.describe("Photorealistic Deep-Space Visual Regression & Luminance Verificat
     page,
   }) => {
     await page.goto("http://127.0.0.1:8080/");
-    await page.waitForSelector("#canvas-container canvas", { timeout: 10000 });
+    await page.waitForSelector("#canvas-container canvas", {
+      timeout: CANVAS_TIMEOUT,
+    });
     await page.waitForTimeout(2500);
 
     // 1. Solar Overview
