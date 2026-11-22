@@ -286,7 +286,37 @@ missing or partial:
 
 Tested on Google Chrome (Linux x86_64) via Chrome DevTools Protocol & Lighthouse v12:
 
-- **Frame Rate:** 60.01 FPS (16.66 ms average frame time)
+- **Frame Rate:** 60.00 FPS (16.67 ms average frame time), 0 console errors
+
+### Measuring it yourself
+
+```bash
+npm run build && npm run preview       # in one terminal
+npm run measure -- --dpr=2             # in another
+```
+
+`scripts/measure-fps.mjs` drives its own headless Chrome over the DevTools
+protocol. That indirection is the point: a page in a hidden or background
+window has its `requestAnimationFrame` throttled to a crawl, so frame timings
+taken there describe the window manager rather than the site — measured here
+as 10–16 FPS for a scene that actually runs at 60.
+
+`--dpr` is the flag that exercises the pixel budget, since the budget only
+binds once `width x height x dpr²` passes it. Measured on an AMD integrated
+GPU at a 1600x857 viewport:
+
+| Device ratio              | Drawing buffer                   | FPS  |
+| ------------------------- | -------------------------------- | ---- |
+| 1                         | 1600x857 — 1.37 MP, under budget | 57.5 |
+| 2, before the budget held | 3200x1714 — 5.48 MP              | 27.1 |
+| 2, with the budget held   | 1980x1060 — 2.10 MP              | 30.5 |
+
+The middle row is a bug that these measurements found: `choosePixelRatio()`
+was correct and applied correctly at startup, but `onWindowResize()` carried
+its own copy of the old width-based rule and silently reinstated the full
+device ratio on the first resize. `tests/pixelBudget.spec.js` pins it, and
+was confirmed to fail when the old line is put back.
+
 - **Asset Size:** 2.7 MB total textures and audio (WebP compressed, -64.9% vs original)
 - **Initial JS:** `main` 62 KB gzip, `three` 139 KB, `gsap` 28 KB, `i18n` 28 KB.
   The trilingual dictionary is its own chunk: it is 115 KB of string data that

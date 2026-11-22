@@ -28,7 +28,8 @@
     "format:check": "prettier --check \"**/*.{js,cjs,mjs,jsx,json,css,md,yml}\"",
     "types": "wrangler types",
     "verify": "npm run format:check && npm run lint && npm run build && npm run test && npm run budget",
-    "budget": "node scripts/bundle-budget.mjs"
+    "budget": "node scripts/bundle-budget.mjs",
+    "measure": "node scripts/measure-fps.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "5.3.0",
@@ -48,6 +49,7 @@
     "prettier": "3.10.1",
     "vite": "6.4.6",
     "vitest": "4.1.12",
-    "wrangler": "4.158.0"
+    "wrangler": "4.158.0",
+    "ws": "8.18.3"
   }
 }

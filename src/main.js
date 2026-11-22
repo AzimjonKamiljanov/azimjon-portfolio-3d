@@ -589,19 +589,24 @@ function startInitialDive() {
 
 // 10. Window Event Handlers
 function onWindowResize() {
-  // Re-derive the pixel ratio: the viewport and the display's own ratio can
-  // both change on rotation or when the window moves between monitors.
-  renderer.recomputePixelRatio?.();
   const isMobile = window.innerWidth <= 768;
-  const maxPixelRatio = isMobile
-    ? 1.5
-    : Math.min(window.devicePixelRatio || 1, 2);
 
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(maxPixelRatio);
+
+  // The pixel ratio comes from the budget in src/scene/pixelBudget.js, and
+  // is re-derived here because both the viewport and the display's own ratio
+  // change when a phone rotates or a window moves between monitors.
+  //
+  // This must run *after* setSize: three.js recomputes the drawing buffer
+  // from the stored size, so calling it the other way round lets setSize
+  // reinstate the previous ratio. This function used to carry its own copy
+  // of the old width-based rule, which silently overrode the budget — a
+  // 1600x857 viewport at DPR 2 went back to 3200x1714 (5.5 MP) the first
+  // time the window resized.
+  renderer.recomputePixelRatio();
 
   composer.setSize(window.innerWidth, window.innerHeight);
   if (bloomPass) {
