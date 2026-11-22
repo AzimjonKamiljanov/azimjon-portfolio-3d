@@ -66,8 +66,9 @@ An interactive, high-performance 3D WebGL Solar System portfolio showcasing AI e
 
 ```
 ├── .github/workflows/       # GitHub Actions automated CI pipeline
+├── assets/                  # Texture *sources* (JPG/PNG) — never shipped; see note below
 ├── docs/screenshots/        # Verification and portfolio screenshots
-├── public/                  # Static assets (favicons, manifests, MediaPipe WASM, WebP textures)
+├── public/                  # Served as-is: favicons, manifests, MediaPipe WASM, WebP textures
 ├── scripts/                 # Offline build utilities (texture generators, resume PDF, prerender)
 ├── src/
 │   ├── audio/               # Web Audio API procedural soundscape
@@ -86,6 +87,18 @@ An interactive, high-performance 3D WebGL Solar System portfolio showcasing AI e
 ├── vite.config.js           # Vite 6 configuration with manual chunking
 └── vitest.config.js         # Vitest test configuration
 ```
+
+> **On `assets/` vs `public/assets/`:** the runtime loads `assets/*.webp`,
+> which resolves to **`public/assets/`**. The top-level `assets/` directory
+> holds the 6.3 MB of JPG/PNG that `scripts/optimize_assets.mjs` converts into
+> those WebP files — intermediate build input, never served. It is kept in the
+> repository because it is the only copy of the generated textures.
+>
+> Untracking it would not shrink a clone, since the blobs remain in history;
+> only a history rewrite (`git filter-repo`, or Git LFS via `git lfs migrate`)
+> followed by a force-push would. That trade — a smaller clone against
+> breaking every existing clone and fork — is a deliberate choice, not an
+> oversight.
 
 ---
 
@@ -197,6 +210,48 @@ No credential belongs in this repository. The Worker reads every value
 from `env` at request time with no fallback defaults - a missing one
 returns 500 rather than quietly using something hardcoded. See
 [SECURITY.md](SECURITY.md) for the reporting process.
+
+---
+
+## 🧪 Verifying Turnstile before you wire real keys
+
+The challenge was once configured on the Worker but never on the page, so
+every submission was rejected silently. That failure mode is invisible until
+someone tries to contact you, which is why the integration is verifiable
+without a Cloudflare account.
+
+Cloudflare publishes dummy keys for exactly this. They are documented test
+values, not credentials, and they authenticate nothing:
+
+| Behaviour     | Site key                   | Secret                                |
+| ------------- | -------------------------- | ------------------------------------- |
+| Always passes | `1x00000000000000000000AA` | `1x0000000000000000000000000000000AA` |
+| Always blocks | `2x00000000000000000000AB` | `2x0000000000000000000000000000000AA` |
+
+Put a pair in `.dev.vars` (git-ignored), leave the Telegram values out, and
+run `npx wrangler dev --port 8788 --local`. Then open
+**`http://localhost:8788`** — not `127.0.0.1`, which Turnstile rejects with
+error 600010 because the bare IP is not an allowed hostname.
+
+Three outcomes tell you the whole flow is sound:
+
+| Setup                              | Expected                       | What it proves                                                                                                 |
+| ---------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| Pass keys, no token in the payload | `400` security-challenge error | A missing token is rejected                                                                                    |
+| Pass keys, token from the widget   | `500` service-unavailable      | The token verified, and the request reached the Telegram step — which fails only because no bot values are set |
+| Block keys, any token              | `400` security-challenge error | A `siteverify` rejection is honoured                                                                           |
+
+The `500` is the one that matters. Before the fix it was a `400` every time,
+because the page never sent a token at all.
+
+This was run against the current code: `GET /api/config` served the site key,
+the script loaded under the CSP, the widget produced Cloudflare's dummy token
+(`XXXX.DUMMY.TOKEN`), the form sent it, and the Worker verified it and moved
+on to the Telegram dispatch.
+
+Once that checks out, store the real pair as Worker variables and deploy. Set
+both or neither: with only one, the Worker logs an error and leaves the
+challenge off rather than rejecting every message.
 
 ---
 
