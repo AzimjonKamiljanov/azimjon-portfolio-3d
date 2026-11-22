@@ -1,0 +1,18 @@
+# Gitleaks allowlist — known, resolved findings only.
+#
+# Each entry is a fingerprint: <commit>:<file>:<rule>:<line>. Only the exact
+# occurrence at that fingerprint is suppressed, so the same credential
+# reappearing anywhere else still fails the build. Never add an entry for a
+# live credential; the only correct response to one of those is to revoke it.
+#
+# ---------------------------------------------------------------------------
+# A Telegram bot token committed in October 2026 and removed from the working
+# tree in 13670fe. The token was revoked by the repository owner on
+# 2026-11-22 and reissued, so the string left in history authenticates
+# nothing. The history is deliberately not rewritten: a force-push would
+# break every existing clone and fork to delete a dead credential.
+#
+# worker.js now reads TELEGRAM_BOT_TOKEN from env at request time with no
+# fallback default, and a missing value returns 500 rather than quietly using
+# something hardcoded. See SECURITY.md.
+00945231ad341bb8ec1e9433bca4fe10533f6912:worker.js:telegram-bot-api-token:231

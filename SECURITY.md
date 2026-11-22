@@ -53,6 +53,14 @@ with placeholder values only.
 Every CI run scans the full git history with Gitleaks. The job **fails** on any
 finding, so a leak cannot land on `main` unnoticed.
 
+`.gitleaksignore` holds an allowlist of findings that are already resolved.
+Entries are fingerprints — `<commit>:<file>:<rule>:<line>` — so each one
+suppresses exactly one occurrence; the same credential appearing anywhere else
+still fails the build. An entry is only ever added for a credential that has
+already been revoked, and it carries a comment saying when and why. A live
+credential is never allowlisted; the only correct response to one is to
+revoke it.
+
 If you believe a credential has been exposed, report it through the private
 channels above rather than opening an issue — an issue would publicise the
 exposure before it can be rotated.
