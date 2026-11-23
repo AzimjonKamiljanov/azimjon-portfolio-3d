@@ -7,8 +7,44 @@ describe("Data Integrity & Fact Verification Tests", () => {
   );
   const profile = JSON.parse(fs.readFileSync("src/data/profile.json", "utf8"));
 
-  it("contains all 28 systems in projects.json", () => {
-    expect(projects.length).toBe(28);
+  const OWNER = "https://github.com/AzimjonKamiljanov";
+
+  it("lists one entry per celestial body and nothing else", () => {
+    // The Sun plus nine planets. The catalogue used to carry 28 entries,
+    // eighteen of which were bodies that do not exist in the scene.
+    expect(projects.length).toBe(10);
+    expect(projects.map((p) => p.id)).toEqual([
+      "sun",
+      "Mercury",
+      "Venus",
+      "Earth",
+      "Mars",
+      "Jupiter",
+      "Saturn",
+      "Uranus",
+      "Neptune",
+      "Pluto",
+    ]);
+  });
+
+  it("every project links to a repository under the owner's account", () => {
+    // Ten of the old entries were other people's open-source tools, listed in
+    // a portfolio. A link outside this account is the signal for that, so the
+    // check is on the URL rather than on a flag someone has to remember to set.
+    projects.forEach((project) => {
+      expect(project.link, `${project.id} has no link`).toBeTruthy();
+      expect(
+        project.link.startsWith(OWNER),
+        `${project.id}: ${project.link}`,
+      ).toBe(true);
+    });
+  });
+
+  it("claims no third-party authorship", () => {
+    projects.forEach((project) => {
+      expect(project.originalAuthor, `${project.id}`).toBeNull();
+      expect(project.group).toBe("my_projects");
+    });
   });
 
   it("each project has complete trilingual metadata (uz, en, ru)", () => {
@@ -25,15 +61,26 @@ describe("Data Integrity & Fact Verification Tests", () => {
     });
   });
 
-  it("credits open-source tools with original authors and separates personal projects", () => {
-    const myProjects = projects.filter((p) => p.group === "my_projects");
-    const openSource = projects.filter((p) => p.group === "open_source_tools");
+  it("describes projects without marketing superlatives", () => {
+    // The old copy called a student's side project a "flagship" and a
+    // "super-agent", and gave one an enterprise stack it does not use. A
+    // portfolio that overstates is worth less than one that does not.
+    const banned =
+      /flagman|flagship|titan nexus|super-agent|hyper-?real|world.class|cutting.edge/i;
 
-    expect(myProjects.length).toBe(18);
-    expect(openSource.length).toBe(10);
-
-    openSource.forEach((tool) => {
-      expect(tool.originalAuthor).toBeTruthy();
+    projects.forEach((project) => {
+      ["uz", "en", "ru"].forEach((lang) => {
+        const text = [
+          project[lang].badge,
+          project[lang].title,
+          project[lang].subtitle,
+          project[lang].content,
+        ].join(" ");
+        expect(
+          banned.test(text),
+          `${project.id}.${lang}: ${text.slice(0, 80)}`,
+        ).toBe(false);
+      });
     });
   });
 

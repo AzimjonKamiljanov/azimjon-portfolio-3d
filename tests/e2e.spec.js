@@ -68,15 +68,23 @@ test.describe("3D Solar Developer Portfolio E2E Acceptance Tests", () => {
     const modal = page.locator("#catalog-modal");
     await expect(modal).toBeVisible();
 
-    // Search for "TITAN"
+    // Search narrows the list. "Cyber" matches the voice agent on Earth.
     const searchInput = page.locator("#catalog-search");
-    await searchInput.fill("TITAN");
+    const allCards = await page.locator(".catalog-card").count();
+    await searchInput.fill("Cyber");
     await page.waitForTimeout(300); // debounce wait
 
     const visibleCards = page.locator(".catalog-card");
     const count = await visibleCards.count();
     expect(count).toBeGreaterThanOrEqual(1);
-    await expect(visibleCards.first()).toContainText("TITAN NEXUS");
+    expect(count).toBeLessThan(allCards);
+    await expect(visibleCards.first()).toContainText(/Cyber/i);
+
+    // Searching for a removed entry must return nothing: the catalogue no
+    // longer carries other people's open-source tools.
+    await searchInput.fill("Agent Zero");
+    await page.waitForTimeout(300);
+    expect(await page.locator(".catalog-card").count()).toBe(0);
 
     // Clear search
     await page.click("#catalog-search-clear");

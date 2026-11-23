@@ -46,7 +46,7 @@ export const translations = {
       viewMore: "Batafsil →",
       catalogBadge: "PORTFOLIO KATALOGI",
       catalogHeading: "Azimjon Kamiljanov • Barcha Loyihalar",
-      catalogDesc: "Flagman tizimlar va ishlab chiqishlar:",
+      catalogDesc: "GitHub'dagi haqiqiy repozitoriyalarim:",
       stellarBadge: "YULDUZLAR & KIBER-ARSENAL",
       stellarHeading:
         "Tizim Loyihalari, Xavfsizlik Arsenali & AI Infratuzilmasi",
@@ -134,7 +134,7 @@ export const translations = {
           },
           earth: {
             name: "Yer",
-            role: "3-Sayyora • CyberAgent TITAN NEXUS (VoIP Flagship)",
+            role: "3-sayyora • Cyber Agent — ovozli AI agent",
           },
           moon: {
             name: "Oy",
@@ -144,7 +144,7 @@ export const translations = {
           jupiter: { name: "Yupiter", role: "5-Sayyora • Sentinel ECC Matrix" },
           saturn: {
             name: "Saturn",
-            role: "6-Sayyora • Elite AI Swarm Architecture",
+            role: "6-sayyora • Cosmic Portfolio — 3D veb",
           },
           uranus: {
             name: "Uran",
@@ -167,7 +167,7 @@ export const translations = {
         step1Title: "3D Koinotni Boshqarish",
         step1Desc:
           "Ekranni surib 360° aylantiring (Orbit), skroll orqali yaqinlashtiring (Zoom).",
-        step2Title: "Sayyoralar & Flagman Loyihalar",
+        step2Title: "Sayyoralar va loyihalar",
         step2Desc:
           "Har bir sayyora yirik loyiha. Ustiga bosib, texnik tafsilotlarini oching.",
         step3Title: "Oy — To'g'ridan-to'g'ri Aloqa",
@@ -175,7 +175,7 @@ export const translations = {
           "Yer yonidagi Oy — Telegram botga xabar yuborish va VoIP qo'ng'iroq markazi.",
         step4Title: "Yulduzlar & Interaktiv Katalog",
         step4Desc:
-          "Loyihalar katalogi orqali 28 ta tizimni tezkor qidirish va saralash.",
+          "Loyihalar ro'yxatini nomi, texnologiyasi yoki tegi bo'yicha qidiring.",
         step5Title: "Ko'p Tillilik (I18n)",
         step5Desc:
           "O'zbek, Ingliz va Rus tillari o'rtasida bir zumda almashing.",
@@ -306,7 +306,7 @@ export const translations = {
       viewMore: "Explore →",
       catalogBadge: "PORTFOLIO CATALOG",
       catalogHeading: "Azimjon Kamiljanov • Engineering Arsenal",
-      catalogDesc: "Flagship systems and architectures:",
+      catalogDesc: "My repositories on GitHub:",
       stellarBadge: "STARS & CYBER ARSENAL",
       stellarHeading: "System Platforms, Security Arsenal & AI Infrastructure",
       stellarDesc:
@@ -392,7 +392,7 @@ export const translations = {
           },
           earth: {
             name: "Earth",
-            role: "Planet 3 • CyberAgent TITAN NEXUS (VoIP Flagship)",
+            role: "Planet 3 • Cyber Agent — voice AI agent",
           },
           moon: {
             name: "Moon",
@@ -402,7 +402,7 @@ export const translations = {
           jupiter: { name: "Jupiter", role: "Planet 5 • Sentinel ECC Matrix" },
           saturn: {
             name: "Saturn",
-            role: "Planet 6 • Elite AI Swarm Architecture",
+            role: "Planet 6 • Cosmic Portfolio — 3D web",
           },
           uranus: {
             name: "Uranus",
@@ -424,7 +424,7 @@ export const translations = {
         desc: "System navigation and interaction guide:",
         step1Title: "Navigate the Cosmos",
         step1Desc: "Drag to orbit 360°, scroll or pinch to zoom.",
-        step2Title: "Planets & Flagship Projects",
+        step2Title: "Planets and projects",
         step2Desc:
           "Each planet represents a major system. Tap to inspect architecture and code.",
         step3Title: "Moon — Direct Communications",
@@ -558,7 +558,7 @@ export const translations = {
       viewMore: "Подробнее →",
       catalogBadge: "КАТАЛОГ ПОРТФОЛИО",
       catalogHeading: "Азимжон Камильджанов • Все Проекты",
-      catalogDesc: "Флагманские системы и разработки:",
+      catalogDesc: "Мои репозитории на GitHub:",
       stellarBadge: "ЗВЕЗДЫ И КИБЕР-АРСЕНАЛ",
       stellarHeading:
         "Системные Проекты, Кибербезопасность и AI Инфраструктура",
@@ -643,14 +643,14 @@ export const translations = {
           },
           earth: {
             name: "Земля",
-            role: "Планета 3 • CyberAgent TITAN NEXUS (VoIP Флагман)",
+            role: "Планета 3 • Cyber Agent — голосовой AI-агент",
           },
           moon: { name: "Луна", role: "Спутник Земли • Терминал Прямой Связи" },
           mars: { name: "Марс", role: "Планета 4 • UstaPro Master CAD 3D" },
           jupiter: { name: "Юпитер", role: "Планета 5 • Sentinel ECC Matrix" },
           saturn: {
             name: "Сатурн",
-            role: "Планета 6 • Elite AI Swarm Архитектура",
+            role: "Планета 6 • Cosmic Portfolio — 3D-веб",
           },
           uranus: {
             name: "Уран",
@@ -672,7 +672,7 @@ export const translations = {
         desc: "Основные правила навигации и управления:",
         step1Title: "Управление Космосом",
         step1Desc: "Вращайте на 360° (Orbit), используйте скролл для зума.",
-        step2Title: "Планеты и Флагманские Проекты",
+        step2Title: "Планеты и проекты",
         step2Desc:
           "Каждая планета — крупный проект. Нажмите для просмотра архитектуры.",
         step3Title: "Луна — Прямая Связь",
@@ -776,271 +776,408 @@ export const translations = {
   celestial: {
     sun: {
       uz: {
-        badge: "Markaziy Yulduz • Dasturchi Profili",
-        title: "Azimjon Kamiljanov (AI & Full-Stack Dasturchi)",
-        subtitle:
-          "AI & Full-Stack Dasturchi (Talaba) • PDP University & School 21",
-        content: `Assalomu alaykum! Men Azimjon Kamiljanov — PDP Universiteti 2-kurs talabasi (AI yo'nalishi) va School 21 Tashkent ishtirokchisiman (kiberxavfsizlik). Sun'iy intellekt agentlari, real vaqtli WebRTC/VoIP tizimlari hamda 3D WebGL interfeyslarini yaratishga ixtisoslashganman.
+        badge: "Markaziy yulduz • Profil",
+        title: "Azimjon Kamiljanov",
+        subtitle: "AI va full-stack yo'nalishidagi talaba dasturchi",
+        content: `PDP Universitetida sun'iy intellekt yo'nalishi 2-kurs talabasi va School 21 Tashkent ishtirokchisi (kiberxavfsizlik).
 
-Ta'lim:
-• PDP University — Sun'iy intellekt (AI) yo'nalishi (2-kurs talabasi, 2024 — hozirgacha)
-• School 21 Tashkent — Kiberxavfsizlik va tizimli dasturlash (2024 — hozirgacha)
-
-Asosiy Texnologik Stack:
-• AI & ML: Python 3.12, PyTorch, Whisper STT, Kokoro TTS, Gemini Flash, DeepSeek R1, Groq.
-• Frontend & 3D: Three.js / WebGL, GLSL Shaders, React, Next.js, TypeScript, TailwindCSS.
-• Backend & DevOps: Node.js, Express, FastAPI, PostgreSQL, Docker, Redis, Cloudflare.
-• Tillar: O'zbek tili (Native), Ingliz tili (B1), Rus tili (A1).`,
+Asosan Python va JavaScript bilan ishlayman: ovozli AI yordamchilari, Telegram botlari, veb-ilovalar va 3D interfeyslar. Quyidagi sayyoralar — GitHub'dagi haqiqiy repozitoriyalarim.`,
         tags: [
-          "Azimjon Kamiljanov",
-          "Three.js / WebGL",
-          "AI Agents",
-          "PyTorch",
+          "Python",
+          "JavaScript",
+          "Three.js",
+          "Telegram Bot API",
           "Docker",
-          "PDP University",
-          "School 21",
+          "Linux",
         ],
-        actionText: "Telegram Aloqa",
-        githubText: "GitHub Profil",
       },
       en: {
-        badge: "Central Star • Developer Profile",
-        title: "Azimjon Kamiljanov (AI & Full-Stack Developer)",
-        subtitle:
-          "AI & Full-Stack Developer (Student) • PDP University & School 21",
-        content: `Hello! I am Azimjon Kamiljanov — a 2nd-year AI student at PDP University and a cybersecurity learner at School 21 Tashkent. I build autonomous AI agents, real-time WebRTC/VoIP pipelines, and interactive 3D WebGL interfaces.
+        badge: "Central star • Profile",
+        title: "Azimjon Kamiljanov",
+        subtitle: "Student developer, AI and full-stack",
+        content: `Second-year AI student at PDP University, and a participant at School 21 Tashkent (cybersecurity).
 
-Education:
-• PDP University — Artificial Intelligence (AI) Direction (2nd Year Student, 2024 — Present)
-• School 21 Tashkent — Cybersecurity & Systems Programming (2024 — Present)
-
-Core Technology Stack:
-• AI & ML: Python 3.12, PyTorch, Whisper STT, Kokoro TTS, Gemini Flash, DeepSeek R1, Groq.
-• Frontend & 3D: Three.js / WebGL, GLSL Shaders, React, Next.js, TypeScript, TailwindCSS.
-• Backend & DevOps: Node.js, Express, FastAPI, PostgreSQL, Docker, Redis, Cloudflare.
-• Languages: Uzbek (Native), English (B1), Russian (A1).`,
+I work mostly in Python and JavaScript: voice AI assistants, Telegram bots, web applications and 3D interfaces. The planets below are my actual GitHub repositories.`,
         tags: [
-          "Azimjon Kamiljanov",
-          "Three.js / WebGL",
-          "AI Agents",
-          "PyTorch",
+          "Python",
+          "JavaScript",
+          "Three.js",
+          "Telegram Bot API",
           "Docker",
-          "PDP University",
-          "School 21",
+          "Linux",
         ],
-        actionText: "Contact via Telegram",
-        githubText: "GitHub Profile",
       },
       ru: {
-        badge: "Центральная Звезда • Профиль Разработчика",
-        title: "Азимжон Камильджанов (AI & Full-Stack Разработчик)",
-        subtitle:
-          "AI & Full-Stack Разработчик (Студент) • PDP University & School 21",
-        content: `Здравствуйте! Я Азимжон Камильджанов — студент 2-го курса PDP University (направление AI) и участник Школы 21 в Ташкенте (кибербезопасность). Специализируюсь на разработке AI-агентов, WebRTC/VoIP систем и 3D WebGL интерфейсов.
+        badge: "Центральная звезда • Профиль",
+        title: "Азимжон Камилжанов",
+        subtitle: "Студент-разработчик, AI и full-stack",
+        content: `Студент 2 курса направления искусственного интеллекта в PDP University, участник School 21 Tashkent (кибербезопасность).
 
-Образование:
-• PDP University — Направление искусственного интеллекта (AI) (Студент 2-го курса, 2024 — по наст. время)
-• School 21 Tashkent — Кибербезопасность и системное программирование (2024 — по наст. время)
-
-Основной Технологический Стек:
-• AI & ML: Python 3.12, PyTorch, Whisper STT, Kokoro TTS, Gemini Flash, DeepSeek R1, Groq.
-• Frontend & 3D: Three.js / WebGL, GLSL Shaders, React, Next.js, TypeScript, TailwindCSS.
-• Backend & DevOps: Node.js, Express, FastAPI, PostgreSQL, Docker, Redis, Cloudflare.
-• Языки: Узбекский (Родной), Английский (B1), Русский (A1).`,
+Работаю в основном на Python и JavaScript: голосовые AI-ассистенты, Telegram-боты, веб-приложения и 3D-интерфейсы. Планеты ниже — мои реальные репозитории на GitHub.`,
         tags: [
-          "Азимжон Камильджанов",
-          "Three.js / WebGL",
-          "AI Agents",
+          "Python",
+          "JavaScript",
+          "Three.js",
+          "Telegram Bot API",
           "Docker",
-          "PDP University",
-          "School 21",
+          "Linux",
         ],
-        actionText: "Связаться в Telegram",
-        githubText: "Профиль GitHub",
       },
     },
-
     Mercury: {
       uz: {
-        badge: "1-Sayyora • Enterprise ERP Tizimi",
-        title: "CareTrack Clinic • Medical ERP & Clinic CRM",
-        subtitle:
-          "Klinikalar va Tibbiy Muassasalar Uchun Katta Hajmli Boshqaruv Tizimi",
-        content: `Klinikalar, shifokorlar va bemorlar o'rtasidagi to'liq siklni raqamlashtiruvchi zamonaviy enterprise ERP platformasi.
+        badge: "1-sayyora • Veb-ilova",
+        title: "CareTrack Clinic",
+        subtitle: "Klinika uchun bemor va qabul hisobini yuritish ilovasi",
+        content: `Express va EJS asosidagi server tomonda render qilinadigan veb-ilova. Ma'lumotlar sql.js orqali saqlanadi, kirish express-session va bcryptjs bilan himoyalangan, qrcode kutubxonasi bilan QR kodlar generatsiya qilinadi.
 
-Bemorlarni ro'yxatga olish, elektron tibbiy kartalar (EMR), laboratoriya tahlillari tahlili, shifokorlar ish jadvallari, dorixona inventarizatsiyasi va moliya/billing modullarini qamrab oladi.`,
-        tags: [
-          "Next.js",
-          "PostgreSQL",
-          "TailwindCSS",
-          "Prisma ORM",
-          "Healthcare ERP",
-          "TypeScript",
-        ],
-        actionText: "CareTrack Repo",
-        githubText: "CareTrack",
+Repozitoriya ochiq, JavaScript/CSS/EJS da yozilgan.`,
+        tags: ["Express", "EJS", "sql.js", "bcryptjs", "express-session", "QR"],
       },
       en: {
-        badge: "Planet 1 • Enterprise ERP Platform",
-        title: "CareTrack Clinic • Medical ERP & Clinic CRM",
-        subtitle:
-          "Comprehensive Enterprise Management Suite for Clinics & Hospitals",
-        content: `End-to-end digital transformation platform for medical clinics, healthcare networks, and patient care workflows.
+        badge: "1st planet • Web application",
+        title: "CareTrack Clinic",
+        subtitle: "Patient and appointment records for a clinic",
+        content: `A server-rendered web application built on Express and EJS. Data is kept through sql.js, sign-in is handled by express-session with bcryptjs hashing, and QR codes are generated with the qrcode library.
 
-Features patient admission, Electronic Medical Records (EMR), laboratory analytics, automated physician scheduling, pharmacy inventory, and automated billing modules.`,
-        tags: [
-          "Next.js",
-          "PostgreSQL",
-          "TailwindCSS",
-          "Prisma ORM",
-          "Healthcare ERP",
-          "TypeScript",
-        ],
-        actionText: "CareTrack Repo",
-        githubText: "CareTrack",
+Public repository, written in JavaScript, CSS and EJS.`,
+        tags: ["Express", "EJS", "sql.js", "bcryptjs", "express-session", "QR"],
       },
       ru: {
-        badge: "1-я Планета • Enterprise ERP Система",
-        title: "CareTrack Clinic • Medical ERP & Clinic CRM",
-        subtitle: "Комплексная Платформа Управления Клиниками и Медцентрами",
-        content: `Современная корпоративная ERP платформа для автоматизации клиник, медицинских центров и ухода за пациентами.
+        badge: "1-я планета • Веб-приложение",
+        title: "CareTrack Clinic",
+        subtitle: "Учёт пациентов и приёмов для клиники",
+        content: `Веб-приложение с серверным рендерингом на Express и EJS. Данные хранятся через sql.js, вход защищён express-session и bcryptjs, QR-коды генерируются библиотекой qrcode.
 
-Включает онлайн-регистратуру, электронные медицинские карты (EMR), учет лабораторных анализов, графики врачей, склад медикаментов и биллинг.`,
-        tags: [
-          "Next.js",
-          "PostgreSQL",
-          "TailwindCSS",
-          "Prisma ORM",
-          "Healthcare ERP",
-          "TypeScript",
-        ],
-        actionText: "Репозиторий CareTrack",
-        githubText: "CareTrack",
+Открытый репозиторий, написан на JavaScript, CSS и EJS.`,
+        tags: ["Express", "EJS", "sql.js", "bcryptjs", "express-session", "QR"],
       },
     },
-
     Venus: {
       uz: {
-        badge: "2-Sayyora • Voice AI & Robotics",
-        title: "Jarvis-X • Autonomous Desktop Voice Assistant",
-        subtitle:
-          "Ovozli Buyruqlar, Desktop Avtomatizatsiyasi va Aqlli Yordamchi",
-        content: `Foydalanuvchi ovozini real vaqtda tushunib, dasturlar ochish, skriptlar yurgizish, brauzerni boshqarish va murakkab operatsion tizim vazifalarini bajaruvchi mustaqil yordamchi.
+        badge: "2-sayyora • AI yordamchi",
+        title: "Jarvis-X",
+        subtitle: "Modulli, oflayn ishlay oladigan ko'p tilli AI yordamchi",
+        content: `GitHub tavsifida shunday ta'riflangan: modulli, oflayn rejimda ishlay oladigan va ingliz hamda o'zbek tillarini qo'llab-quvvatlaydigan AI yordamchi.
 
-Modular, offline-capable, multilingual (EN/UZ) arxitektura, mahalliy STT/TTS dvigatellari va FastAPI backend.`,
-        tags: [
-          "Python",
-          "Voice AI",
-          "SpeechRecognition",
-          "Kokoro TTS",
-          "System Automation",
-          "FastAPI",
-        ],
-        actionText: "Jarvis-X Repo",
-        githubText: "Jarvis-X",
+Python asosida, Makefile va shell skriptlari bilan yig'iladi. Repozitoriya ochiq.`,
+        tags: ["Python", "Makefile", "Shell", "Offline", "EN / UZ"],
       },
       en: {
-        badge: "Planet 2 • Voice AI & Robotics",
-        title: "Jarvis-X • Autonomous Desktop Voice Assistant",
-        subtitle:
-          "Voice-Activated Desktop Automation & Intelligent AI Assistant",
-        content: `Real-time desktop voice assistant executing natural voice commands, operating system automation, browser control, and terminal tasks.
+        badge: "2nd planet • AI assistant",
+        title: "Jarvis-X",
+        subtitle: "A modular, offline-capable, multilingual assistant",
+        content: `Described in its own repository as a modular AI assistant that can run offline and works in both English and Uzbek.
 
-Architected with an offline-capable, modular design, multilingual (EN/UZ) support, local high-speed STT/TTS engines, and FastAPI backend.`,
-        tags: [
-          "Python",
-          "Voice AI",
-          "SpeechRecognition",
-          "Kokoro TTS",
-          "System Automation",
-          "FastAPI",
-        ],
-        actionText: "Jarvis-X Repo",
-        githubText: "Jarvis-X",
+Built in Python, assembled with a Makefile and shell scripts. Public repository.`,
+        tags: ["Python", "Makefile", "Shell", "Offline", "EN / UZ"],
       },
       ru: {
-        badge: "2-я Планета • Голосовой AI & Робототехника",
-        title: "Jarvis-X • Autonomous Desktop Voice Assistant",
-        subtitle: "Голосовое Управление, Автоматизация ПК и Умный Ассистент",
-        content: `Автономный голосовой ассистент, распознающий естественную речь, открывающий программы, запускающий скрипты и автоматизирующий задачи ОС.
+        badge: "2-я планета • AI-ассистент",
+        title: "Jarvis-X",
+        subtitle: "Модульный многоязычный ассистент с офлайн-режимом",
+        content: `В описании репозитория: модульный AI-ассистент, способный работать офлайн и поддерживающий английский и узбекский языки.
 
-Модульная архитектура с поддержкой автономного офлайн-режима, мультиязычности (EN/UZ), локальных STT/TTS движков и бэкенда на FastAPI.`,
-        tags: [
-          "Python",
-          "Voice AI",
-          "SpeechRecognition",
-          "Kokoro TTS",
-          "System Automation",
-          "FastAPI",
-        ],
-        actionText: "Репозиторий Jarvis-X",
-        githubText: "Jarvis-X",
+Написан на Python, собирается через Makefile и shell-скрипты. Открытый репозиторий.`,
+        tags: ["Python", "Makefile", "Shell", "Offline", "EN / UZ"],
       },
     },
-
     Earth: {
       uz: {
-        badge: "3-Sayyora • Bosh Flagman AI Loyiha",
-        title: "CyberAgent TITAN NEXUS",
-        subtitle:
-          "Shaxsiy Avtonom Super-Agent va Telegram Ovozli Duplex VoIP Tizimi",
-        content: `Azimjon Kamiljanovning bosh flagman loyihasi.
-Gemini 3.8 Flash, Groq, DeepSeek R1 va mahalliy RTX 5070 GPU (Whisper + Kokoro TTS) vositasida ishlovchi avtonom kiber-agent.
+        badge: "3-sayyora • Ovozli AI agent",
+        title: "Cyber Agent",
+        subtitle: "O'zbek tilida gaplashadigan shaxsiy ovozli yordamchi",
+        content: `Telefon va quloqchin orqali o'zbek tilida muloqot qiladigan, ish stantsiyasini nazorat ostidagi vositalar qatlami orqali boshqaradigan shaxsiy yordamchi.
 
-Hydrogram VoIP dvigateli orqali 1-on-1 telefon qo'ng'iroqlari, jonli duplex ovozli muloqot va tizimdagi 180 dan ortiq vositalarni (Docker, bash, fayllar, skriptlar) avtonom boshqarish qobiliyatiga ega.`,
+Ovoz uchta rejimda ishlaydi: WebSocket orqali Gemini Live past kechikishli oqim; mahalliy faster-whisper + Gemini Flash + mahalliy TTS; va to'liq mahalliy rejim — faster-whisper + Ollama (qwen3:8b) + mahalliy TTS.
+
+Bepul tariflar va mahalliy modellar hisobiga qo'shimcha xarajatsiz ishlaydi.`,
         tags: [
-          "Gemini 3.8 Flash",
-          "Telegram VoIP",
-          "WebRTC Duplex",
-          "RTX 5070 CUDA",
-          "PyTorch",
-          "Docker",
+          "Gemini Live",
+          "faster-whisper",
+          "Ollama",
+          "WebSocket",
+          "Python",
+          "O'zbek tili",
         ],
-        actionText: "CyberAgent Repo",
-        githubText: "CyberAgent",
       },
       en: {
-        badge: "Planet 3 • Flagship Autonomous AI",
-        title: "CyberAgent TITAN NEXUS",
-        subtitle:
-          "Personal Autonomous Super-Agent with Real-Time Duplex VoIP Calling",
-        content: `Azimjon Kamiljanov's supreme flagship engineering project.
-Powered by Gemini 3.8 Flash, Groq LPU, DeepSeek R1, and local RTX 5070 GPU (Whisper + Kokoro TTS neuraudio).
+        badge: "3rd planet • Voice AI agent",
+        title: "Cyber Agent",
+        subtitle: "A personal voice-first assistant that speaks Uzbek",
+        content: `A personal assistant that converses in Uzbek through a phone and earbuds, and controls a workstation through a policy-controlled tool layer.
 
-Performs 1-on-1 cellular Telegram phone calls via Hydrogram WebRTC VoIP, streaming two-way full-duplex conversations and autonomously executing over 180 system tools (Docker, bash, filesystem, scripts).`,
+Voice runs in three modes: low-latency Gemini Live streaming over WebSocket; local faster-whisper into Gemini Flash into local TTS; and a fully local mode of faster-whisper into Ollama (qwen3:8b) into local TTS.
+
+Runs at no extra cost by combining free tiers with local models.`,
         tags: [
-          "Gemini 3.8 Flash",
-          "Telegram VoIP",
-          "WebRTC Duplex",
-          "RTX 5070 CUDA",
-          "PyTorch",
-          "Docker",
+          "Gemini Live",
+          "faster-whisper",
+          "Ollama",
+          "WebSocket",
+          "Python",
+          "O'zbek tili",
         ],
-        actionText: "CyberAgent Repo",
-        githubText: "CyberAgent",
       },
       ru: {
-        badge: "3-я Планета • Главный Флагманский AI Проект",
-        title: "CyberAgent TITAN NEXUS",
-        subtitle:
-          "Автономный Супер-Агент с Двусторонней Голосовой VoIP Связью в Telegram",
-        content: `Главный флагманский проект Азимжона Камильджанова.
-Работает на базе Gemini 3.8 Flash, Groq, DeepSeek R1 и локального RTX 5070 GPU (нейронные Whisper + Kokoro TTS).
+        badge: "3-я планета • Голосовой AI-агент",
+        title: "Cyber Agent",
+        subtitle: "Персональный голосовой ассистент на узбекском языке",
+        content: `Персональный ассистент, который общается на узбекском через телефон и наушники и управляет рабочей станцией через контролируемый слой инструментов.
 
-Осуществляет прямые телефонные 1-on-1 звонки в Telegram через движок Hydrogram VoIP, поддерживает потоковый дуплексный диалог и автономно управляет более чем 180 инструментами ОС (Docker, bash, файлы, скрипты).`,
+Голос работает в трёх режимах:низколатентный Gemini Live по WebSocket; локальный faster-whisper → Gemini Flash → локальный TTS; и полностью локальный режим faster-whisper → Ollama (qwen3:8b) → локальный TTS.
+
+Работает без дополнительных затрат за счёт бесплатных тарифов и локальных моделей.`,
         tags: [
-          "Gemini 3.8 Flash",
-          "Telegram VoIP",
-          "WebRTC Duplex",
-          "RTX 5070 CUDA",
-          "PyTorch",
-          "Docker",
+          "Gemini Live",
+          "faster-whisper",
+          "Ollama",
+          "WebSocket",
+          "Python",
+          "O'zbek tili",
         ],
-        actionText: "Репозиторий CyberAgent",
-        githubText: "CyberAgent",
       },
     },
+    Mars: {
+      uz: {
+        badge: "4-sayyora • Telegram bot",
+        title: "Detektiv (Mafia) bot",
+        subtitle: "O'zbek tilidagi Telegram mafiya o'yini boti",
+        content: `Guruhlarda va shaxsiy xabarlarda o'ynaladigan mafiya/detektiv o'yini boti. Asinxron Python arxitekturasi: python-telegram-bot 22.8 va aiosqlite.
 
+Rollar, ovoz berish va o'yin bosqichlari to'liq hujjatlashtirilgan. Docker va Procfile orqali joylashtiriladi.`,
+        tags: [
+          "python-telegram-bot 22.8",
+          "aiosqlite",
+          "httpx",
+          "Docker",
+          "Async",
+        ],
+      },
+      en: {
+        badge: "4th planet • Telegram bot",
+        title: "Mafia / Detective bot",
+        subtitle: "An Uzbek-language Mafia game bot for Telegram",
+        content: `A Mafia-style social deduction game played in Telegram groups and direct messages. Built on an async Python stack: python-telegram-bot 22.8 with aiosqlite.
+
+Roles, voting and game phases are documented in the repository. Deployed via Docker and a Procfile.`,
+        tags: [
+          "python-telegram-bot 22.8",
+          "aiosqlite",
+          "httpx",
+          "Docker",
+          "Async",
+        ],
+      },
+      ru: {
+        badge: "4-я планета • Telegram-бот",
+        title: "Бот «Детектив» (Мафия)",
+        subtitle: "Бот для игры в мафию на узбекском языке",
+        content: `Игра в мафию для групп и личных сообщений Telegram. Асинхронный Python-стек: python-telegram-bot 22.8 и aiosqlite.
+
+Роли, голосование и фазы игры задокументированы в репозитории. Разворачивается через Docker и Procfile.`,
+        tags: [
+          "python-telegram-bot 22.8",
+          "aiosqlite",
+          "httpx",
+          "Docker",
+          "Async",
+        ],
+      },
+    },
+    Jupiter: {
+      uz: {
+        badge: "5-sayyora • Avtonom agent",
+        title: "Elite AI Agent",
+        subtitle: "Xotira va qidiruv vositalari bilan jihozlangan agent",
+        content: `Python asosidagi avtonom agent. Vektor xotira uchun chromadb, veb qidiruv uchun duckduckgo-search, ma'lumot sxemalari uchun pydantic va terminal interfeysi uchun rich ishlatiladi.
+
+Repozitoriya ochiq; hujjatlarida ko'p modelli orkestratsiya va RAG tavsiflangan.`,
+        tags: ["Python", "pydantic", "chromadb", "httpx", "rich", "DuckDuckGo"],
+      },
+      en: {
+        badge: "5th planet • Autonomous agent",
+        title: "Elite AI Agent",
+        subtitle: "An agent with vector memory and search tools",
+        content: `An autonomous agent in Python. It uses chromadb for vector memory, duckduckgo-search for web lookups, pydantic for data schemas and rich for its terminal interface.
+
+Public repository; its documentation describes multi-model orchestration and RAG.`,
+        tags: ["Python", "pydantic", "chromadb", "httpx", "rich", "DuckDuckGo"],
+      },
+      ru: {
+        badge: "5-я планета • Автономный агент",
+        title: "Elite AI Agent",
+        subtitle: "Агент с векторной памятью и инструментами поиска",
+        content: `Автономный агент на Python. Использует chromadb для векторной памяти, duckduckgo-search для веб-поиска, pydantic для схем данных и rich для терминального интерфейса.
+
+Открытый репозиторий; в документации описаны мультимодельная оркестрация и RAG.`,
+        tags: ["Python", "pydantic", "chromadb", "httpx", "rich", "DuckDuckGo"],
+      },
+    },
+    Saturn: {
+      uz: {
+        badge: "6-sayyora • 3D veb",
+        title: "Cosmic Portfolio",
+        subtitle: "React asosidagi 3D portfolio — shu saytning salafi",
+        content: `Next.js va react-three-fiber asosida qurilgan 3D portfolio. Sahna uchun drei yordamchilari, holat boshqaruvi uchun zustand, animatsiya uchun GSAP va framer-motion ishlatilgan.
+
+Hozir ko'rib turganingiz shu loyihaning keyingi, vanilla Three.js'dagi qayta yozilgan versiyasi.`,
+        tags: [
+          "Next.js",
+          "react-three-fiber",
+          "drei",
+          "zustand",
+          "GSAP",
+          "TypeScript",
+        ],
+      },
+      en: {
+        badge: "6th planet • 3D web",
+        title: "Cosmic Portfolio",
+        subtitle: "A React-based 3D portfolio — the predecessor of this site",
+        content: `A 3D portfolio built with Next.js and react-three-fiber, using drei helpers for the scene, zustand for state and GSAP with framer-motion for animation.
+
+The site you are looking at now is the later rewrite of this project in vanilla Three.js.`,
+        tags: [
+          "Next.js",
+          "react-three-fiber",
+          "drei",
+          "zustand",
+          "GSAP",
+          "TypeScript",
+        ],
+      },
+      ru: {
+        badge: "6-я планета • 3D-веб",
+        title: "Cosmic Portfolio",
+        subtitle: "3D-портфолио на React — предшественник этого сайта",
+        content: `3D-портфолио на Next.js и react-three-fiber, с помощниками drei для сцены, zustand для состояния и GSAP вместе с framer-motion для анимации.
+
+Сайт, который вы видите сейчас, — более поздняя переработка этого проекта на чистом Three.js.`,
+        tags: [
+          "Next.js",
+          "react-three-fiber",
+          "drei",
+          "zustand",
+          "GSAP",
+          "TypeScript",
+        ],
+      },
+    },
+    Uranus: {
+      uz: {
+        badge: "7-sayyora • Shu sayt",
+        title: "3D Quyosh tizimi portfoliosi",
+        subtitle: "Siz hozir ko'rib turgan sayt",
+        content: `Vanilla Three.js va GLSL shaderlarida qurilgan quyosh tizimi. Vite bilan yig'iladi, Cloudflare Workers'da joylashtirilgan.
+
+Veb-kamera orqali qo'l harakatlari bilan boshqarish MediaPipe Hands yordamida amalga oshirilgan — model brauzerda ishlaydi, video hech qayerga yuborilmaydi.
+
+Uch tilda: o'zbek, ingliz, rus.`,
+        tags: [
+          "Three.js",
+          "WebGL",
+          "GLSL",
+          "MediaPipe",
+          "Cloudflare Workers",
+          "Vite",
+        ],
+      },
+      en: {
+        badge: "7th planet • This site",
+        title: "3D Solar System portfolio",
+        subtitle: "The site you are looking at",
+        content: `A solar system built in vanilla Three.js with GLSL shaders, bundled by Vite and deployed on Cloudflare Workers.
+
+Hand control through the webcam uses MediaPipe Hands; the model runs in the browser and no video leaves the device.
+
+Available in Uzbek, English and Russian.`,
+        tags: [
+          "Three.js",
+          "WebGL",
+          "GLSL",
+          "MediaPipe",
+          "Cloudflare Workers",
+          "Vite",
+        ],
+      },
+      ru: {
+        badge: "7-я планета • Этот сайт",
+        title: "3D-портфолио «Солнечная система»",
+        subtitle: "Сайт, который вы сейчас просматриваете",
+        content: `Солнечная система на чистом Three.js с GLSL-шейдерами, собирается через Vite и развёрнута на Cloudflare Workers.
+
+Управление жестами рук через веб-камеру реализовано на MediaPipe Hands: модель работает в браузере, видео никуда не отправляется.
+
+Доступен на узбекском, английском и русском.`,
+        tags: [
+          "Three.js",
+          "WebGL",
+          "GLSL",
+          "MediaPipe",
+          "Cloudflare Workers",
+          "Vite",
+        ],
+      },
+    },
+    Neptune: {
+      uz: {
+        badge: "8-sayyora • Mobil",
+        title: "Poco",
+        subtitle: "Telefon yordamchisi",
+        content: `Kotlin'da yozilgan telefon yordamchisi.
+
+Repozitoriya yopiq, shuning uchun bu yerda faqat tasdiqlangan ma'lumot keltirilgan: asosiy til Kotlin, GitHub tavsifi — «Your phone assistant».`,
+        tags: ["Kotlin", "Android", "Yopiq repo"],
+      },
+      en: {
+        badge: "8th planet • Mobile",
+        title: "Poco",
+        subtitle: "A phone assistant",
+        content: `A phone assistant written in Kotlin.
+
+The repository is private, so only what can be confirmed is stated here: the primary language is Kotlin, and its GitHub description reads “Your phone assistant”.`,
+        tags: ["Kotlin", "Android", "Yopiq repo"],
+      },
+      ru: {
+        badge: "8-я планета • Мобильное",
+        title: "Poco",
+        subtitle: "Ассистент для телефона",
+        content: `Ассистент для телефона, написанный на Kotlin.
+
+Репозиторий закрытый, поэтому здесь указано только подтверждённое: основной язык — Kotlin, описание на GitHub — «Your phone assistant».`,
+        tags: ["Kotlin", "Android", "Yopiq repo"],
+      },
+    },
+    Pluto: {
+      uz: {
+        badge: "Mitti sayyora • Yopiq ishlanma",
+        title: "CyberAgent",
+        subtitle: "Ishlanmoqda — yopiq repozitoriya",
+        content: `Python, shell va Docker asosidagi yopiq repozitoriya.
+
+Repo yopiq va hujjati e'lon qilinmagan, shuning uchun bu yerda uni batafsil tavsiflamayman. Ochiq Cyber Agent loyihasi uchun 3-sayyoraga qarang.`,
+        tags: ["Python", "Shell", "Docker", "Yopiq repo"],
+      },
+      en: {
+        badge: "Dwarf planet • Private work",
+        title: "CyberAgent",
+        subtitle: "In progress — private repository",
+        content: `A private repository built around Python, shell and Docker.
+
+It is private and carries no published documentation, so it is not described in detail here. For the public Cyber Agent project, see the third planet.`,
+        tags: ["Python", "Shell", "Docker", "Yopiq repo"],
+      },
+      ru: {
+        badge: "Карликовая планета • Закрытая разработка",
+        title: "CyberAgent",
+        subtitle: "В разработке — закрытый репозиторий",
+        content: `Закрытый репозиторий на Python, shell и Docker.
+
+Репозиторий приватный и без опубликованной документации, поэтому подробного описания здесь нет. Публичный проект Cyber Agent — на третьей планете.`,
+        tags: ["Python", "Shell", "Docker", "Yopiq repo"],
+      },
+    },
     moon: {
       uz: {
         badge: "Yer Yo'ldoshi • Aloqa & Hamkorlik",
@@ -1109,1435 +1246,6 @@ Use the terminal below to dispatch an encrypted message to Azimjon's Telegram bo
           "Ташкент",
         ],
         actionText: "Написать в Telegram",
-        githubText: "Профиль GitHub",
-      },
-    },
-
-    Mars: {
-      uz: {
-        badge: "4-Sayyora • 3D CAD Muhandislik Tizimi",
-        title: "UstaPro Master CAD 3D",
-        subtitle: "Telegram Mini App & Web 3D CAD Qurilish va Smeta Dvigateli",
-        content: `Murakkab tom, shift, pol va devor yog'och karkaslarini 3D da loyihalovchi va smetasini millimetrgacha hisoblovchi muhandislik platformasi.
-
-Har bir detalni 3D sochish (Exploded View), 0 dan bosqichma-bosqich avto-qurish, 2D chizmalar, materiallar ro'yxati va eksport. 98/98 avtomatlashtirilgan test 100% PASS qilingan.`,
-        tags: [
-          "Three.js CAD",
-          "Telegram WebApp",
-          "Wood Engineering",
-          "Cost Estimation",
-          "WebGL",
-        ],
-        actionText: "UstaPro CAD",
-        githubText: "UstaPro",
-      },
-      en: {
-        badge: "Planet 4 • 3D CAD Engineering Platform",
-        title: "UstaPro Master CAD 3D",
-        subtitle:
-          "Telegram Mini App & Web 3D CAD Construction & Estimation Suite",
-        content: `Architectural CAD platform for precision 3D design and cost estimation of roofs, ceilings, walls, and flooring framing.
-
-Features real-time 3D Exploded View, step-by-step phased auto-construction, parametric editing, 2D blueprints, and itemized bill-of-materials. Verified with 98/98 automated tests.`,
-        tags: [
-          "Three.js CAD",
-          "Telegram WebApp",
-          "Wood Engineering",
-          "Cost Estimation",
-          "WebGL",
-        ],
-        actionText: "UstaPro CAD",
-        githubText: "UstaPro",
-      },
-      ru: {
-        badge: "4-я Планета • 3D CAD Инженерный Комплекс",
-        title: "UstaPro Master CAD 3D",
-        subtitle:
-          "Telegram Mini App & Web 3D CAD Движок Проектирования и Сметы",
-        content: `Инженерная платформа для точного 3D проектирования деревянных каркасов крыш, полов, потолков и автоматического расчета сметы до миллиметра.
-
-Включает 3D режим разборки (Exploded View), пошаговую сборку с нуля, 2D чертежи, точную калькуляцию метизов и материалов. 98/98 тестов пройдены успешно.`,
-        tags: [
-          "Three.js CAD",
-          "Telegram WebApp",
-          "Wood Engineering",
-          "Cost Estimation",
-          "WebGL",
-        ],
-        actionText: "UstaPro CAD",
-        githubText: "UstaPro",
-      },
-    },
-
-    Jupiter: {
-      uz: {
-        badge: "5-Sayyora • DevSecOps & Kiberxavfsizlik",
-        title: "Sentinel ECC Matrix & Docker Sandboxing",
-        subtitle: "68 Agent, 48 Skill va OWASP GenAI Xavfsizlik Qalqoni",
-        content: `Murakkab dasturchi agentlar (Everything Claude Code) uchun ko'p tilli (Go, Python, Rust, TypeScript) himoyalangan sandboxing poligoni.
-
-TDD, arxitektura qarorlari (ADR), xavfsiz terminal izolyatsiyasi va doimiy avtonom auditi bilan jihozlangan.`,
-        tags: [
-          "Go / Rust / Python",
-          "Docker Sandboxing",
-          "DevSecOps",
-          "OWASP GenAI",
-          "TDD",
-        ],
-        actionText: "Sentinel Matrix",
-        githubText: "Sentinel",
-      },
-      en: {
-        badge: "Planet 5 • DevSecOps & Security Armor",
-        title: "Sentinel ECC Matrix & Docker Sandboxing",
-        subtitle: "68 Subagents, 48 Skills & OWASP GenAI Threat Shield",
-        content: `Polyglot (Go, Python, Rust, TypeScript) hardened sandbox proving ground designed for high-autonomy developer agents.
-
-Equipped with strict TDD pipelines, Architecture Decision Records (ADR), zero-trust terminal sandboxing, and autonomous 24/7 security auditing.`,
-        tags: [
-          "Go / Rust / Python",
-          "Docker Sandboxing",
-          "DevSecOps",
-          "OWASP GenAI",
-          "TDD",
-        ],
-        actionText: "Sentinel Matrix",
-        githubText: "Sentinel",
-      },
-      ru: {
-        badge: "5-я Планета • DevSecOps & Кибербезопасность",
-        title: "Sentinel ECC Matrix & Docker Sandboxing",
-        subtitle: "68 Агентов, 48 Навыков и Защитный Щит OWASP GenAI",
-        content: `Мультиязычный (Go, Python, Rust, TypeScript) защищенный Docker-полигон для автономных агентов-разработчиков.
-
-Оснащен TDD пайплайнами, протоколами архитектурных решений (ADR), строгой изоляцией терминала и непрерывным аудитом уязвимостей.`,
-        tags: [
-          "Go / Rust / Python",
-          "Docker Sandboxing",
-          "DevSecOps",
-          "OWASP GenAI",
-          "TDD",
-        ],
-        actionText: "Sentinel Matrix",
-        githubText: "Sentinel",
-      },
-    },
-
-    Saturn: {
-      uz: {
-        badge: "6-Sayyora • Multi-Agent Framework",
-        title: "Elite AI Agent • Multi-Agent Swarm",
-        subtitle: "Avtonom Vazifalarni Taqsimlovchi Ko'p Agentli AI Tizimi",
-        content: `Murakkab kiber va dasturlash vazifalarini parallel bajaruvchi ierarxik agentlar to'dasi (Swarm Intelligence).
-
-Rejalashtiruvchi (Architect), kodlovchi (Coder), sinovchi (Tester) va xavfsizlik auditori (SecOps) rollari o'rtasida muvofiqlashtirilgan ish oqimi.`,
-        tags: [
-          "Multi-Agent Swarm",
-          "LLM Orchestration",
-          "Python",
-          "Asyncio",
-          "Auto-Evaluation",
-        ],
-        actionText: "Elite AI Agent",
-        githubText: "Elite AI Agent",
-      },
-      en: {
-        badge: "Planet 6 • Multi-Agent Swarm Framework",
-        title: "Elite AI Agent • Multi-Agent Swarm",
-        subtitle:
-          "Hierarchical Multi-Agent Framework for Autonomous Task Execution",
-        content: `Hierarchical swarm intelligence engine coordinating parallel execution of complex software engineering and cybersecurity workflows.
-
-Synchronizes roles between Architect (strategic planning), Coder (implementation), Tester (TDD verification), and SecOps (threat mitigation).`,
-        tags: [
-          "Multi-Agent Swarm",
-          "LLM Orchestration",
-          "Python",
-          "Asyncio",
-          "Auto-Evaluation",
-        ],
-        actionText: "Elite AI Agent",
-        githubText: "Elite AI Agent",
-      },
-      ru: {
-        badge: "6-я Планета • Мульти-Агентный Фреймворк",
-        title: "Elite AI Agent • Multi-Agent Swarm",
-        subtitle: "Иерархическая Роевая Мульти-Агентная AI Система",
-        content: `Фреймворк роевого интеллекта (Swarm Intelligence) для параллельного решения масштабных программных и кибернетических задач.
-
-Координирует роли Архитектора (планирование), Разработчика (кодинг), Тестировщика (TDD) и Офицера безопасности (SecOps).`,
-        tags: [
-          "Multi-Agent Swarm",
-          "LLM Orchestration",
-          "Python",
-          "Asyncio",
-          "Auto-Evaluation",
-        ],
-        actionText: "Elite AI Agent",
-        githubText: "Elite AI Agent",
-      },
-    },
-
-    Uranus: {
-      uz: {
-        badge: "7-Sayyora • Full-Stack Cloud Ekotizim",
-        title: "Modern Full-Stack Cloud Ecosystem",
-        subtitle: "Masshtablanuvchi Veb Arxitektura va Bulut Servislari",
-        content: `Zamonaviy veb-ilovalarni noldan ishlab chiqarish darajasigacha ko'taruvchi to'liq stekli arxitektura.
-
-Next.js App Router, TypeScript, PostgreSQL, Redis kesh tizimi, TailwindCSS va Docker orqali avtomatlashtirilgan CI/CD konveyeri.`,
-        tags: [
-          "Next.js 14",
-          "TypeScript",
-          "PostgreSQL",
-          "Redis",
-          "Docker CI/CD",
-          "TailwindCSS",
-        ],
-        actionText: "Full-Stack Repo",
-        githubText: "Full-Stack",
-      },
-      en: {
-        badge: "Planet 7 • Full-Stack Cloud Architecture",
-        title: "Modern Full-Stack Cloud Ecosystem",
-        subtitle: "Scalable Cloud-Native Web Architecture & Microservices",
-        content: `Full-stack production blueprint for high-performance cloud web applications.
-
-Features Next.js App Router, strict TypeScript, PostgreSQL, Redis cache layer, TailwindCSS, and containerized Docker CI/CD delivery pipelines.`,
-        tags: [
-          "Next.js 14",
-          "TypeScript",
-          "PostgreSQL",
-          "Redis",
-          "Docker CI/CD",
-          "TailwindCSS",
-        ],
-        actionText: "Full-Stack Repo",
-        githubText: "Full-Stack",
-      },
-      ru: {
-        badge: "7-я Планета • Full-Stack Облачная Экосистема",
-        title: "Modern Full-Stack Cloud Ecosystem",
-        subtitle: "Масштабируемая Облачная Архитектура и Микросервисы",
-        content: `Полнофункциональный эталонный стек для создания высокопроизводительных веб-платформ корпоративного уровня.
-
-Next.js App Router, строгий TypeScript, PostgreSQL, кэширование Redis, TailwindCSS и автоматизированный Docker CI/CD пайплайн.`,
-        tags: [
-          "Next.js 14",
-          "TypeScript",
-          "PostgreSQL",
-          "Redis",
-          "Docker CI/CD",
-          "TailwindCSS",
-        ],
-        actionText: "Репозиторий Full-Stack",
-        githubText: "Full-Stack",
-      },
-    },
-
-    Neptune: {
-      uz: {
-        badge: "8-Sayyora • Deep Learning Laboratoriyasi",
-        title: "AI & Deep Learning Research Lab",
-        subtitle: "Lenovo Legion RTX 5070 Blackwell CUDA 13 Neyron Tizimi",
-        content: `Mahalliy GPU quvvatida ishlovchi sun'iy intellekt va neyron tarmoqlar ilmiy laboratoriyasi.
-
-Whisper large-v3-turbo nutqni aniqlash, Kokoro neyron ovoz sintezi, PyTorch 2.14 + CUDA 13 tezlatgichlari va 180 dan ortiq AI kutubxonalar bazasi.`,
-        tags: [
-          "PyTorch 2.14",
-          "CUDA 13",
-          "Whisper Turbo",
-          "Kokoro TTS",
-          "Jupyter Lab",
-          "RTX 5070",
-        ],
-        actionText: "AI Lab Profil",
-        githubText: "AI Lab",
-      },
-      en: {
-        badge: "Planet 8 • Deep Learning Research Lab",
-        title: "AI & Deep Learning Research Lab",
-        subtitle:
-          "Lenovo Legion RTX 5070 Blackwell CUDA 13 Neural Acceleration",
-        content: `High-performance local GPU deep learning laboratory for state-of-the-art model inference and fine-tuning.
-
-Equipped with Whisper large-v3-turbo, Kokoro neural TTS, PyTorch 2.14 + CUDA 13 acceleration, and over 180 foundational AI research packages.`,
-        tags: [
-          "PyTorch 2.14",
-          "CUDA 13",
-          "Whisper Turbo",
-          "Kokoro TTS",
-          "Jupyter Lab",
-          "RTX 5070",
-        ],
-        actionText: "AI Lab Profile",
-        githubText: "AI Lab",
-      },
-      ru: {
-        badge: "8-я Планета • Лаборатория Глубокого Обучения",
-        title: "AI & Deep Learning Research Lab",
-        subtitle:
-          "Lenovo Legion RTX 5070 Blackwell CUDA 13 Нейросетевая Станция",
-        content: `Локальная GPU лаборатория глубокого обучения для высокоскоростного инференса и дообучения нейросетей.
-
-Whisper large-v3-turbo для распознавания речи, нейросинтез Kokoro TTS, ускорение PyTorch 2.14 + CUDA 13 и более 180 библиотек машинного обучения.`,
-        tags: [
-          "PyTorch 2.14",
-          "CUDA 13",
-          "Whisper Turbo",
-          "Kokoro TTS",
-          "Jupyter Lab",
-          "RTX 5070",
-        ],
-        actionText: "Профиль AI Lab",
-        githubText: "AI Lab",
-      },
-    },
-
-    Pluto: {
-      uz: {
-        badge: "9-Sayyora • Cloud Fleet & Multi-Repo",
-        title: "Google Jules Cloud Fleet & Poco Orchestrator",
-        subtitle: "Bulutli Repozitoriylar Sinxronizatsiyasi va Avtonom Flot",
-        content: `Google Jules AI agenti orqali 8 dan ortiq GitHub repozitoriylarini bulutda avtonom sinxronlashtiruvchi va boshqaruvchi flot tizimi.
-
-Poco CLI orqali ko'p omborli (multi-repo) o'zgarishlarni kuzatish, avtomatik testlar va versiyalarni yetkazish.`,
-        tags: [
-          "Google Jules",
-          "Cloud Fleet",
-          "Poco CLI",
-          "Multi-Repo",
-          "Automated DevOps",
-        ],
-        actionText: "Poco Repo",
-        githubText: "Poco",
-      },
-      en: {
-        badge: "Planet 9 • Cloud Fleet & Multi-Repo Orchestration",
-        title: "Google Jules Cloud Fleet & Poco Orchestrator",
-        subtitle: "Autonomous Cloud Fleet Synchronization & Multi-Repo DevOps",
-        content: `Autonomous cloud development fleet managing continuous synchronization across 8+ GitHub repositories via Google Jules.
-
-Empowered by Poco CLI for atomic cross-repository commits, continuous testing, and unified version delivery.`,
-        tags: [
-          "Google Jules",
-          "Cloud Fleet",
-          "Poco CLI",
-          "Multi-Repo",
-          "Automated DevOps",
-        ],
-        actionText: "Poco Repo",
-        githubText: "Poco",
-      },
-      ru: {
-        badge: "9-я Планета • Облачный Флот и Multi-Repo",
-        title: "Google Jules Cloud Fleet & Poco Orchestrator",
-        subtitle: "Автономная Облачная Синхронизация Репозиториев и DevOps",
-        content: `Автономный облачный флот для непрерывной синхронизации и координации более 8 репозиториев GitHub через Google Jules.
-
-Оснащен CLI утилитой Poco для атомарных кросс-репозиторных коммитов, автоматического тестирования и релизов.`,
-        tags: [
-          "Google Jules",
-          "Cloud Fleet",
-          "Poco CLI",
-          "Multi-Repo",
-          "Automated DevOps",
-        ],
-        actionText: "Репозиторий Poco",
-        githubText: "Poco",
-      },
-    },
-
-    Voyager: {
-      uz: {
-        badge: "Koinot Zondi • Interstellar Architecture",
-        title: "Voyager 1 • CyberProbe Deep Space Telemetry",
-        subtitle: "Avtonom Tizimlar, Chuqur Arxitektura va Erkin AI Missiyasi",
-        content: `Azimjon Kamiljanovning yulduzlararo fazoga yo'naltirilgan texnologik konseptsiyasi.
-Yulduzlararo masofalarda avtonom ishlovchi kiber-agentlar arxitekturasi, RTX 5070 lokal GPU infratuzilmasi, markazlashmagan AI protokollari va tizimli optimallashtirish missiyasi.
-
-Telemetriya:
-• Missiya: Deep Space Autonomous Computing
-• Aloqa kanali: Direct Decentralized RPC
-• Holat: Yulduzlararo fazoda faol parvozda
-• Boshqaruv: Azimjon Kamiljanov AI Systems Lab`,
-        tags: [
-          "Voyager 1",
-          "Interstellar Mission",
-          "Autonomous Agents",
-          "Deep Architecture",
-          "RTX 5070 CUDA",
-          "Decentralized Tech",
-        ],
-        actionText: "Voyager Missiyasi",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "Deep Space Probe • Interstellar Architecture",
-        title: "Voyager 1 • CyberProbe Deep Space Telemetry",
-        subtitle:
-          "Autonomous Systems, Deep Architecture & Decentralized AI Mission",
-        content: `Azimjon Kamiljanov's deep-space engineering vision.
-Autonomous agent architecture operating over interstellar distances, local RTX 5070 GPU infrastructure, decentralized AI pipelines, and continuous system resilience.
-
-Telemetry:
-• Mission: Deep Space Autonomous Computing
-• Channel: Direct Decentralized RPC
-• Status: Sailing into Interstellar Space
-• Operation: Azimjon Kamiljanov AI Systems Lab`,
-        tags: [
-          "Voyager 1",
-          "Interstellar Mission",
-          "Autonomous Agents",
-          "Deep Architecture",
-          "RTX 5070 CUDA",
-          "Decentralized Tech",
-        ],
-        actionText: "Voyager Mission",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "Космический Зонд • Межзвездная Архитектура",
-        title: "Voyager 1 • CyberProbe Deep Space Telemetry",
-        subtitle:
-          "Автономные Системы, Глубокая Архитектура и Миссия Свободного AI",
-        content: `Технологическая концепция Азимжона Камильджанова, устремленная в межзвездное пространство.
-Архитектура автономных кибер-агентов, работающих на межзвездных расстояниях, локальная GPU-инфраструктура RTX 5070, децентрализованные AI протоколы и отказоустойчивость.
-
-Телеметрия:
-• Миссия: Deep Space Autonomous Computing
-• Канал связи: Direct Decentralized RPC
-• Статус: Активный полет в межзвездной среде
-• Центр управления: Azimjon Kamiljanov AI Systems Lab`,
-        tags: [
-          "Voyager 1",
-          "Interstellar Mission",
-          "Autonomous Agents",
-          "Deep Architecture",
-          "RTX 5070 CUDA",
-          "Decentralized Tech",
-        ],
-        actionText: "Миссия Вояджер",
-        githubText: "Профиль GitHub",
-      },
-    },
-
-    Comet: {
-      uz: {
-        badge: "Koinot Hodisasi • Davriy Kometa",
-        title: "Halley-Neowise • Dynamic Periodic Comet",
-        subtitle: "Ekssentrik Dumli Yulduz va Quyosh Shamoli Dinamikasi",
-        content: `Quyosh tizimini kesib o'tuvchi yuqori ekssentriklikdagi kometaning dinamik harakati.
-Quyosh nurlanish bosimi va quyosh shamoli natijasida hosil bo'ladigan gaz (ion) va chang dumlari fizikasi. Quyosh yaqinida maksimal tezlik va yorqinlikka erishadi.`,
-        tags: [
-          "Comet",
-          "Keplerian Orbit",
-          "Ion Tail",
-          "Solar Wind",
-          "Solar Physics",
-        ],
-        actionText: "Kometa Dinamikasi",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "Cosmic Phenomenon • Periodic Comet",
-        title: "Halley-Neowise • Dynamic Periodic Comet",
-        subtitle: "Highly Eccentric Comet & Solar Wind Dynamics",
-        content: `Dynamic trajectory of a highly eccentric comet sweeping through the Solar System.
-Physics of dual tails (bluish gas ion tail and warm dust tail) driven by solar radiation pressure and solar wind, accelerating near perihelion.`,
-        tags: [
-          "Comet",
-          "Keplerian Orbit",
-          "Ion Tail",
-          "Solar Wind",
-          "Solar Physics",
-        ],
-        actionText: "Comet Dynamics",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "Космический Феномен • Периодическая Комета",
-        title: "Halley-Neowise • Dynamic Periodic Comet",
-        subtitle: "Эксцентричная Комета и Динамика Солнечного Ветра",
-        content: `Динамическая траектория кометы с высоким эксцентриситетом, пролетающей через Солнечную систему.
-Физика двойного хвоста (газовый ионный и пылевой), направленного от Солнца под давлением солнечного ветра и радиации.`,
-        tags: [
-          "Comet",
-          "Keplerian Orbit",
-          "Ion Tail",
-          "Solar Wind",
-          "Solar Physics",
-        ],
-        actionText: "Динамика Кометы",
-        githubText: "Профиль GitHub",
-      },
-    },
-
-    BlackHole: {
-      uz: {
-        badge: "Singulyarlik • Gravitatsion Linza",
-        title: "Sagittarius A* • Supermassive Singularity",
-        subtitle:
-          "Fazoni Eguvchi Gravitatsion Linzalanish va Voqealar Gorizonti",
-        content: `Somon Yo'li galaktikasi markazidagi o'ta og'ir qora o'ra (Gargantua / Sagittarius A*).
-Umumiy nisbiylik nazariyasi (Eynshteyn tenglamalari) bo'yicha cheksiz gravitatsiya qudug'i, yorug'lik ham qochib qutula olmaydigan qop-qora voqealar gorizonti (event horizon) va yorug'lik tezligiga yaqin aylanuvchi oltin-qizil plazma akkretsion diski.
-
-Fizik va Kosmik Ko'rsatkichlar:
-• Relyativistik Gravitatsion Linzalanish (GLSL Spacetime Distortion)
-• Eynshteyn Foton Sferasi va Doppler nurlanish asimmetriyasi
-• Joylashuv: Pluton orbitasidan tashqarida, chuqur yulduzlararo fazoda
-• Arxitektura Falsafasi: Katta yuklamalarda 100% buzilmas va yengilmas mustahkam yadroli tizimlar ramzi.`,
-        tags: [
-          "General Relativity",
-          "Event Horizon",
-          "Accretion Disk",
-          "Einstein Ring",
-          "Gravitational Lensing",
-          "Sagittarius A*",
-          "GLSL Shader",
-        ],
-        actionText: "Singulyarlik Tahlili",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "Singularity • Gravitational Lens",
-        title: "Sagittarius A* • Supermassive Singularity",
-        subtitle: "Spacetime-Curving Gravitational Lensing & Event Horizon",
-        content: `Supermassive black hole at the center of the Milky Way (Gargantua / Sagittarius A*).
-Extreme curvature of spacetime governed by General Relativity, creating an impenetrable event horizon where light cannot escape, flanked by a swirling relativistic gold-red plasma accretion disk.
-
-Physical & Cosmic Specifications:
-• Relativistic Gravitational Lensing (GLSL Spacetime Distortion)
-• Einstein Photon Sphere & Doppler beaming asymmetry
-• Location: Deep interstellar space well beyond Pluto
-• Architectural Philosophy: The symbolic embodiment of zero-failure, unbreakable core systems design under astronomical scale.`,
-        tags: [
-          "General Relativity",
-          "Event Horizon",
-          "Accretion Disk",
-          "Einstein Ring",
-          "Gravitational Lensing",
-          "Sagittarius A*",
-          "GLSL Shader",
-        ],
-        actionText: "Singularity Analysis",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "Сингулярность • Гравитационная Линза",
-        title: "Sagittarius A* • Сверхмассивная Сингулярность",
-        subtitle:
-          "Искривление Пространства, Гравитационное Линзирование и Горизонт Событий",
-        content: `Сверхмассивная черная дыра в центре Млечного Пути (Gargantua / Sagittarius A*).
-Экстремальное искривление пространства-времени по уравнениям Эйнштейна, непроницаемый горизонт событий (event horizon) и вращающийся с околосветовой скоростью плазменный аккреционный диск.
-
-Физические Параметры:
-• Релятивистское гравитационное линзирование (GLSL Spacetime Distortion)
-• Фотонная сфера Эйнштейна и доплеровский эффект на аккреционном диске
-• Расположение: Глубокий межзвездный космос за пределами Плутона
-• Символизм Архитектуры: Воплощение абсолютно несокрушимого ядра распределенных систем под экстремальными нагрузками.`,
-        tags: [
-          "General Relativity",
-          "Event Horizon",
-          "Accretion Disk",
-          "Einstein Ring",
-          "Gravitational Lensing",
-          "Sagittarius A*",
-          "GLSL Shader",
-        ],
-        actionText: "Анализ Сингулярности",
-        githubText: "Профиль GitHub",
-      },
-    },
-  },
-
-  // --------------------------------------------------------------------------
-  // 18 ASTRONOMICAL STARS
-  // --------------------------------------------------------------------------
-  stars: {
-    star_legion_power: {
-      uz: {
-        badge: "Tizim Loyihasi • Legion Power",
-        title: "Legion Power Optimizer • Hardware & Battery Automation",
-        subtitle:
-          "Lenovo Legion Pro 5 Avtomatlashtirilgan Tejamkorlik va Himoya Tizimi",
-        content: `Lenovo Legion Pro 5 uchun maxsus yaratilgan apparat nazorati va batareya tejamkorligi avtomatizatsiyasi.
-Tok manbaidan uzilganda ekran chastotasini avtomatik 165Hz dan 60Hz ga tushiradi, noutbukni Quiet/Power-Saver rejimiga o'tkazadi, klaviatura RGB yoritgichlarini o'chiradi va batareya degradatsiyasini oldini oluvchi Conservation Mode (80% chegara) boshqaradi.`,
-        tags: [
-          "Lenovo Legion Pro 5",
-          "Battery Automation",
-          "Bash / Systemd",
-          "Linux Kernel",
-          "Hardware Control",
-        ],
-        actionText: "Legion Power",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "System Suite • Legion Power",
-        title: "Legion Power Optimizer • Hardware & Battery Automation",
-        subtitle:
-          "Automated Power Conservation & Thermal Defense for Legion Pro 5",
-        content: `Precision Linux hardware control suite for Lenovo Legion Pro 5.
-Automatically scales refresh rate from 165Hz to 60Hz on AC disconnect, engages Quiet profile, shuts off keyboard RGB backlight, and regulates Conservation Mode (80% battery cap) to eliminate cell degradation.`,
-        tags: [
-          "Lenovo Legion Pro 5",
-          "Battery Automation",
-          "Bash / Systemd",
-          "Linux Kernel",
-          "Hardware Control",
-        ],
-        actionText: "Legion Power",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "Системный Проект • Legion Power",
-        title: "Legion Power Optimizer • Hardware & Battery Automation",
-        subtitle:
-          "Автоматизация Энергосбережения и Защита Батареи Legion Pro 5",
-        content: `Низкоуровневая утилита управления аппаратной частью Lenovo Legion Pro 5 в Linux.
-При отключении от сети автоматически снижает частоту экрана со 165Гц до 60Гц, включает режим Quiet, гасит RGB подсветку клавиатуры и активирует Conservation Mode (лимит 80%) для продления срока службы аккумулятора.`,
-        tags: [
-          "Lenovo Legion Pro 5",
-          "Battery Automation",
-          "Bash / Systemd",
-          "Linux Kernel",
-          "Hardware Control",
-        ],
-        actionText: "Legion Power",
-        githubText: "Профиль GitHub",
-      },
-    },
-
-    star_titan_cyber: {
-      uz: {
-        badge: "Xavfsizlik Tizimi • Cyber Arsenal",
-        title: "Titan Centurion • Hybrid Cyber & OSINT Arsenal",
-        subtitle:
-          "100+ Kiberxavfsizlik, Pentesting va OSINT Qurollari Integratsiyasi",
-        content: `BlackArch, AUR va maxsus skriptlar orqali birlashtirilgan 100+ jangovar kiber-qurollar arsenali.
-RTX 5070 CUDA bilan tezlashtirilgan Hashcat, Nmap, Radare2, Lynis, Volatility3, Nuclei, NetExec va 760+ manbali OSINT razvedka dvigateli.`,
-        tags: [
-          "Cybersecurity",
-          "OSINT",
-          "Hashcat CUDA",
-          "Nmap",
-          "Penetration Testing",
-          "DevSecOps",
-        ],
-        actionText: "Cyber Arsenal",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "Security Suite • Cyber Arsenal",
-        title: "Titan Centurion • Hybrid Cyber & OSINT Arsenal",
-        subtitle:
-          "100+ Integrated Offensive Security, Pentest & OSINT Frameworks",
-        content: `High-readiness defensive and offensive cyber arsenal integrating 100+ native security binaries from BlackArch and AUR.
-Accelerated with RTX 5070 CUDA: Hashcat, Nmap, Radare2, Lynis, Volatility3, Nuclei, NetExec, and an automated 760+ source OSINT threat intelligence engine.`,
-        tags: [
-          "Cybersecurity",
-          "OSINT",
-          "Hashcat CUDA",
-          "Nmap",
-          "Penetration Testing",
-          "DevSecOps",
-        ],
-        actionText: "Cyber Arsenal",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "Кибербезопасность • Cyber Arsenal",
-        title: "Titan Centurion • Hybrid Cyber & OSINT Arsenal",
-        subtitle: "Интеграция 100+ Инструментов Пентестинга, Анализа и OSINT",
-        content: `Мощный арсенал из более чем 100 утилит информационной безопасности на базе BlackArch и AUR.
-Ускорение на RTX 5070 CUDA: Hashcat, Nmap, Radare2, Lynis, Volatility3, Nuclei, NetExec и автоматизированный OSINT-движок по 760+ источникам.`,
-        tags: [
-          "Cybersecurity",
-          "OSINT",
-          "Hashcat CUDA",
-          "Nmap",
-          "Penetration Testing",
-          "DevSecOps",
-        ],
-        actionText: "Cyber Arsenal",
-        githubText: "Профиль GitHub",
-      },
-    },
-
-    star_graphify: {
-      uz: {
-        badge: "Arxitektura Dvigateli • Graphify",
-        title: "Graphify Visual Architecture • Codebase Knowledge Graph",
-        subtitle:
-          "373 Tugunli D3 Interaktiv Arxitektura Grafigi va AST Tahlili",
-        content: `Katta kod bazalarini (CyberAgent, mikroxizmatlar) chuqur tahlil qilib, 373 tugun va 766 bog'lanishli D3 interaktiv bilimlar grafigiga (graph.html) va Obsidian Canvas modeliga aylantiruvchi dvigatel.`,
-        tags: [
-          "AST Analysis",
-          "Knowledge Graph",
-          "D3.js",
-          "Obsidian Canvas",
-          "Code Intelligence",
-        ],
-        actionText: "Graphify Repo",
-        githubText: "Graphify",
-      },
-      en: {
-        badge: "Architecture Engine • Graphify",
-        title: "Graphify Visual Architecture • Codebase Knowledge Graph",
-        subtitle: "373-Node Interactive D3 Architecture Graph & AST Visualizer",
-        content: `Codebase comprehension engine parsing polyglot source trees into a 373-node, 766-edge interactive D3 knowledge graph and Obsidian Canvas. Detects God nodes and circular dependencies.`,
-        tags: [
-          "AST Analysis",
-          "Knowledge Graph",
-          "D3.js",
-          "Obsidian Canvas",
-          "Code Intelligence",
-        ],
-        actionText: "Graphify Repo",
-        githubText: "Graphify",
-      },
-      ru: {
-        badge: "Архитектурный Движок • Graphify",
-        title: "Graphify Visual Architecture • Codebase Knowledge Graph",
-        subtitle: "Интерактивный D3 Граф на 373 Узла и AST Анализ Кода",
-        content: `Инструмент семантического анализа исходного кода, строящий интерактивный граф знаний на D3.js (373 узла, 766 связей) и карту Obsidian Canvas для мгновенного поиска God-нод и циклических зависимостей.`,
-        tags: [
-          "AST Analysis",
-          "Knowledge Graph",
-          "D3.js",
-          "Obsidian Canvas",
-          "Code Intelligence",
-        ],
-        actionText: "Репозиторий Graphify",
-        githubText: "Graphify",
-      },
-    },
-
-    star_newapi: {
-      uz: {
-        badge: "AI Infratuzilma • New API",
-        title: "New API Multi-LLM Universal Gateway",
-        subtitle: "Yagona Docker AI Shlyuzi (Port 3001) va Multi-Model Router",
-        content: `Port 3001 da ishlovchi universal AI shlyuzi. Gemini 3.8 Flash, DeepSeek-R1, Claude 3.5 Sonnet, OpenAI GPT-4o va Groq modellarini yagona OpenAI-formatli API orqali taqsimlaydi.`,
-        tags: [
-          "Docker Gateway",
-          "Port 3001",
-          "Multi-LLM",
-          "OpenAI Spec",
-          "Zero-Downtime",
-        ],
-        actionText: "New API Repo",
-        githubText: "New API",
-      },
-      en: {
-        badge: "AI Infrastructure • New API",
-        title: "New API Multi-LLM Universal Gateway",
-        subtitle:
-          "Unified Port 3001 Docker Gateway & Multi-Model Traffic Router",
-        content: `Enterprise AI proxy running on Port 3001. Routes traffic between Gemini 3.8 Flash, DeepSeek-R1, Claude 3.5 Sonnet, OpenAI, and Groq behind a unified OpenAI-compatible endpoint.`,
-        tags: [
-          "Docker Gateway",
-          "Port 3001",
-          "Multi-LLM",
-          "OpenAI Spec",
-          "Zero-Downtime",
-        ],
-        actionText: "New API Repo",
-        githubText: "New API",
-      },
-      ru: {
-        badge: "AI Инфраструктура • New API",
-        title: "New API Multi-LLM Universal Gateway",
-        subtitle: "Единый Docker AI Шлюз (Порт 3001) и Маршрутизатор Моделей",
-        content: `Универсальный прокси-шлюз на порту 3001. Объединяет Gemini 3.8 Flash, DeepSeek-R1, Claude 3.5 Sonnet, OpenAI и Groq в единый стандартизированный API.`,
-        tags: [
-          "Docker Gateway",
-          "Port 3001",
-          "Multi-LLM",
-          "OpenAI Spec",
-          "Zero-Downtime",
-        ],
-        actionText: "Репозиторий New API",
-        githubText: "New API",
-      },
-    },
-
-    star_agentzero: {
-      uz: {
-        badge: "Avtonom Agent • Agent Zero",
-        title: "Agent Zero Dual-Brain Docker Environment",
-        subtitle: "Port 5080 da Izolyatsiyalangan Avtonom Kiber-Agent",
-        content: `Port 5080 dagi izolyatsiyalangan Docker ekotizimi. Mustaqil buyruqlar satri, veb-brauzer, fayl manipulyatsiyasi va Antigravity bilan Master-Slave hamkorlik simbiozi.`,
-        tags: [
-          "Docker Sandbox",
-          "Agent Zero",
-          "Port 5080",
-          "Autonomous Agent",
-          "Cyber Operations",
-        ],
-        actionText: "Agent Zero Repo",
-        githubText: "Agent Zero",
-      },
-      en: {
-        badge: "Autonomous Agent • Agent Zero",
-        title: "Agent Zero Dual-Brain Docker Environment",
-        subtitle: "Isolated Port 5080 Autonomous Cyber-Agent Container",
-        content: `Hardened Docker sandbox on Port 5080 providing an autonomous operating runtime with independent shell, headless browser, memory tools, and master-slave symbiosis with Antigravity.`,
-        tags: [
-          "Docker Sandbox",
-          "Agent Zero",
-          "Port 5080",
-          "Autonomous Agent",
-          "Cyber Operations",
-        ],
-        actionText: "Agent Zero Repo",
-        githubText: "Agent Zero",
-      },
-      ru: {
-        badge: "Автономный Агент • Agent Zero",
-        title: "Agent Zero Dual-Brain Docker Environment",
-        subtitle:
-          "Изолированный Контейнер Автономного Кибер-Агента (Порт 5080)",
-        content: `Безопасный Docker-контейнер на порту 5080 с собственным терминалом, браузером и файловой средой, работающий в тандеме с Antigravity для автономного решения сложных задач.`,
-        tags: [
-          "Docker Sandbox",
-          "Agent Zero",
-          "Port 5080",
-          "Autonomous Agent",
-          "Cyber Operations",
-        ],
-        actionText: "Репозиторий Agent Zero",
-        githubText: "Agent Zero",
-      },
-    },
-
-    star_aider_nv: {
-      uz: {
-        badge: "AI Dasturchi • Aider NIM",
-        title: "Aider & NVIDIA NIM Architect",
-        subtitle: "Dual-Brain AI Dasturlash CLI: DeepSeek-R1 + Qwen 2.5 Coder",
-        content: `Dual-Brain arxitekturasi: DeepSeek-R1 (rejalashtiruvchi) + Qwen 2.5 Coder 32B (ijrochi) va 81 ta NVIDIA NIM modeli. Git avto-commit va Tree-sitter AST integratsiyasi.`,
-        tags: [
-          "Aider CLI",
-          "NVIDIA NIM",
-          "DeepSeek-R1",
-          "Qwen 2.5 Coder",
-          "Tree-Sitter",
-        ],
-        actionText: "Aider NIM Profil",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "AI Developer • Aider NIM",
-        title: "Aider & NVIDIA NIM Architect",
-        subtitle: "Dual-Brain AI Coding CLI: DeepSeek-R1 + Qwen 2.5 Coder 32B",
-        content: `Dual-Brain CLI coding architecture combining DeepSeek-R1 (reasoning architect) and Qwen 2.5 Coder 32B (synthesizer) over NVIDIA NIM API with automated git commits and AST parsing.`,
-        tags: [
-          "Aider CLI",
-          "NVIDIA NIM",
-          "DeepSeek-R1",
-          "Qwen 2.5 Coder",
-          "Tree-Sitter",
-        ],
-        actionText: "Aider NIM Profile",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "AI Разработчик • Aider NIM",
-        title: "Aider & NVIDIA NIM Architect",
-        subtitle: "Двухъядерный AI CLI Кодинга: DeepSeek-R1 + Qwen 2.5 Coder",
-        content: `Архитектура Dual-Brain: DeepSeek-R1 в роли архитектора и Qwen 2.5 Coder 32B в роли исполнителя через NVIDIA NIM API с авто-коммитами в Git и парсингом Tree-Sitter AST.`,
-        tags: [
-          "Aider CLI",
-          "NVIDIA NIM",
-          "DeepSeek-R1",
-          "Qwen 2.5 Coder",
-          "Tree-Sitter",
-        ],
-        actionText: "Профиль Aider NIM",
-        githubText: "Профиль GitHub",
-      },
-    },
-
-    star_openshell: {
-      uz: {
-        badge: "Xavfsizlik • OpenShell",
-        title: "NVIDIA OpenShell Safety Sandbox",
-        subtitle: "AI Agentlar Uchun 100% Izolyatsiyalangan Xavfsizlik Qobig'i",
-        content: `NVIDIA OpenShell v0.1.2 gateway va T3 AI agentlari uchun izolyatsiyalangan sandbox. Tizim yadrosini avtonom agentlarning ruxsatsiz yoki xatarli amallaridan himoyalaydi.`,
-        tags: [
-          "NVIDIA OpenShell",
-          "Agent Safety",
-          "Docker Sandbox",
-          "Zero-Trust",
-          "Sentry",
-        ],
-        actionText: "OpenShell Profil",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "AI Security • OpenShell",
-        title: "NVIDIA OpenShell Safety Sandbox",
-        subtitle: "Zero-Trust Execution Perimeter for Autonomous Agent Tooling",
-        content: `NVIDIA OpenShell v0.1.2 sandbox gateway isolating AI agent command execution in sealed containers, safeguarding host kernel filesystems from unintended autonomous side-effects.`,
-        tags: [
-          "NVIDIA OpenShell",
-          "Agent Safety",
-          "Docker Sandbox",
-          "Zero-Trust",
-          "Sentry",
-        ],
-        actionText: "OpenShell Profile",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "Безопасность • OpenShell",
-        title: "NVIDIA OpenShell Safety Sandbox",
-        subtitle: "Изолированный Защитный Периметр для AI Агентов",
-        content: `Шлюз NVIDIA OpenShell v0.1.2, изолирующий терминальные команды AI-агентов в изолированных Docker-оболочках, защищая хост-систему от несанкционированных действий.`,
-        tags: [
-          "NVIDIA OpenShell",
-          "Agent Safety",
-          "Docker Sandbox",
-          "Zero-Trust",
-          "Sentry",
-        ],
-        actionText: "Профиль OpenShell",
-        githubText: "Профиль GitHub",
-      },
-    },
-
-    star_btech: {
-      uz: {
-        badge: "Ta'lim • B.Tech Cloud",
-        title: "B.Tech Cloud Fundamentals Lab",
-        subtitle: "Bulutli Hisoblash va Taqsimlangan Tizimlar Laboratoriyasi",
-        content: `B.Tech universiteti Cloud Fundamentals fani laboratoriyasi. Jupyter Notebooklar (01_Cloud_Basics.ipynb), taqsimlangan tizimlar, IaaS/PaaS va Obsidian xotira konspektlari.`,
-        tags: [
-          "Cloud Computing",
-          "B.Tech",
-          "Jupyter Lab",
-          "Distributed Systems",
-          "IaaS / PaaS",
-        ],
-        actionText: "Cloud Lab Profil",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "Academia • B.Tech Cloud",
-        title: "B.Tech Cloud Fundamentals Lab",
-        subtitle: "Distributed Systems & Cloud Computing Research Environment",
-        content: `Academic curriculum engineering lab for B.Tech Cloud Fundamentals. Includes interactive Jupyter workbooks (01_Cloud_Basics.ipynb), distributed consensus models, and Obsidian notes.`,
-        tags: [
-          "Cloud Computing",
-          "B.Tech",
-          "Jupyter Lab",
-          "Distributed Systems",
-          "IaaS / PaaS",
-        ],
-        actionText: "Cloud Lab Profile",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "Академия • B.Tech Cloud",
-        title: "B.Tech Cloud Fundamentals Lab",
-        subtitle: "Лаборатория Распределенных Систем и Облачных Вычислений",
-        content: `Академическая исследовательская база курса Cloud Fundamentals. Включает интерактивные Jupyter ноутбуки, изучение моделей IaaS/PaaS и структурированную базу знаний в Obsidian.`,
-        tags: [
-          "Cloud Computing",
-          "B.Tech",
-          "Jupyter Lab",
-          "Distributed Systems",
-          "IaaS / PaaS",
-        ],
-        actionText: "Профиль Cloud Lab",
-        githubText: "Профиль GitHub",
-      },
-    },
-
-    star_gsd: {
-      uz: {
-        badge: "Ish Oqimi • GSD Core",
-        title: "GSD Core Spec-Driven Autonomous Framework",
-        subtitle: "72 Ko'nikmali Spec-Contract Muhandislik Dvigateli",
-        content: `Murakkab dasturiy vazifalarni qat'iy spec-shartnoma (SPEC -> PLAN -> EXECUTE -> VERIFY) asosida fazalarga bo'lib, xatosiz bajaruvchi avtonom ishlab chiqish tizimi.`,
-        tags: [
-          "GSD Core",
-          "Spec-Driven",
-          "Bun / TS",
-          "Deterministic AI",
-          "TDD Testing",
-        ],
-        actionText: "GSD Core Repo",
-        githubText: "GSD Core",
-      },
-      en: {
-        badge: "Workflow • GSD Core",
-        title: "GSD Core Spec-Driven Autonomous Framework",
-        subtitle: "Deterministic 72-Skill Phase Execution Engine",
-        content: `Autonomous development orchestrator executing complex multi-phase software refactors under rigorous spec contracts (SPEC -> PLAN -> EXECUTE -> VERIFY) with atomic verification.`,
-        tags: [
-          "GSD Core",
-          "Spec-Driven",
-          "Bun / TS",
-          "Deterministic AI",
-          "TDD Testing",
-        ],
-        actionText: "GSD Core Repo",
-        githubText: "GSD Core",
-      },
-      ru: {
-        badge: "Воркфлоу • GSD Core",
-        title: "GSD Core Spec-Driven Autonomous Framework",
-        subtitle: "Движок Фазовой Автономной Разработки с 72 Навыками",
-        content: `Оркестратор разработки, разбивающий сложные инженерные задачи на фазы со строгой верификацией (SPEC -> PLAN -> EXECUTE -> VERIFY) и атомарными коммитами.`,
-        tags: [
-          "GSD Core",
-          "Spec-Driven",
-          "Bun / TS",
-          "Deterministic AI",
-          "TDD Testing",
-        ],
-        actionText: "Репозиторий GSD Core",
-        githubText: "GSD Core",
-      },
-    },
-
-    star_claudemem: {
-      uz: {
-        badge: "AI Xotirasi • Claude-Mem",
-        title: "Claude-Mem Cognitive Vector DB",
-        subtitle: "Port 37700 da Doimiy Semantik Xotira Servisi",
-        content: `SQLite + ChromaDB asosidagi kognitiv xotira tizimi. AI agentlar o'rtasida kontekst va o'rganilgan darslarni yo'qotmasdan, uzluksiz tiklab beruvchi vektor shlyuzi.`,
-        tags: [
-          "ChromaDB",
-          "SQLite",
-          "Persistent Memory",
-          "Port 37700",
-          "Vector Search",
-        ],
-        actionText: "Claude-Mem Repo",
-        githubText: "Claude-Mem",
-      },
-      en: {
-        badge: "Cognitive Memory • Claude-Mem",
-        title: "Claude-Mem Cognitive Vector DB",
-        subtitle: "Continuous Semantic Memory Daemon on Port 37700",
-        content: `Dual-engine cognitive memory server running on SQLite and ChromaDB. Provides persistent cross-session memory recall, vector semantic search, and observation mining.`,
-        tags: [
-          "ChromaDB",
-          "SQLite",
-          "Persistent Memory",
-          "Port 37700",
-          "Vector Search",
-        ],
-        actionText: "Claude-Mem Repo",
-        githubText: "Claude-Mem",
-      },
-      ru: {
-        badge: "Когнитивная Память • Claude-Mem",
-        title: "Claude-Mem Cognitive Vector DB",
-        subtitle: "Векторная Долговременная Память Агентов (Порт 37700)",
-        content: `Сервер когнитивной памяти на SQLite и ChromaDB. Позволяет AI-агентам сохранять контекст, извлекать уроки из прошлых сессий и быстро находить решения через векторный поиск.`,
-        tags: [
-          "ChromaDB",
-          "SQLite",
-          "Persistent Memory",
-          "Port 37700",
-          "Vector Search",
-        ],
-        actionText: "Репозиторий Claude-Mem",
-        githubText: "Claude-Mem",
-      },
-    },
-
-    star_headroom: {
-      uz: {
-        badge: "Kontekst • Headroom",
-        title: "Headroom Context Optimization Engine",
-        subtitle: "LLM Tokenlarini 40% gacha Tejovchi Kompressiya Tizimi",
-        content: `Katta kod bazalarini til modellariga uzatishda tokenlar sarfini 40% gacha siquvchi AST parsing va kompressiya qatlami (MCP server). Xotirani tejaydi va tezlikni 2x oshiradi.`,
-        tags: [
-          "Headroom",
-          "Token Compression",
-          "AST Parsing",
-          "MCP Server",
-          "SmartCrusher",
-        ],
-        actionText: "Headroom Repo",
-        githubText: "Headroom",
-      },
-      en: {
-        badge: "Context Engine • Headroom",
-        title: "Headroom Context Optimization Engine",
-        subtitle: "AST Context Compressor Saving Up to 40% of LLM Tokens",
-        content: `High-density code context compression layer utilizing Tree-sitter AST pruning and SmartCrusher deduplication, reducing LLM token consumption by up to 40% without losing semantic fidelity.`,
-        tags: [
-          "Headroom",
-          "Token Compression",
-          "AST Parsing",
-          "MCP Server",
-          "SmartCrusher",
-        ],
-        actionText: "Headroom Repo",
-        githubText: "Headroom",
-      },
-      ru: {
-        badge: "Контекст • Headroom",
-        title: "Headroom Context Optimization Engine",
-        subtitle: "Сжатие Контекста AST и Экономия до 40% Токенов LLM",
-        content: `Инструмент оптимизации промптов и кодовой базы на основе парсинга AST, сжимающий передаваемый в LLM контекст до 40% без потери семантического смысла.`,
-        tags: [
-          "Headroom",
-          "Token Compression",
-          "AST Parsing",
-          "MCP Server",
-          "SmartCrusher",
-        ],
-        actionText: "Репозиторий Headroom",
-        githubText: "Headroom",
-      },
-    },
-
-    star_ralph: {
-      uz: {
-        badge: "Avtonom TDD • Ralph Loop",
-        title: "Ralph Loop Self-Healing Runner",
-        subtitle:
-          "Testlar 100% Yashil Bo'lmaguncha To'xtamaydigan Avtonom Sikl",
-        content: `Xatolik yuz berganda toza yangi kontekst bilan qayta ishga tushib, kodni tekshiruvchi va testlar 100% yashil bo'lmaguncha to'xtamaydigan o'z-o'zini davolovchi avtonom sikl dvigateli.`,
-        tags: [
-          "Ralph Loop",
-          "Self-Healing",
-          "TDD Loops",
-          "Continuous Testing",
-          "Bash CLI",
-        ],
-        actionText: "Ralph Loop Repo",
-        githubText: "Ralph Loop",
-      },
-      en: {
-        badge: "Autonomous TDD • Ralph Loop",
-        title: "Ralph Loop Self-Healing Runner",
-        subtitle: "Autonomous Test-Driven Feedback Loop Until 100% Pass",
-        content: `Self-healing autonomous loop runner that executes clean-context sub-cycles upon code failure, iteratively refactoring and verifying until all test assertions pass with zero regressions.`,
-        tags: [
-          "Ralph Loop",
-          "Self-Healing",
-          "TDD Loops",
-          "Continuous Testing",
-          "Bash CLI",
-        ],
-        actionText: "Ralph Loop Repo",
-        githubText: "Ralph Loop",
-      },
-      ru: {
-        badge: "Автономный TDD • Ralph Loop",
-        title: "Ralph Loop Self-Healing Runner",
-        subtitle: "Самовосстанавливающийся TDD Цикл до 100% Успеха Тестов",
-        content: `Автономный итерационный раннер, который при ошибках запускает чистые контекстные подциклы, исправляет код и прогоняет тесты до достижения 100% зеленого статуса.`,
-        tags: [
-          "Ralph Loop",
-          "Self-Healing",
-          "TDD Loops",
-          "Continuous Testing",
-          "Bash CLI",
-        ],
-        actionText: "Репозиторий Ralph Loop",
-        githubText: "Ralph Loop",
-      },
-    },
-
-    star_deepseek_harness: {
-      uz: {
-        badge: "Agent Dvigateli • dsh",
-        title: "DeepSeek Harness (dsh) Multi-Plugin Engine",
-        subtitle: "Port 3080 da Modulli AI Agent Infratuzilmasi",
-        content: `DeepSeek AI uchun modulli agent muhiti. Cordis spatiotemporal arxitekturasi, hamma narsa plagin tamoyili va port 3080 dagi interaktiv boshqaruv paneli.`,
-        tags: [
-          "DeepSeek AI",
-          "Cordis Engine",
-          "TypeScript",
-          "Port 3080",
-          "Plugin Ecosystem",
-        ],
-        actionText: "DeepSeek Harness Repo",
-        githubText: "DeepSeek Harness",
-      },
-      en: {
-        badge: "Agent Engine • dsh",
-        title: "DeepSeek Harness (dsh) Multi-Plugin Engine",
-        subtitle:
-          "Extensible Everything-as-a-Plugin Agent Platform on Port 3080",
-        content: `Modular AI agent harness built on the Cordis spatiotemporal framework for DeepSeek models. Features hot-swappable tool plugins, WebSocket streaming, and Port 3080 dashboard.`,
-        tags: [
-          "DeepSeek AI",
-          "Cordis Engine",
-          "TypeScript",
-          "Port 3080",
-          "Plugin Ecosystem",
-        ],
-        actionText: "DeepSeek Harness Repo",
-        githubText: "DeepSeek Harness",
-      },
-      ru: {
-        badge: "Агентский Движок • dsh",
-        title: "DeepSeek Harness (dsh) Multi-Plugin Engine",
-        subtitle: "Модульный Фреймворк для AI-Агентов на Порту 3080",
-        content: `Модульная среда запуска AI-агентов на базе DeepSeek. Построена на платформе Cordis, поддерживает динамические плагины инструментов и веб-дашборд на порту 3080.`,
-        tags: [
-          "DeepSeek AI",
-          "Cordis Engine",
-          "TypeScript",
-          "Port 3080",
-          "Plugin Ecosystem",
-        ],
-        actionText: "Репозиторий DeepSeek Harness",
-        githubText: "DeepSeek Harness",
-      },
-    },
-
-    star_titan_osint: {
-      uz: {
-        badge: "Kiber-Razvedka • OSINT",
-        title: "Titan OSINT Massive Threat Intelligence",
-        subtitle: "769 Ta Qurol va Manbalardan Iborat Global Kiber-Razvedka",
-        content: `769 ta kiber-razvedka va OSINT vositasi (OSINT_TOOL_INVENTORY.md). Maigret, Sherlock, Holehe, Cloudfox, Sublist3r va xavf-xatarlarni avtomatlashtirilgan qidiruvi.`,
-        tags: [
-          "OSINT",
-          "769 Tools",
-          "Threat Intel",
-          "Reconnaissance",
-          "Python CLI",
-        ],
-        actionText: "Titan OSINT Profil",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "Threat Intelligence • OSINT",
-        title: "Titan OSINT Massive Threat Intelligence",
-        subtitle: "Global Cyber Reconnaissance Engine Indexing 769 Sources",
-        content: `Comprehensive threat intelligence and reconnaissance repository compiling 769 specialized intelligence utilities including Maigret, Sherlock, Holehe, Cloudfox, and DNS threat scrapers.`,
-        tags: [
-          "OSINT",
-          "769 Tools",
-          "Threat Intel",
-          "Reconnaissance",
-          "Python CLI",
-        ],
-        actionText: "Titan OSINT Profile",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "Киберразведка • OSINT",
-        title: "Titan OSINT Massive Threat Intelligence",
-        subtitle: "Глобальный Комплекс Киберразведки из 769 Инструментов",
-        content: `Масштабная база и автоматизированный пайплайн OSINT разведки из 769 утилит: Maigret, Sherlock, Holehe, Cloudfox, Sublist3r и парсеры цифровых следов.`,
-        tags: [
-          "OSINT",
-          "769 Tools",
-          "Threat Intel",
-          "Reconnaissance",
-          "Python CLI",
-        ],
-        actionText: "Профиль Titan OSINT",
-        githubText: "Профиль GitHub",
-      },
-    },
-
-    star_sentinel_shield: {
-      uz: {
-        badge: "Yadro Xavfsizligi • Sudo Shield",
-        title: "System Sentinel & Sudo Shield",
-        subtitle: "Linux Yadro Himoyasi va Buzilmas Barqarorlik",
-        content: `Linux OS tizim darajasidagi himoyasi. 'sudo rm -rf' buyrug'ini butunlay bloklash, 8GB ZRAM swap, va apparat resurslarini 24/7 nazorat qiluvchi avtonom soqchi.`,
-        tags: [
-          "Linux Hardening",
-          "Sudo Shield",
-          "ZRAM Swap",
-          "Kernel Watchdog",
-          "System Stability",
-        ],
-        actionText: "Sentinel Shield Profil",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "Kernel Security • Sudo Shield",
-        title: "System Sentinel & Sudo Shield",
-        subtitle: "System-Level Linux Hardening & Root Command Defense",
-        content: `Operating system stability shield enforcing system-level interception against destructive commands like 'sudo rm -rf', coupled with 8GB dynamic ZRAM swap and automated power crash watchdogs.`,
-        tags: [
-          "Linux Hardening",
-          "Sudo Shield",
-          "ZRAM Swap",
-          "Kernel Watchdog",
-          "System Stability",
-        ],
-        actionText: "Sentinel Shield Profile",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "Защита Ядра • Sudo Shield",
-        title: "System Sentinel & Sudo Shield",
-        subtitle: "Системная Защита Linux и Блокировка Опасных Команд",
-        content: `Системный щит безопасности Linux, перехватывающий деструктивные команды вроде 'sudo rm -rf', управляющий 8ГБ ZRAM swap и обеспечивающий 24/7 защиту ядра от сбоев.`,
-        tags: [
-          "Linux Hardening",
-          "Sudo Shield",
-          "ZRAM Swap",
-          "Kernel Watchdog",
-          "System Stability",
-        ],
-        actionText: "Профиль Sentinel Shield",
-        githubText: "Профиль GitHub",
-      },
-    },
-
-    star_solar_portfolio: {
-      uz: {
-        badge: "3D WebGL • Solar Engine",
-        title: "Cosmic Portfolio 3D Three.js Engine",
-        subtitle: "Ushbu Giper-Realistik 3D Quyosh Tizimi Portfoliosi",
-        content: `Three.js r160, maxsus GLSL plazma shaderi, 1:1 NASA SDO fotosferasi, 9 ta sayyora, ACESFilmic tonemapping va UnrealBloomPass bilan yaratilgan dunyodagi ilk koinot portfoliosi.`,
-        tags: [
-          "Three.js",
-          "GLSL Shaders",
-          "WebGL",
-          "GSAP",
-          "Space UI",
-          "Clean HUD",
-        ],
-        actionText: "Cosmic Portfolio Repo",
-        githubText: "Cosmic Portfolio",
-      },
-      en: {
-        badge: "3D WebGL • Solar Engine",
-        title: "Cosmic Portfolio 3D Three.js Engine",
-        subtitle: "The Hyper-Realistic 3D Solar System Developer Portfolio",
-        content: `The world's first space-station-grade developer portfolio: Three.js r160, custom procedural GLSL magma shader, 1:1 NASA SDO photosphere, 9 concentric orbits, ACESFilmic tonemapping, and adaptive camera physics.`,
-        tags: [
-          "Three.js",
-          "GLSL Shaders",
-          "WebGL",
-          "GSAP",
-          "Space UI",
-          "Clean HUD",
-        ],
-        actionText: "Cosmic Portfolio Repo",
-        githubText: "Cosmic Portfolio",
-      },
-      ru: {
-        badge: "3D WebGL • Solar Engine",
-        title: "Cosmic Portfolio 3D Three.js Engine",
-        subtitle: "Гипер-Реалистичное 3D Портфолио Солнечной Системы",
-        content: `Первое в мире портфолио космического класса: Three.js r160, процедурный GLSL шейдер лавы, 1:1 фотосфера NASA SDO, 9 концентрических орбит, тонемаппинг ACESFilmic и адаптивная физика камеры.`,
-        tags: [
-          "Three.js",
-          "GLSL Shaders",
-          "WebGL",
-          "GSAP",
-          "Space UI",
-          "Clean HUD",
-        ],
-        actionText: "Репозиторий Cosmic Portfolio",
-        githubText: "Cosmic Portfolio",
-      },
-    },
-
-    star_school21: {
-      uz: {
-        badge: "Algoritmlar • School 21",
-        title: "School 21 Crypto & Network Lab",
-        subtitle: "Past Darajadagi C/C++ Tarmoq va Kriptografiya Dasturlari",
-        content: `School 21 loyihalari: CbS2-CbS4 past darajadagi POSIX tarmoq protokollari va CbS7-CbS8 zamonaviy simmetrik/asimmetrik kriptografiya tadqiqotlari (C/C++).`,
-        tags: [
-          "School 21",
-          "C / C++",
-          "POSIX Sockets",
-          "Cryptography",
-          "Algorithms",
-        ],
-        actionText: "School 21 Profil",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "Algorithms • School 21",
-        title: "School 21 Crypto & Network Lab",
-        subtitle: "Low-Level C/C++ POSIX Networking & Cryptographic Suites",
-        content: `Core algorithmic projects from School 21: CbS2-CbS4 low-level POSIX socket network implementations and CbS7-CbS8 symmetric and asymmetric cryptographic research in pure C/C++.`,
-        tags: [
-          "School 21",
-          "C / C++",
-          "POSIX Sockets",
-          "Cryptography",
-          "Algorithms",
-        ],
-        actionText: "School 21 Profile",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "Алгоритмы • School 21",
-        title: "School 21 Crypto & Network Lab",
-        subtitle: "Низкоуровневые Сетевые Протоколы и Криптография на C/C++",
-        content: `Фундаментальные проекты School 21: низкоуровневые сетевые сокеты POSIX (CbS2-CbS4) и алгоритмы симметричной/асимметричной криптографии (CbS7-CbS8) на чистом C/C++.`,
-        tags: [
-          "School 21",
-          "C / C++",
-          "POSIX Sockets",
-          "Cryptography",
-          "Algorithms",
-        ],
-        actionText: "Профиль School 21",
-        githubText: "Профиль GitHub",
-      },
-    },
-
-    star_task_observer: {
-      uz: {
-        badge: "Telemetriya • Observer",
-        title: "Task Observer & Mnemoverse Telemetry",
-        subtitle: "Multi-Agent Tizimlarda Har Bir Qadam Telemetriyasi",
-        content: `Ko'p agentli tizimlarda har bir agent qadamlari, asboblari, xatoliklari va kognitiv xotirasini real vaqtda monitoring qiluvchi va tahlil etuvchi telemetriya infratuzilmasi.`,
-        tags: [
-          "Agent Telemetry",
-          "Mnemoverse",
-          "Task Observer",
-          "Observability",
-          "Multi-Agent",
-        ],
-        actionText: "Task Observer Profil",
-        githubText: "GitHub Profil",
-      },
-      en: {
-        badge: "Telemetry • Observer",
-        title: "Task Observer & Mnemoverse Telemetry",
-        subtitle:
-          "Real-Time Observability & Step Tracing for Multi-Agent Swarms",
-        content: `Distributed observability infrastructure capturing execution steps, tool usage, memory states, and decision trajectories across autonomous multi-agent swarms.`,
-        tags: [
-          "Agent Telemetry",
-          "Mnemoverse",
-          "Task Observer",
-          "Observability",
-          "Multi-Agent",
-        ],
-        actionText: "Task Observer Profile",
-        githubText: "GitHub Profile",
-      },
-      ru: {
-        badge: "Телеметрия • Observer",
-        title: "Task Observer & Mnemoverse Telemetry",
-        subtitle: "Мониторинг Шагов и Инструментов в Мульти-Агентных Системах",
-        content: `Инфраструктура наблюдаемости (Observability) для мульти-агентных систем, отслеживающая шаги агентов, вызовы инструментов, состояние памяти и траектории решений в реальном времени.`,
-        tags: [
-          "Agent Telemetry",
-          "Mnemoverse",
-          "Task Observer",
-          "Observability",
-          "Multi-Agent",
-        ],
-        actionText: "Профиль Task Observer",
         githubText: "Профиль GitHub",
       },
     },

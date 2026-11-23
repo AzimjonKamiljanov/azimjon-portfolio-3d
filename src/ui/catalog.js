@@ -92,6 +92,12 @@ export function initCatalog({ onSelectTarget }) {
   const emptyState = document.getElementById("catalog-empty-state");
   const catalogGrid = document.getElementById("catalog-planets-grid");
 
+  // The "all" count used to be written into the markup by hand, so it still
+  // claimed 28 after the catalogue was cut to the repositories that actually
+  // exist. Deriving it from the data is the only way it stays true.
+  const allCount = document.getElementById("cat-count-all");
+  if (allCount) allCount.textContent = `(${projectsData.length})`;
+
   let currentLanguage = "uz";
   let currentCategory = "all";
   let searchQuery = "";

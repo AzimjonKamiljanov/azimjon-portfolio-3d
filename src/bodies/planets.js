@@ -344,8 +344,6 @@ export function initPlanets(scene, textureLoader, interactableObjects) {
     const planet = new THREE.Mesh(planetGeo, planetMat);
     planet.position.x = cfg.distance;
     planet.rotation.z = (cfg.tilt * Math.PI) / 180;
-    planet.castShadow = true;
-    planet.receiveShadow = true;
     orbitGroup.add(planet);
 
     // 4. Special cases: Atmosphere, Clouds, Rings, Moon
@@ -389,8 +387,6 @@ export function initPlanets(scene, textureLoader, interactableObjects) {
       });
       moonMesh = new THREE.Mesh(moonGeo, moonMat);
       moonMesh.position.x = cfg.moonDistance;
-      moonMesh.castShadow = true;
-      moonMesh.receiveShadow = true;
       moonGroup.add(moonMesh);
 
       moonMesh.userData = {
@@ -435,8 +431,6 @@ Xabarlar Cloudflare Worker orqali qattiq tekshiruvdan o'tib, Telegram botiga rea
       });
       const saturnRing = new THREE.Mesh(saturnRingGeo, saturnRingMat);
       saturnRing.rotation.x = Math.PI / 2;
-      saturnRing.castShadow = true;
-      saturnRing.receiveShadow = true;
       planet.add(saturnRing);
     }
 
@@ -459,8 +453,6 @@ Xabarlar Cloudflare Worker orqali qattiq tekshiruvdan o'tib, Telegram botiga rea
       });
       const uranusRing = new THREE.Mesh(uranusRingGeo, uranusRingMat);
       uranusRing.rotation.x = Math.PI / 2;
-      uranusRing.castShadow = true;
-      uranusRing.receiveShadow = true;
       planet.add(uranusRing);
     }
 

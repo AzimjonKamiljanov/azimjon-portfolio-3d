@@ -33,9 +33,18 @@ describe("Production Distribution (dist/) Integrity Tests", () => {
     const html = fs.readFileSync(indexPath, "utf8");
     expect(html).toContain('class="skip-link"');
     expect(html).toContain('id="accessible-fallback"');
-    expect(html).toContain("CyberAgent TITAN NEXUS");
+
+    // The fallback is what screen readers and crawlers see, so it has to
+    // agree with the catalogue rather than drift from it. It is generated
+    // from the same projects.json, and these titles are the proof.
+    expect(html).toContain("Cyber Agent");
     expect(html).toContain("CareTrack Clinic");
-    expect(html).toContain("UstaPro Master CAD 3D");
+    expect(html).toContain("Cosmic Portfolio");
+
+    // Entries that were removed must not survive in the crawlable copy.
+    expect(html).not.toContain("TITAN NEXUS");
+    expect(html).not.toContain("Agent Zero");
+    expect(html).not.toContain("UstaPro Master CAD 3D");
   });
 
   it("contains truthful schema.org JSON-LD and meta description", () => {

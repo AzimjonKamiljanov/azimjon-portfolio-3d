@@ -11,7 +11,6 @@ export function getTranslations(lang = currentLang) {
   return {
     ui: translations.ui[lang] || translations.ui.uz,
     celestial: translations.celestial,
-    stars: translations.stars,
   };
 }
 
@@ -102,9 +101,6 @@ export function setLanguage(requestedLang) {
     Uranus: uiTexts.nav.uranus,
     Neptune: uiTexts.nav.neptune,
     Pluto: uiTexts.nav.pluto,
-    star: uiTexts.nav.stars,
-    Voyager: uiTexts.nav.voyager || "Voyager",
-    BlackHole: uiTexts.nav.blackHole || "Qora O'ra",
   };
 
   document.querySelectorAll("#nav-container .nav-btn").forEach((btn) => {

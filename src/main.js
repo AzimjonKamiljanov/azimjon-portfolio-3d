@@ -21,8 +21,7 @@ import { initGestureControl } from "./input/gestures.js";
 import { initSun } from "./bodies/sun.js";
 import { initPlanets } from "./bodies/planets.js";
 import { initAsteroidBelt } from "./bodies/asteroids.js";
-import { initStars } from "./bodies/stars.js";
-import { initCosmicBodies } from "./bodies/cosmic.js";
+import { initStarfield } from "./bodies/starfield.js";
 
 import {
   initSoundscape,
@@ -50,8 +49,12 @@ import {
 initErrorTracking();
 
 // 1. Setup Scene, Camera, Renderer
-const { scene, camera, renderer, skydomeMesh } = initScene();
-const { composer, bloomPass } = initPostprocessing(renderer, scene, camera);
+const { scene, camera, renderer } = initScene();
+const { composer, bloomPass, bloomResolution } = initPostprocessing(
+  renderer,
+  scene,
+  camera,
+);
 const controls = initControls(camera, renderer);
 
 // Global interactable objects array for raycasting and UI
@@ -126,15 +129,16 @@ const {
   update: updatePlanets,
 } = initPlanets(scene, textureLoader, interactableObjects);
 const { update: updateAsteroids } = initAsteroidBelt(scene);
-const { starMeshes, update: updateStars } = initStars(
-  scene,
-  interactableObjects,
-);
-const {
-  voyagerGroup,
-  blackHoleGroup,
-  update: updateCosmic,
-} = initCosmicBodies(scene, interactableObjects);
+const { update: updateStarfield } = initStarfield(scene);
+// The scene is the Solar System and nothing else.
+//
+// It used to carry eighteen extra "star" bodies, each with its own orbit
+// LineLoop and glow sprite, plus a black hole with an accretion disk and a
+// Voyager probe. That was 27 orbit rings where there are nine orbits, and a
+// black hole sitting inside a planetary system — the opposite of the real
+// sky it is meant to evoke. Removing them takes the scene from 51 meshes,
+// 27 line loops and 18 sprites down to the Sun, nine planets, the Moon,
+// Saturn's and Uranus' own rings, the asteroid belt and the starfield.
 
 // 3. UI Modules Initialization
 initTerminal();
@@ -152,18 +156,9 @@ function focusTargetById(targetId) {
   let target = null;
   if (targetId === "sun") target = sun;
   else if (targetId === "moon") target = moonMesh;
-  else if (targetId === "Voyager")
-    target = voyagerGroup?.children[0] || voyagerGroup;
-  else if (targetId === "BlackHole")
-    target = blackHoleGroup?.children[0] || blackHoleGroup;
   else {
     const pObj = planetMeshes.find((p) => p.mesh.userData?.id === targetId);
-    if (pObj) {
-      target = pObj.mesh;
-    } else {
-      const sObj = starMeshes.find((s) => s.userData?.id === targetId);
-      if (sObj) target = sObj;
-    }
+    if (pObj) target = pObj.mesh;
   }
 
   if (target) {
@@ -589,8 +584,6 @@ function startInitialDive() {
 
 // 10. Window Event Handlers
 function onWindowResize() {
-  const isMobile = window.innerWidth <= 768;
-
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 
@@ -610,10 +603,9 @@ function onWindowResize() {
 
   composer.setSize(window.innerWidth, window.innerHeight);
   if (bloomPass) {
-    const bloomRes = isMobile
-      ? new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2)
-      : new THREE.Vector2(window.innerWidth, window.innerHeight);
-    bloomPass.setSize(bloomRes.x, bloomRes.y);
+    // Same half-resolution rule as at startup; see postprocessing.js for why.
+    const res = bloomResolution(window.innerWidth, window.innerHeight);
+    bloomPass.setSize(res.x, res.y);
   }
 }
 let resizeRafId = null;
@@ -677,13 +669,7 @@ function animate() {
   updateSun(elapsedTime, camera);
   updatePlanets(elapsedTime, delta, currentOrbitSpeed);
   updateAsteroids(elapsedTime, delta, currentOrbitSpeed);
-  updateStars(elapsedTime, delta);
-  updateCosmic(elapsedTime, delta, camera);
-
-  // Update skydome
-  if (skydomeMesh && skydomeMesh.material.uniforms?.uTime) {
-    skydomeMesh.material.uniforms.uTime.value = elapsedTime;
-  }
+  updateStarfield(elapsedTime, delta);
 
   composer.render();
 }
