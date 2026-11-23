@@ -70,7 +70,15 @@ test.describe("3D Solar Developer Portfolio E2E Acceptance Tests", () => {
 
     // Search narrows the list. "Cyber" matches the voice agent on Earth.
     const searchInput = page.locator("#catalog-search");
+
+    // Wait for the grid to render before taking the baseline. Reading the
+    // count straight after the modal becomes visible raced the first render
+    // on a slow CI runner and sampled zero, which made the comparison below
+    // fail for a reason that had nothing to do with search.
+    await expect(page.locator(".catalog-card").first()).toBeVisible();
     const allCards = await page.locator(".catalog-card").count();
+    expect(allCards).toBeGreaterThan(1);
+
     await searchInput.fill("Cyber");
     await page.waitForTimeout(300); // debounce wait
 
